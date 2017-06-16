@@ -37,17 +37,21 @@
          --><div class="toolbar_item">
             <a href="#none" class="toolbar_person_information">
                 <i class="fa fa-circle"></i>
-                <span class="toolbar_user_name">萨达sdfsadf</span>
+                <span class="toolbar_user_name">{{ Auth::user()->name }}</span>
             </a>
             <ul class="toolbar_drop_menu">
-                <li class="toolopr_modify_password" data-toggle="modal" data-target=".modal_modify_password">修改密码</li>
-                <li class="toolopr_phone_solution" data-toggle="modal" data-target=".modal_phone_solution">手机号解绑</li>
+                {{--<li class="toolopr_modify_password" data-toggle="modal" data-target=".modal_modify_password">修改密码</li>--}}
+                {{--<li class="toolopr_phone_solution" data-toggle="modal" data-target=".modal_phone_solution">手机号解绑</li>--}}
                 <li class="toolopr_log_out">
                     <a href="{{ route('logout') }}"
                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                         退出登录
                     </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                 </li>
             </ul>
         </div>
