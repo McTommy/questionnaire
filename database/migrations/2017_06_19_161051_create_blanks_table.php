@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAnswersTable extends Migration
+class CreateBlanksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateAnswersTable extends Migration
      */
     public function up()
     {
-        Schema::create('answers', function (Blueprint $table) {
+        Schema::create('blanks', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('question_id')->index()->comment('问题id');
-            $table->string('content')->index()->comment('答案描述');
-            $table->unsignedInteger('next_question_order')->nullable()->comment('下一个问题的序号');
-            $table->unsignedSmallInteger('order')->default(1)->comment('答案序号');
-            $table->unsignedSmallInteger('status')->default(1)->comment('状态');
+            $table->string('content')->index()->comment('填空题答案内容');
+            $table->unsignedInteger('order')->default(1)->comment('填空题答案序号');
+            $table->unsignedSmallInteger('status')->default(1);
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateAnswersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('answers');
+        Schema::dropIfExists('blanks');
     }
 }
