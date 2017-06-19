@@ -16,10 +16,9 @@ class CreateAnswersTable extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('question_id')->index()->comment('问题id');
-            $table->string('content')->index()->comment('答案描述');
-            $table->unsignedInteger('next_question_order')->nullable()->comment('下一个问题的序号');
-            $table->unsignedSmallInteger('order')->default(1)->comment('答案序号');
-            $table->unsignedSmallInteger('status')->default(1)->comment('状态');
+            $table->unsignedInteger('choice_id')->index()->comment('选项id');
+            $table->string('other')->nullable()->index()->comment('选项中的其他内容');
+            $table->unsignedSmallInteger('status')->default(1);
             $table->timestamps();
         });
     }
