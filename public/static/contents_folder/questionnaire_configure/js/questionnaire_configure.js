@@ -1,106 +1,6 @@
 /**
  * Created by yuejd on 2017/4/10.
  */
-window.onload = $(function () {
-    (function(){
-        // $.ajax({
-        //     url:"",
-        //     data:{
-        //         "activity":act_info_id,
-        //         "cities":cities,
-        //         "questions":questions,
-        //         "answers":answers,
-        //         "awards":awards
-        //
-        //     },
-        //     type:"get",
-        //     dataType:"json",
-        //     success:function (data) {
-        //         alert("success")
-        //     }
-        // })
-
-        $.getJSON("get_data.json",function(result){
-            var cities=result.cities; //城区
-            var questions=result.questions;//问题
-            var answers=result.answers;// 答案
-            var awards=result.awards;//奖励
-            var activity=result.activity;
-            // 回填城区
-
-            $(".activity_info_id").html(activity);
-            $.each(cities,function (index,item) {
-                $(".city_content").append("<li><div class='displayPart' displayLength='5'>" +item.city+ "</div><span>&times;</span></li>")
-
-            });
-            // 回填问题
-            $.each(questions,function (index,item) {
-                if(item.que_form==1){
-                    var singleOrMultipal="单选";
-                }else if(item.que_form==2){
-                    singleOrMultipal="多选"
-                }
-                $(".question_content").append("<table class='table table-bordered'><thead><tr> <th>Q<span>"+item.que_id+"</span></th><th><span>" +item.question+"" +
-                    "</span><span>【"+singleOrMultipal+"】</span></th> <th> <div class='btn-group'> <div class='btn btn-default btn_creat_answer'>创建答案</div> " +
-                    "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>")
-
-            })
-            // 回填答案
-            $.each(answers,function (index,item) {
-                var id=item.que_id - 1;
-                $(".question_content table:eq("+ id +") tbody").append("<tr> <td><input type='radio'> </td> <td>"+ item.content +"</td> <td> <div class='btn btn-group'>" +
-                    "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>")
-
-            })
-            // 回填奖励文字
-            $(".crear_txt").val(awards.award_name);
-
-
-        })
-    })();
-
-
-
-
-
-
-
-
-
-
-    //点击创建城区开始
-    //点击创建城区btn
-
-    $(".creat_city").click(function () {
-        var li=$(".city_content li");
-        if (li.length <= 15){
-            $("#modal-city").modal("show");
-        }else {
-            $(".creat_city").addClass("set_grey")
-        }
-    });
-
-    //点击创建城区中的确定创建
-    $(".creat_city_box .city_submit").click(function () {
-        var cityname= $(".creat_city_box input").val();
-        if (cityname==""||cityname==null){
-            $(".error_tips").show();
-            $(".creat_city_box input").focus();
-        }
-        else {
-            $(".city_content").append("<li><div class='displayPart' displayLength='5'>" +cityname+ "</div><span>&times;</span></li>")
-            $("#modal-city").modal("hide");
-        }
-
-    });
-    //点击删除单个已创建的城市
-    $("body .city_content").delegate("li span","click",function () {
-        var li = $(this).parents("li")
-        li.remove();
-        //如果按钮变灰，删除一个变蓝
-        $(".creat_city").removeClass("set_grey")
-    });
-    //点击创建城市结束
 
     //点击创建问题开始
     $(".creat_question_btn").click(function () {
@@ -679,12 +579,7 @@ window.onload = $(function () {
     $("#spinner").spinner();
     //点击完成创建, 传数据
     $(".finish-creat .finish").click(function () {
-        var city=$(".city_content");
         var question=$(".question_content");
-        var award=$(".card-content")
-        var city_name=[];
-        var city_id=[];
-        var cities=[];
         var questions=[];
         var que_id=[];
         var que_form=[];
@@ -693,12 +588,6 @@ window.onload = $(function () {
         var ans_id=[];
         var ans_content=[];
         var act_info_id=$(".activity_info_id").html();
-        //获取城区名称和城区id
-         city.find("li").each(function (index,element) {
-            city_name[index]= $(element).find("div").html();
-            city_id[index]= index+1;
-            cities[index]={"city_id":city_id[index],"city":city_name[index]}
-        });
         //获取问题内容和问题序号
          question.find("table").each(function (index,element) {
              var answer = [];
@@ -722,31 +611,15 @@ window.onload = $(function () {
              answers.push(answer);
              //-------------修改-------------------
          });
-        //获取答案和问题序号
-        // question.find("tbody tr").each(function(id,item){
-        //     ans_content[id]= $(this).find("td:eq(1)").html();
-        //     ans_id[id]=id+1;
-        //     que_id[id]=$(this).parents("table").find("thead th:eq(0) span").html();
-        //     answers[id]={"que_id":que_id[id],"inner_id":ans_id[id],"content":ans_content[id]}
-        // });
-        //获取奖励名称及描述
-          var award_name=award.find("tbody td:eq(1)").html();
-          var award_des=$(".creat-txt").val();
-          var awards={"award_name":award_name,"award_des":award_des};
 
         console.log(answers)
+        console.log(act_info_id)
         console.log(questions)
-        console.log(cities)
-        console.log(awards)
-        if(city_name.length==0){
-            window.scrollTo(0,0);
-            alertShow("danger",3,"请创建城区！")
-        }
         if(que_content.length==0){
             window.scrollTo(0,0);
             alertShow("danger",3,"请创建问题！")
         }
-        if(city_name.length!==0 && que_content.length!==0){
+        if(que_content.length!==0){
             window.scrollTo(0,0);
             alertShow("success",3,"创建成功！")
 
@@ -755,26 +628,24 @@ window.onload = $(function () {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url:"questionnaire/make_questionnaire/save",
+                url:"/questionnaire/question/save",
                 data:{
                     "activity":act_info_id,
-                    "cities":cities,
                     "questions":questions,
-                    "answers":answers,
-                    "awards":awards
-
+                    "answers":answers
                 },
                 type:"post",
                 dataType:"json",
                 success:function (data) {
-                    alert("success")
+                    console.info('hahaha');
+                    console.info(data);
+                },
+                error:function (data) {
+                    console.info(data)
                 }
             })
 
         }
-
-
-
 
     });
 
@@ -807,6 +678,6 @@ window.onload = $(function () {
     // });
 
 
-})
+
 
 

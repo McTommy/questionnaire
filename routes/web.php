@@ -14,8 +14,12 @@
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//续登录才可进行操作
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+    //制作调查问卷url
+    Route::get('questionnaire/question/{id}', 'Questionnaire\QuestionController@index')->name('questionnaire.question');
+    Route::post('questionnaire/question/save', 'Questionnaire\QuestionController@save');
+    Route::resource('questionnaire', 'Questionnaire\QuestionnaireController');
 
-//制作调查问卷url
-Route::get('questionnaire/make_questionnaire', 'Questionnaire\MakeQuestionnaireController@index');
-Route::post('questionnaire/make_questionnaire/save', 'Questionnaire\MakeQuestionnaireController@save');
+});
