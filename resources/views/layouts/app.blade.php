@@ -37,7 +37,9 @@
                     <span class="toolbar_user_name">{{ Auth::user()->name }}</span>
                 </a>
                 <ul class="toolbar_drop_menu">
-                    {{--<li class="toolopr_modify_password" data-toggle="modal" data-target=".modal_modify_password">修改密码</li>--}}
+                    <li class="toolopr_modify_password" data-toggle="modal" data-target=".modal_modify_password">
+                        <a href="{{ url('/reset_password') }}">修改密码</a>
+                    </li>
                     {{--<li class="toolopr_phone_solution" data-toggle="modal" data-target=".modal_phone_solution">手机号解绑</li>--}}
                     <li class="toolopr_log_out">
                         <a href="{{ route('logout') }}"
