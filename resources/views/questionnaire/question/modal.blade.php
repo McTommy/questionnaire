@@ -173,7 +173,6 @@
             </div>
         </div>
     </div>
-
     <!--配置矩阵单选模态框-->
     <div class="modal fade config_single_box" id="modal-config-single" aria-hidden='true' data-backdrop='static'>
         <div class="modal-dialog">
@@ -294,52 +293,6 @@
             </div>
         </div>
     </div>
-    <!--选取卡券模态框-->
-    <div class="modal fade card-box" id="modal-card" aria-hidden='true' data-backdrop='static'>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">选取卡券</h4>
-                </div>
-                <div class="modal-body">
-                    <p>请确认卡券已在腾讯后台创建，确认后请点击拉取更新卡券信息</p>
-                    <div class="upgrade-card btn btn-primary">拉取／更新卡券</div>
-                    <p>请选择要使用的卡券（单选）</p>
-                    <div class="card-box-content">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>选择</th>
-                                <th>类型</th>
-                                <th>名称</th>
-                                <th>库存</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><input name="card" type="radio"></td>
-                                <td>代金券</td>
-                                <td>xxxxxx</td>
-                                <td>9999</td>
-                            </tr>
-                            <tr>
-                                <td><input name="card" type="radio"></td>
-                                <td>购物券</td>
-                                <td>xxxxxx</td>
-                                <td>9999</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="card-submit btn btn-primary">确认</button>
-                    <button  type="button" class="cancel btn btn-black">取消</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <!--确认删除模态框-->
     <div class="modal fade confirm_delete_box" id="modal-delete" aria-hidden='true' data-backdrop='static'>
         <div class="modal-dialog">
@@ -359,5 +312,4 @@
         </div>
     </div>
     <!--模态框结束-->
-
 @endsection

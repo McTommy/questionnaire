@@ -41,7 +41,13 @@
                                     <th><span>{{ $question->name }}</span> <span>【{{ question_type($question->type) }}】</span></th>
                                     <th>
                                         <div class="btn-group">
-                                            <div class="btn btn-default btn_config_rank">配置选项</div>
+                                            @if($question->type == 1 || $question->type == 2)
+                                                <div class="btn btn-default btn_creat_answer">创建答案</div>
+                                            @elseif($question->type == 4)
+                                                <div class="btn btn-default btn_config_option">配置选项</div>
+                                            @elseif($question->type == 5)
+                                                <div class="btn btn-default btn_config_rank">配置选项</div>
+                                            @endif
                                             <div class="btn btn-default btn_edit_question">编辑</div>
                                             <div class="btn btn-default btn_delete_question">删除</div>
                                         </div>
