@@ -1,8 +1,6 @@
 @section('modal')
     <!--模态框开始-->
     <!--模态框-->
-    <!--<div class="mask" style="display:none"></div>-->
-
     <!--创建问题模态框-->
     <div class="modal fade creat_question_box" id="modal-question" aria-hidden='true' data-backdrop='static'>
         <div class="modal-dialog">
@@ -21,6 +19,12 @@
                             <input  class="input_sort_num" type="text" >
                             <p class="error_tips" style="display: none">*请输入问题位置</p>
                             <p class="sort_tips" style="display:none;">当前共有<span>3</span>条问题，请输入小于等于<span>4</span>且大于0的正整数</p>
+                            <div class="must_radio">
+                                <label>
+                                    <input type="checkbox" name="must" class="must" checked>
+                                    必填
+                                </label>
+                            </div>
                             <p>请选择问题勾选方式</p>
                             <div class="radio">
                                 <label>
@@ -50,6 +54,12 @@
                                 <label>
                                     <input type="radio" name="optionsRadios" id="optionsRadios5" class="rank_radio" value="矩阵量表题">
                                     矩阵量表题
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios6" class="explain_radio" value="段落说明">
+                                    段落说明
                                 </label>
                             </div>
                         </div>
@@ -118,8 +128,8 @@
                     <div class="creat_answer_box_choice"><strong>勾选形式：</strong><span>多选</span></div>
                     <p>请输入问题答案选项及排列序号</p>
                     <div class="form-group">
-                        <input class="input_answer" type="text" placeholder="请输入答案选项">
-                        <input class="input_answer_num" type="text" placeholder="位置序号">
+                        <input class="input_answer" type="text" placeholder="请输入答案选项" AUTOCOMPLETE="off">
+                        <input class="input_answer_num" type="text" placeholder="位置序号" AUTOCOMPLETE="off">
                         <button type="button" class="confirm_add btn btn-primary">确认添加</button>
                     </div>
                     <div>
@@ -127,6 +137,14 @@
                         <div class="sort_error_tips" style="display:none;">*当前有<span>2</span>个答案，请输入小于<span>3</span>的正整数</div>
                     </div>
                     <div class="add_other">添加「其他」项</div>
+                    <div class="max_choose_box" style="display: none">
+                        <label>最多可选</label>
+                        <select class="max_choose">
+                            <!--<option>不限</option>-->
+                            <!--<option>1</option>-->
+                            <!--<option>2</option>-->
+                        </select>
+                    </div>
                     <div class="answer_content">
                         <table class="table table-bordered" style="word-break:break-all;">
                             <thead>
@@ -261,6 +279,11 @@
                             <p class="error_tips" style="display: none">*请输入答案序号</p>
                             <p class="sort_tips" style="display:none;">当前共有<span>3</span>条答案，请输入小于等于<span>4</span>且大于0的正整数</p>
                         </div>
+                        <input type="checkbox" class="jump_que"> 跳题
+                        <div class="jump" style="display: none">
+                            <label>请选择要跳转到的题目</label>
+                            <input type="text">
+                        </div>
 
                     </form>
                 </div>
@@ -271,7 +294,52 @@
             </div>
         </div>
     </div>
-
+    <!--选取卡券模态框-->
+    <div class="modal fade card-box" id="modal-card" aria-hidden='true' data-backdrop='static'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">选取卡券</h4>
+                </div>
+                <div class="modal-body">
+                    <p>请确认卡券已在腾讯后台创建，确认后请点击拉取更新卡券信息</p>
+                    <div class="upgrade-card btn btn-primary">拉取／更新卡券</div>
+                    <p>请选择要使用的卡券（单选）</p>
+                    <div class="card-box-content">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>选择</th>
+                                <th>类型</th>
+                                <th>名称</th>
+                                <th>库存</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><input name="card" type="radio"></td>
+                                <td>代金券</td>
+                                <td>xxxxxx</td>
+                                <td>9999</td>
+                            </tr>
+                            <tr>
+                                <td><input name="card" type="radio"></td>
+                                <td>购物券</td>
+                                <td>xxxxxx</td>
+                                <td>9999</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="card-submit btn btn-primary">确认</button>
+                    <button  type="button" class="cancel btn btn-black">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--确认删除模态框-->
     <div class="modal fade confirm_delete_box" id="modal-delete" aria-hidden='true' data-backdrop='static'>
         <div class="modal-dialog">

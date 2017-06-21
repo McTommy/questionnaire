@@ -37,7 +37,6 @@ class QuestionController extends Controller
         dd($data);
         return response()->json(['status' => '123', 'data' => $data]);
     }
-
     //新建问题
     public function createQuestion(Request $request)
     {
@@ -46,7 +45,7 @@ class QuestionController extends Controller
         //使该问卷中order大于等于$order的问题的order（矩阵题parent_order）加一
         $this->question->changeOrder($questionnaire_id, $order);
         $data = $request->only([
-            'questionnaire_id', 'order', 'is_required', 'type'
+            'questionnaire_id', 'order', 'is_required', 'type', 'name'
         ]);
         switch($request->get('type')) {
             case 1:
@@ -78,9 +77,9 @@ class QuestionController extends Controller
         $questionnaire_id = $request->get('questionnaire_id');
         $order = $request->get('order');
         $old_order = $request->get('old_order');
+        $id = $this->question->saveEditQuestion($questionnaire_id, $old_order, $order, $request->get('name'), $request->get('is_required'));
         if($order != $old_order)
-            $this->question->changeOrder($questionnaire_id, $order, $old_order);
-        $this->question->saveEditQuestion($questionnaire_id, $order, $request->get('name'), $request->get('is_required'));
+            $this->question->changeOrder($questionnaire_id, $order, $old_order, $id);
         return response()->json(['status' => 200]);
 
     }

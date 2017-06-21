@@ -26,7 +26,10 @@ class QuestionRepository
      */
     public function byQuestionnaireId($id)
     {
-        return Question::where('questionnaire_id', $id)->get();
+        $condition = [
+            ['questionnaire_id', $id],
+        ];
+        return Question::where($condition)->orderBy('order')->get();
     }
 
     /**
@@ -131,7 +134,7 @@ class QuestionRepository
         $data = [
             'questionnaire_id' => $array['questionnaire_id'],
             'name' => $array['name'],
-            'type' => 5,
+            'type' => 6,
             'order' => $array['order'],
             'is_required' => 0,
         ];
@@ -144,41 +147,40 @@ class QuestionRepository
      * @param $order
      * @param $old_order
      */
-    public function changeOrder($questionnaire_id, $order, $old_order = null)
+    public function changeOrder($questionnaire_id, $order, $old_order = null, $id = null)
     {
-        $questions = Question::where('questionnaire_id', $questionnaire_id)->get();
-        foreach ($questions as $question)
-        {
-            //不为矩阵题
-            if($question->type != 4 && $question->type != 5) {
+        $condition = [
+          ['questionnaire_id', $questionnaire_id],
+        ];
+        $questions = Question::where($condition)->get();
+        foreach ($questions as $question) {
+            if($question->parent_order == null) {
                 //若存在旧order
-                if($old_order) {
+                if ($old_order) {
                     //新大于旧， 更改区间内的order
-                    if($order > $old_order && $old_order < $question->order && $question->order <= $order) {
-                        $question->order --;
-                        $question->save;
-                    } elseif($order < $old_order && $old_order > $question->order && $question->order >= $order) {
-                        $question->order ++;
-                        $question->save;
+                    if ($order > $old_order && $old_order < $question->order && $question->order <= $order && $question->id != $id) {
+                        $question->order--;
+                        $question->save();
+                    } elseif ($order < $old_order && $old_order > $question->order && $question->order >= $order && $question->id != $id) {
+                        $question->order++;
+                        $question->save();
                     }
 
                 } elseif ($question->order >= $order) {
-                    $question->order ++;
-                    $question->save;
+                    $question->order++;
+                    $question->save();
                 }
             } else {
                 //如果矩阵题parent_order
-                if($old_order) {
-                    if($order > $old_order && $old_order < $question->parent_order && $question->parent_order <= $order) {
-                        $question->parent_order --;
-                        $question->save;
-                    } elseif($order < $old_order && $old_order > $question->parent_order && $question->parent_order >= $order) {
-                        $question->parent_order ++;
-                        $question->save;
-                    }
-                } elseif ($question->parent_order >= $order) {
-                    $question->parent_order ++;
-                    $question->save;
+                if($question->parent_order >= $order && $question->parent_order < $old_order) {
+                    $question->parent_order++;
+                    $question->save();
+                } elseif ($question->parent_order <= $order && $question->parent_order > $old_order) {
+                    $question->parent_order--;
+                    $question->save();
+                } elseif($question->parent_order == $old_order) {
+                    $question->parent_order = $order;
+                    $question->save();
                 }
             }
         }
@@ -189,18 +191,19 @@ class QuestionRepository
      * @param $order
      * @param $name
      */
-    public function saveEditQuestion($questionnaire, $order, $name, $is_required)
+    public function saveEditQuestion($questionnaire, $old_order, $order, $name, $is_required)
     {
         $data = [
           ['questionnaire_id', $questionnaire],
-          ['order', $order],
-          ['type', '<>', 4],
-          ['type', '<>', 5],
+          ['order', $old_order],
+          ['parent_order', null]
         ];
         $question = Question::where($data)->first();
         $question->name = $name;
         $question->is_required = $is_required;
-        $question->save;
+        $question->order = $order;
+        $question->save();
+        return $question->id;
     }
 
     /**
@@ -212,8 +215,7 @@ class QuestionRepository
         $condition1 = [
             ['questionnaire_id', $questionnaire],
             ['order', $order],
-            ['type', '<>', 4],
-            ['type', '<>', 5],
+            ['parent_order', null]
         ];
         //删除关联的选项
         $question = Question::where($condition1)->first();
@@ -222,27 +224,29 @@ class QuestionRepository
         $condition2 = [
             ['questionnaire_id', $questionnaire],
             ['parent_order', $order],
-            ['type', 4],
         ];
-        $condition3 = [
-            ['questionnaire_id', $questionnaire],
-            ['parent_order', $order],
-            ['type', 5],
-        ];
-        Question::where($condition2)->orwhere($condition3)->delete();
+        Question::where($condition2)->delete();
         //删除该问题
         $question->delete();
         //order大于该问题的order减一
         $data = [
             ['questionnaire_id', $questionnaire],
             ['order', '>', $order],
-            ['type', '<>', 4],
-            ['type', '<>', 5],
         ];
         $questions = Question::where($data)->get();
         foreach ($questions as $question) {
             $question->order --;
-            $question->save;
+            $question->save();
+        }
+        //parent_order 大于该问题的减一
+        $data = [
+            ['questionnaire_id', $questionnaire],
+            ['parent_order', '>', $order],
+        ];
+        $questions = Question::where($data)->get();
+        foreach ($questions as $question) {
+            $question->parent_order --;
+            $question->save();
         }
     }
 }
