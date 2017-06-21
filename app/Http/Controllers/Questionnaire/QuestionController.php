@@ -38,4 +38,60 @@ class QuestionController extends Controller
         return response()->json(['status' => '123', 'data' => $data]);
     }
 
+    //新建问题
+    public function createQuestion(Request $request)
+    {
+        $questionnaire_id = $request->get('questionnaire_id');
+        $order = $request->get('order');
+        //使该问卷中order大于等于$order的问题的order（矩阵题parent_order）加一
+        $this->question->changeOrder($questionnaire_id, $order);
+        $data = $request->only([
+            'questionnaire_id', 'order', 'is_required', 'type'
+        ]);
+        switch($request->get('type')) {
+            case 1:
+                $this->question->saveSingleChoice($data);
+                break;
+            case 2:
+                $this->question->saveMultiChoice($data);
+                break;
+            case 3:
+                $this->question->saveFillInBlank($data);
+                break;
+            case 4:
+                $this->question->saveMatrixSingleChoice($data);
+                break;
+            case 5:
+                $this->question->saveMatrixScale($data);
+                break;
+            case 6:
+                $this->question->saveParaDescrip($data);
+                break;
+        }
+        return response()->json(['status' => 200]);
+
+    }
+
+    //编辑问题
+    public function updateQuestion(Request $request)
+    {
+        $questionnaire_id = $request->get('questionnaire_id');
+        $order = $request->get('order');
+        $old_order = $request->get('old_order');
+        if($order != $old_order)
+            $this->question->changeOrder($questionnaire_id, $order, $old_order);
+        $this->question->saveEditQuestion($questionnaire_id, $order, $request->get('name'), $request->get('is_required'));
+        return response()->json(['status' => 200]);
+
+    }
+
+    //删除问题
+    public function deleteQuestion(Request $request)
+    {
+        $questionnaire_id = $request->get('questionnaire_id');
+        $order = $request->get('order');
+        $this->question->deleteQuestion($questionnaire_id,$order);
+        return response()->json(['status' => 200]);
+    }
+
 }
