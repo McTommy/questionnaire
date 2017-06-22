@@ -25,8 +25,12 @@ class QuestionController extends Controller
     public function index($id)
     {
         $questions = $this->question->byQuestionnaireId($id);
-        return view('questionnaire.question.questionnaire_configure',
-            ['activity_info_id' => $id, 'questions' => $questions]);
+        $sub_question = $this->question->getAllSubQuestion($id);
+        return view('questionnaire.question.questionnaire_configure', [
+                'activity_info_id' => $id,
+                'questions' => $questions,
+                'sub_questions' => $sub_question
+            ]);
     }
 
     //存储调查问卷

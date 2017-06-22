@@ -143,7 +143,7 @@ html body .modal-dialog{
     /*margin-left: 20px;*/
 /*}*/
 .creat_city_box .cancel{background: #000}
-.error_tips,.sort_tips{
+.error_tips,.sort_tips,.jump_error_tips{
     font-size: 12px;
     color: red;
 }
@@ -425,7 +425,20 @@ html body .cancel{
     margin-right: 180px;
     color: #8e8b8b;
 }
+
 .add_other{
     color: #0096ff;
     cursor: pointer;
+    display: inline-block;
+}
+.max_choose_box{
+    display: inline-block;
+    margin-left: 30px;
+}
+.fixed_content{
+    padding: 20px;
+}
+.fix{
+    position: fixed;
+    top:40px;
 }
