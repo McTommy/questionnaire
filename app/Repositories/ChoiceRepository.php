@@ -23,9 +23,62 @@ class ChoiceRepository
         $data = [
             'question_id' => $array['question_id'],
             'content' => $array['content'],
-            'next_question_order' => $array['next_question_order'],
             'order' => $array['order'],
+            'next_question_order' => isset($array['jump_to']) ? $array['jump_to'] : null
         ];
         return Choice::create($data);
     }
+
+    /**
+     * @param $question_id
+     * @return mixed
+     */
+    public function deleteByQuestionId($question_id)
+    {
+        return Choice::where('question_id', $question_id)->delete();
+    }
+
+    /**
+     * @param $question_id
+     * @param $order
+     * @return mixed
+     */
+    public function delByQuestionIdAndOrder($question_id, $order)
+    {
+        $condition = [
+            ['question_id', $question_id],
+            ['order', $order]
+        ];
+        return Choice::where($condition)->delete();
+    }
+
+
+    /**
+     * @param $question_id
+     * @param $old_order
+     * @param $order
+     */
+    public function changeOrder($question_id, $order, $old_order = null)
+    {
+        $choices = Choice::where('question_id', $question_id)->get();
+        foreach ($choices as $choice)
+        {
+            if($old_order) {
+                if($choice->order > $old_order && $choice->order <= $order) {
+                    $choice->order--;
+                    $choice->save();
+                } elseif ($choice->order < $old_order && $choice->order >= $order) {
+                    $choice->order++;
+                    $choice->save();
+                }
+            } else {
+                if($choice->order > $order) {
+                    $choice->order--;
+                    $choice->save();
+                }
+            }
+
+        }
+    }
+
 }

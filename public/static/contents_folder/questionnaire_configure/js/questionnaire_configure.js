@@ -194,9 +194,14 @@ window.onload = $(function () {
                 "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th></tr></thead><tbody></tbody></table>";
         }else if(option =="txt"){
             item = "<table class='table table-bordered'><thead><tr> <th>Q<span>"+order+"</span></th><th><span>" +content+"" +
-                "___________</span><span>【"+choice+"】</span><span style='color: red;'>"+star+"</span></th> <th> <div class='btn-group'> <div class='btn btn-default btn_creat_answer'>创建答案</div>" +
+                "___________</span><span>【"+choice+"】</span><span style='color: red;'>"+star+"</span></th> <th> <div class='btn-group'>" +
                 "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>";
-        }else if(option == "box"){
+        }else if(option=="mul_txt"){
+            item = "<table class='table table-bordered'><thead><tr> <th>Q<span>"+order+"</span></th><th><span>" +content+"" +
+                "___________</span><span>【"+choice+"】</span><span style='color: red;'>"+star+"</span></th> <th> <div class='btn-group'><div class='btn btn-default btn_creat_answer'>创建答案</div>" +
+                "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>";
+        }
+        else if(option == "box"){
             item = "<table class='table table-bordered'><thead><tr> <th>Q<span>"+order+"</span></th><th><span>" +content+"" +
                 "</span><span>【"+choice+"】</span><span style='color: red;'>"+star+"</span></th> <th> <div class='btn-group'> <div class='btn btn-default btn_config_option'>配置选项</div> " +
                 "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>";
@@ -232,31 +237,8 @@ window.onload = $(function () {
         var input_num=$(".edit_question_box .input_sort_num").val();
         var data_id=parseInt($("#modal-edit-question").attr("data-id")) - 1;
         var table=$(".question_content table:eq("+data_id+")");
-        console.log(input_question);
-        console.log(input_num);
         // var singleOrMultipal= $(".edit_question_box .radio input:radio:checked").val();
         if(input_num<=table_num && input_num>0){
-
-            $.ajax({
-                // csrf-token
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url:"/api/question/update_question",
-                data:{
-                    "questionnaire_id":$(".activity_info_id").text(),
-                    "old_order":$(".edit_question_box").attr('data-id'),
-                    "order":input_num,
-                    // "is_required":$(".must").is(":checked") == true ? 1 : 0,
-                    "is_required":1,
-                    "name":input_question
-                },
-                type:"post",
-                dataType:"json",
-                success:function (data) {
-                    alert("success")
-                }
-            });
             if(input_num==1){
                 table.find("th:eq(1)").find("span:eq(0)").html(input_question);
                 // table.find("th:eq(1)").find("span:eq(1)").html("【"+singleOrMultipal+"】");
@@ -291,10 +273,7 @@ window.onload = $(function () {
     $(".question_content").delegate("table .btn_delete_question","click",function () {
         var $this=$(this);
         $("#modal-delete").modal("show");
-        $("#modal-delete").find(".modal-body p").html("确认删除当前问题？");
-        setDataId();
-        var data_id=$(this).parents("table").attr("data-id");
-        $("#modal-delete").attr("data-id", data_id);
+        $("#modal-delete").find(".modal-body p").html("确认删除当前问题？")
         $(".confirm_delete_box .delete_submit").click(function () {
             $this.parents("table").remove();
             sortQuestion();
@@ -317,6 +296,7 @@ window.onload = $(function () {
             $('.max_choose').empty().append("<option>不限</option>");
         }else {
             $(".max_choose_box").hide();
+            $(".max_choose").empty();
         }
         var answer = table.find("tbody").html(),state=judge();
         if(state==true){
@@ -331,8 +311,10 @@ window.onload = $(function () {
             table.find("tbody tr").each(function (id,item) {
                 var data = $(item).attr("data");
                 var input_num = id+1;
-                var input_anw = $(item).find("td:eq(1)").text();
-                $(".max_choose").append("<option>"+(id+1)+"</option>");
+                var input_anw = $(item).find("td:eq(1) span:eq(0)").text();
+                if(choice=="【多选】"){
+                    $(".max_choose").append("<option>"+(id+1)+"</option>");
+                }
                 $(".answer_content tbody").append("<tr data="+data+"><td>"+input_num+"</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
             })
 
@@ -411,9 +393,10 @@ window.onload = $(function () {
         var data_id=$("#modal-creat-answer").attr("data-id")-1;
         var choice=  $(".creat_answer_box .creat_answer_box_choice span").html();
         var max_num = $(".max_choose option:selected").val();
-        console.log(max_num);
+
         if(!isNaN(max_num)){
-            $(".question_content table:eq("+ data_id +") thead th:eq(1) span:last").before("<i>(最多可选"+max_num+"项) &nbsp;</i>");
+            $(".question_content table:eq("+ data_id +") i").remove();
+            $(".question_content table:eq("+ data_id +") thead th:eq(1) span:last").before("<i>(最多可选<span>"+max_num+"</span>项) &nbsp;</i>");
         }
         if(choice=="【单选】" || choice =="【填空】"){
             $(".question_content table:eq("+ data_id +") tbody").empty();
@@ -421,10 +404,10 @@ window.onload = $(function () {
                 var answer=$(item).find("td:eq(1)").html();
                 var data = $(item).attr("data");
                 if(data){
-                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td><input type='radio' name='radio'> </td> <td>"+ answer +"</td> <td> <div class='btn btn-group'>" +
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td><input type='radio' name='radio'> </td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>");
                 }else{
-                    $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='radio' name='radio'> </td> <td>"+ answer +"</td> <td> <div class='btn btn-group'>" +
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='radio' name='radio'> </td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>");
                 }
 
@@ -438,10 +421,10 @@ window.onload = $(function () {
                 var answer=$(item).find("td:eq(1)").html();
                 var data = $(item).attr("data");
                 if(data){
-                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td><input type='checkbox'></td> <td>"+ answer +"</td><td><div class='btn btn-group'>" +
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td><input type='checkbox'></td> <td><span>"+ answer +"</span></td><td><div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div><div class='btn btn-default btn_delete_answer'>删除</div></div></td></tr>")
                 }else{
-                    $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='checkbox'></td><td>"+ answer +"</td><td><div class='btn btn-group'>" +
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='checkbox'></td><td><span>"+ answer +"</span></td><td><div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div><div class='btn btn-default btn_delete_answer'>删除</div></div></td></tr>")
                 }
 
@@ -455,7 +438,7 @@ window.onload = $(function () {
     $(".question_content").delegate("table tbody .btn_edit_answer","click",function () {
         var tr=$(this).parents("tr");
         var table=$(this).parents("table");
-        var cur_answer=tr.find("td:eq(1)").html();
+        var cur_answer=tr.find("td:eq(1) span:eq(0)").text();
         var table_id=table.attr("data-id");
         table.find("tbody tr").each(function (index,element) {
             $(element).attr("tr-id",index+1);
@@ -465,6 +448,12 @@ window.onload = $(function () {
         $("#modal-edit-answer").modal("show").attr({"table-id":table_id,"tr-id":tr_id});
         $(".edit_answer_box .input_answer").val(cur_answer);
         $(".edit_answer_box .input_sort_num").val(tr_id);
+        $(".jump input").val("");
+        $(".jump_error_tips").hide();
+        $(".jump_que").attr("checked",false);
+        $(".jump").hide();
+
+
     });
     $(".jump_que").click(function () {
         if($(this).is(":checked")){
@@ -482,35 +471,56 @@ window.onload = $(function () {
         var tr_num= table.find("tbody tr").length;
         var input_answer=$(".edit_answer_box .input_answer").val();
         var input_num=$(".edit_answer_box .input_sort_num").val();
+        var jump = $(".jump input").val();
+        var l =$(".question_content table").length;
         if(input_num<=tr_num && input_num>0){
             if(input_num==1){
-                tr.find("td:eq(1)").html(input_answer);
-
+                tr.find("td:eq(1) span").text(input_answer);
                 var $r_tr= tr.remove();
                 $r_tr.prependTo($(table).find("tbody"));
-                $("#modal-edit-answer").modal("hide");
                 table.find("tbody tr").each(function (index,element) {
                     $(element).attr("tr-id",index+1);
                 });
-                return false
+                if($(".jump_que").is(":checked")){
+                    if(jump<=l &&jump>table_id+1){
+                        tr.find("td:eq(1) span:eq(1)").remove();
+                        tr.find("td:eq(1) span").after("<span style='color: #00bfd7'>(跳转到第<span>"+jump+"</span>题）</span>");
+                    }else{
+                        $(".jump_error_tips").show().find("span").text(l).end().find("span:eq(1)").text(table_id+2);
+                        return false
+                    }
+                }
+                else {
+                    tr.find("td:eq(1) span:eq(1)").remove();
+                }
             }else{
-                tr.find("td:eq(1)").html(input_answer);
+                tr.find("td:eq(1) span").text(input_answer);
                 var $rr_tr= tr.remove();
                 var input_new_num=input_num-2;
                 $rr_tr.insertAfter($(table).find("tbody tr:eq("+input_new_num+")"));
-                $("#modal-edit-answer").modal("hide");
                 table.find("tbody tr").each(function (index,element) {
                     $(element).attr("tr-id",index+1);
                 });
-                return false;
-            }
+                if($(".jump_que").is(":checked")){
+                    if(jump<=l &&jump>table_id+1){
+                        tr.find("td:eq(1) span:eq(1)").remove();
+                        tr.find("td:eq(1) span").after("<span style='color: #00bfd7'>(跳转到第<span>"+jump+"</span>题）</span>");
+                    }else{
+                        $(".jump_error_tips").show().find("span").text(l).end().find("span:eq(1)").text(table_id+2);
+                        return false
+                    }
 
+                }else {
+                    tr.find("td:eq(1) span:eq(1)").remove();
+                }
+            }
+            $("#modal-edit-answer").modal("hide");
         }else{
-            $(".sort_tips").find("span:eq(0)").html(tr_num);
-            $(".sort_tips").find("span:eq(1)").html(tr_num);
-            $(".sort_tips").show();
+            $(".sort_tips").show().find("span").html(tr_num);
             $(".input_sort_num").focus();
         }
+
+
     });
     //点击答案中的删除
     $(".question_content").delegate("table tbody .btn_delete_answer","click",function (){
@@ -518,6 +528,7 @@ window.onload = $(function () {
         $("#modal-delete").modal("show");
         $("#modal-delete").find(".modal-body p").html("确认删除当前答案？");
         $(".confirm_delete_box .delete_submit").click(function () {
+
             $this.parents("tr").remove();
             $("#modal-delete").modal("hide");
         });
@@ -576,6 +587,7 @@ window.onload = $(function () {
             }
 
         });
+
         var $table = $(".question_content table:eq("+parseInt(id-1)+")");
         var length = option_array.length;
         if(state==true){
@@ -636,6 +648,8 @@ window.onload = $(function () {
                 state = true;
             }
         });
+
+
         if(state==true){
             $table.find("tbody").empty().append('<tr>'+
                 '<td> </td>'+

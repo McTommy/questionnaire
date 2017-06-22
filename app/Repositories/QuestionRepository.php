@@ -14,12 +14,6 @@ use App\Question;
 
 class QuestionRepository
 {
-
-    private $condition = [
-        ['type', '<>', 4],
-        ['type', '<>', 5],
-    ];
-
     /**
      * @param $id
      * @return mixed
@@ -28,8 +22,48 @@ class QuestionRepository
     {
         $condition = [
             ['questionnaire_id', $id],
+            ['parent_order', null]
         ];
-        return Question::where($condition)->orderBy('order')->get();
+        return Question::with(['choices' => function($query) {
+            $query->orderBy('order');
+        }])->where($condition)->orderBy('order')->get();
+    }
+
+
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getAllSubQuestion($id)
+    {
+        $condition = [
+            ['questionnaire_id', $id],
+            ['parent_order', '<>', null]
+        ];
+        return Question::with(['choices' => function($query) {
+            $query->orderBy('order');
+        }])->where($condition)->orderBy('order')->get();
+    }
+
+
+    /**
+     * @param $question_order
+     * @param $questionnaire_id
+     * @param null $sub_order
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getSubQuesByQuesOrder($question_order, $questionnaire_id, $sub_order = null)
+    {
+        $condition = [
+            ['questionnaire_id', $questionnaire_id],
+            ['parent_order', $question_order],
+            ['parent_order', '<>', null]
+        ];
+        if($sub_order) {
+            $condition = array_merge($condition, [['order', $sub_order]]);
+            return Question::with('choices')->where($condition)->first();
+        }
+        return Question::with('choices')->where($condition)->get();
     }
 
     /**
@@ -249,4 +283,36 @@ class QuestionRepository
             $question->save();
         }
     }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    public function getSpecifiedQuestion($request)
+    {
+        $condition = [
+            ['questionnaire_id', $request->get('questionnaire_id')],
+            ['order', $request->get('question_order')],
+            ['parent_order', null]
+        ];
+        return Question::where($condition)->first();
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function saveSubMatrixQuestion($data)
+    {
+        return Question::create($data);
+    }
+
+    /**
+     *
+     */
+    public function updateMeasureWord()
+    {
+
+    }
+
 }
