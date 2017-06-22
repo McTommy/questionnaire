@@ -51,6 +51,7 @@ function create_question_ajax() {
     })
 }
 
+
 //编辑问题ajax提交方法
 // TODO::是否必填
 function edit_question_ajax(input_num, input_question) {
