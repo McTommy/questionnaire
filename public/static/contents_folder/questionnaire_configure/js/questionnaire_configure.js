@@ -2,99 +2,22 @@
  * Created by yuejd on 2017/4/10.
  */
 window.onload = $(function () {
-    (function(){
-        // $.ajax({
-        //     url:"",
-        //     data:{
-        //         "activity":act_info_id,
-        //         "cities":cities,
-        //         "questions":questions,
-        //         "answers":answers,
-        //         "awards":awards
-        //
-        //     },
-        //     type:"get",
-        //     dataType:"json",
-        //     success:function (data) {
-        //         alert("success")
-        //     }
-        // })
 
-
-        $.getJSON("get_data.json",function(result){
-            var cities=result.cities; //城区
-            var questions=result.questions;//问题
-            var answers=result.answers;// 答案
-            var awards=result.awards;//奖励
-            var activity=result.activity;
-            // 回填城区
-
-            $(".activity_info_id").html(activity);
-            $.each(cities,function (index,item) {
-                $(".city_content").append("<li><div class='displayPart' displayLength='5'>" +item.city+ "</div><span>&times;</span></li>")
-
-            });
-            // 回填问题
-            $.each(questions,function (index,item) {
-                if(item.que_form==1){
-                    var singleOrMultipal="单选";
-                }else if(item.que_form==2){
-                    singleOrMultipal="多选"
-                }
-                $(".question_content").append("<table class='table table-bordered'><thead><tr> <th>Q<span>"+item.que_id+"</span></th><th><span>" +item.question+"" +
-                    "</span><span>【"+singleOrMultipal+"】</span></th> <th> <div class='btn-group'> <div class='btn btn-default btn_creat_answer'>创建答案</div> " +
-                    "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>")
-
-            })
-            // 回填答案
-            $.each(answers,function (index,item) {
-                var id=item.que_id - 1;
-                $(".question_content table:eq("+ id +") tbody").append("<tr> <td><input type='radio'> </td> <td>"+ item.content +"</td> <td> <div class='btn btn-group'>" +
-                    "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>")
-
-            })
-            // 回填奖励文字
-            $(".crear_txt").val(awards.award_name);
-
-
-        })
-    })();
-
-
-    //点击创建城区开始
-    //点击创建城区btn
-
-    // $(".creat_city").click(function () {
-    //     var li=$(".city_content li");
-    //     if (li.length <= 15){
-    //         $("#modal-city").modal("show");
-    //     }else {
-    //         $(".creat_city").addClass("set_grey")
-    //     }
-    // });
-    //
-    // //点击创建城区中的确定创建
-    // $(".creat_city_box .city_submit").click(function () {
-    //     var cityname= $(".creat_city_box input").val();
-    //     if (cityname==""||cityname==null){
-    //         $(".error_tips").show();
-    //         $(".creat_city_box input").focus();
-    //     }
-    //     else {
-    //         $(".city_content").append("<li><div class='displayPart' displayLength='5'>" +cityname+ "</div><span>&times;</span></li>")
-    //         $("#modal-city").modal("hide");
-    //     }
-    //
-    // });
-    // //点击删除单个已创建的城市
-    // $("body .city_content").delegate("li span","click",function () {
-    //     var li = $(this).parents("li")
-    //     li.remove();
-    //     //如果按钮变灰，删除一个变蓝
-    //     $(".creat_city").removeClass("set_grey")
-    // });
-    // //点击创建城市结束
     //创建问题btn定位
+    //点击选择手机号题目，在题目列表顶部出现
+    $(".phone_num").click(function () {
+        var $num = $(this);
+        if($num.is(":checked")){
+            $(".question_content").prepend("<table class='table table-bordered' id='phone_que'><thead><tr> <th>Q<span>1</span></th><th><span>请输入您的手机号" +
+                "___________</span><span>【填空】</span><span style='color: red;'>*</span></th><th><div class='btn-group'>" +
+                "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>");
+            sortQuestion();
+            $num.attr("disabled",true)
+        }
+        //新增order为1的问题，题型为填空，必填
+        create_question_ajax(1, 1, "填空", "请输入您的手机号____________________", 1);
+    });
+    //滑到下方时，创建问题按钮固定在顶部
     $(window).scroll(function () {
         var $btn =$(".creat_question_btn");
         var h = 261;
@@ -105,9 +28,6 @@ window.onload = $(function () {
             $btn.removeClass("fix");
         }
     });
-
-
-
 
     //点击创建问题开始
     $(".creat_question_btn").click(function () {
@@ -132,7 +52,7 @@ window.onload = $(function () {
             $(".creat_question_box input").focus();
         }else {
             if(input_order<=table_num+1 && input_order>0){
-
+                var is_required = must == true ? 1 : 0;
                 if(input_order==1){
                     var $que_von = $(".question_content");
                     if(singleOrMultipal=="多选" || singleOrMultipal=="单选"){
@@ -150,7 +70,13 @@ window.onload = $(function () {
                     }else if(singleOrMultipal=="段落说明"){
                         i=createAnswer("explain",input_order,q_content,singleOrMultipal,star);
                         $que_von.prepend(i);
+                    }else if(singleOrMultipal=="多项填空题"){
+                        i=createAnswer("mul_txt",input_order,q_content,singleOrMultipal,star);
+                        $que_von.prepend(i);
                     }
+                    //新增问题调用js
+                    create_question_ajax(input_order, is_required, singleOrMultipal, q_content);
+
                     sortQuestion();//问题列表重新排序
                     $("#modal-question").modal("hide");
                 } else{
@@ -173,16 +99,21 @@ window.onload = $(function () {
                     }else if(singleOrMultipal=="段落说明"){
                         i=createAnswer("explain",input_order,q_content,singleOrMultipal,star);
                         $que_content.after(i);
+                    }else if(singleOrMultipal=="多项填空题"){
+                        i=createAnswer("mul_txt",input_order,q_content,singleOrMultipal,star);
+                        $que_content.after(i);
                     }
+
+                    //新增问题调用js
+                    create_question_ajax(input_order, is_required, singleOrMultipal, q_content);
+
                     //问题列表重新排序
                     sortQuestion();
                     $("#modal-question").modal("hide");
                 }
 
             }else{
-                $(".sort_tips").find("span:eq(0)").html(table_num);
-                $(".sort_tips").find("span:eq(1)").html(table_num+1);
-                $(".sort_tips").show();
+                $(".sort_tips").show().find("span:eq(0)").html(table_num).end().find("span:eq(1)").html(table_num+1);
                 $(".input_sort_num").focus();
             }
         }
@@ -198,7 +129,7 @@ window.onload = $(function () {
                 "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>";
         }else if(option=="mul_txt"){
             item = "<table class='table table-bordered'><thead><tr> <th>Q<span>"+order+"</span></th><th><span>" +content+"" +
-                "___________</span><span>【"+choice+"】</span><span style='color: red;'>"+star+"</span></th> <th> <div class='btn-group'><div class='btn btn-default btn_creat_answer'>创建答案</div>" +
+                "</span><span>【"+choice+"】</span><span style='color: red;'>"+star+"</span></th> <th> <div class='btn-group'><div class='btn btn-default btn_creat_answer'>创建答案</div>" +
                 "<div class='btn btn-default btn_edit_question'>编辑</div> <div class='btn btn-default btn_delete_question'>删除</div> </div> </th> </tr> </thead><tbody></tbody></table>";
         }
         else if(option == "box"){
@@ -227,7 +158,12 @@ window.onload = $(function () {
         var current_in=table.find("th:eq(1)").find("span:eq(0)").html();
         $(".edit_question_box .input_question").val(current_in);
         $(".edit_question_box .input_sort_num").val(table.attr("data-id"));
-
+        var must = table.find("thead th:eq(1) span:eq(2)").text();
+        if(must=="*"){
+            $(".edit_must").prop("checked",true);
+        }else{
+            $(".edit_must").prop("checked",false);
+        }
     });
 
     //点击编辑问题中的确认
@@ -238,6 +174,7 @@ window.onload = $(function () {
         var data_id=parseInt($("#modal-edit-question").attr("data-id")) - 1;
         var table=$(".question_content table:eq("+data_id+")");
         // var singleOrMultipal= $(".edit_question_box .radio input:radio:checked").val();
+        var must = $(".edit_must").prop("checked");
         if(input_num<=table_num && input_num>0){
             if(input_num==1){
                 table.find("th:eq(1)").find("span:eq(0)").html(input_question);
@@ -245,9 +182,6 @@ window.onload = $(function () {
                 var $r_table= table.remove();
                 $r_table.prependTo($(".question_content"))
                 $("#modal-edit-question").modal("hide");
-                setDataId();
-                sortQuestion();
-                return false
             }else{
                 table.find("th:eq(1)").find("span:eq(0)").html(input_question);
                 // table.find("th:eq(1)").find("span:eq(1)").html("【"+singleOrMultipal+"】");
@@ -255,11 +189,21 @@ window.onload = $(function () {
                 var input_new_num=input_num-2;
                 $rr_table.insertAfter($(".question_content table:eq("+ input_new_num +")"));
                 $("#modal-edit-question").modal("hide");
-                setDataId();
-                sortQuestion();
-                return false;
+            }
+            if(must==true){
+                table.find("th:eq(1) span:eq(2)").remove();
+                table.find("th:eq(1)").append("<span style='color:red'>*</span>");
+            }else {
+                table.find("th:eq(1) span:eq(2)").remove();
             }
 
+            //编辑问题ajax
+            var old_order = $(".edit_question_box").attr('data-id');
+            var is_required = must == true ? 1 : 0;
+            edit_question_ajax(input_num, input_question, is_required, old_order);
+
+            setDataId();
+            sortQuestion();
         }else{
             $(".sort_tips").find("span:eq(0)").html(table_num);
             $(".sort_tips").find("span:eq(1)").html(table_num);
@@ -271,19 +215,31 @@ window.onload = $(function () {
     //点击创建问题结束
     // 点击删除单条问题
     $(".question_content").delegate("table .btn_delete_question","click",function () {
+        setDataId();
         var $this=$(this);
-        $("#modal-delete").modal("show");
-        $("#modal-delete").find(".modal-body p").html("确认删除当前问题？")
-        $(".confirm_delete_box .delete_submit").click(function () {
-            $this.parents("table").remove();
-            sortQuestion();
-            $("#modal-delete").modal("hide");
-        });
+        var data_id = $this.parents("table").attr("data-id");
+        $("#modal-delete").modal("show").attr("data-id",data_id);
+        $("#modal-delete").find(".modal-body p").html("确认删除当前问题？");
+    });
+    $(".confirm_delete_box .delete_submit").click(function () {
+        var data_id = $(this).parents(".confirm_delete_box").attr("data-id");
+        var $table =$(".question_content table:eq("+(data_id-1)+")");
+        var id = $table.attr("id");
+
+        delete_question_ajax(data_id);
+
+        $table.remove();
+        if(id=="phone_que"){
+            $(".phone_num").attr("disabled",false).attr("checked",false);
+        }
+        sortQuestion();
+        $("#modal-delete").modal("hide");
     });
     //点击创建答案
     $(".question_content").delegate("table .btn_creat_answer","click",function () {
         setDataId();
         var table=$(this).parents("table");
+        var answer = table.find("tbody").html();
         var data_id=table.attr("data-id");
         $("#modal-creat-answer").modal("show").attr("data-id",data_id).find("input[type='text']").val("");
         var question=table.find("thead th:eq(1)").find("span:eq(0)").html();
@@ -291,6 +247,11 @@ window.onload = $(function () {
         console.log(question);
         $(".creat_answer_box .creat_answer_box_question").text(question);
         $(".creat_answer_box .creat_answer_box_choice span").html(choice);
+        if(choice=="【多项填空题】"){
+            $(".add_other").hide();
+        }else{
+            $(".add_other").show();
+        }
         if(choice=="【多选】"){
             $(".max_choose_box").show();
             $('.max_choose').empty().append("<option>不限</option>");
@@ -298,12 +259,7 @@ window.onload = $(function () {
             $(".max_choose_box").hide();
             $(".max_choose").empty();
         }
-        var answer = table.find("tbody").html(),state=judge();
-        if(state==true){
-            $(".add_other").css("color","#0096ff");
-        }else{
-            $(".add_other").css("color","#ccc");
-        }
+
         if(answer ==""){
             $(".answer_content tbody").empty();
         }else{
@@ -319,6 +275,13 @@ window.onload = $(function () {
             })
 
         }
+        var state =judge();
+        console.log(state)
+        if(state==true){
+            $(".add_other").css("color","#0096ff");
+        }else{
+            $(".add_other").css("color","#ccc");
+        }
 
     });
     //结束创建答案
@@ -329,27 +292,36 @@ window.onload = $(function () {
         var input_num=$(".creat_answer_box .input_answer_num").val();
         var new_input_num=input_num-2;
         var tr_num=$(".creat_answer_box .answer_content tbody tr").length;
+        var type = $(".creat_answer_box_choice span").text();
         if(input_anw=="" || input_anw==null){
             $(".creat_answer_box .answer_error_tips").show();
         }else {
             if (input_num<=tr_num+1 && input_num>0){
                 if(input_num==1){
-                    $(".creat_answer_box .answer_content tbody").prepend("<tr><td>1</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
-                    sortAnswer();
+                    if(type =="【多项填空题】"){
+                        $(".creat_answer_box .answer_content tbody").prepend("<tr><td>1</td> <td>"+input_anw+"________</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+
+                    }else{
+                        $(".creat_answer_box .answer_content tbody").prepend("<tr><td>1</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+
+                    }
                 }else {
-                    $(".creat_answer_box .answer_content tbody tr:eq("+new_input_num+")").after("<tr> <td>1</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
-                    sortAnswer();
+                    if(type =="【多项填空题】"){
+                        $(".creat_answer_box .answer_content tbody tr:eq("+new_input_num+")").after("<tr> <td>1</td> <td>"+input_anw+"________</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+
+                    }else {
+                        $(".creat_answer_box .answer_content tbody tr:eq("+new_input_num+")").after("<tr> <td>1</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+
+                    }
+
                 }
                 if($(".max_choose_box").is(":visible")){
                     $(".max_choose").append("<option>"+(tr_num+1)+"</option>");
                 }
-
-
+                sortAnswer();
             }
             else {
-                $(".creat_answer_box .sort_error_tips").find("span:eq(0)").html(tr_num);
-                $(".creat_answer_box .sort_error_tips").find("span:eq(1)").html(tr_num+1);
-                $(".creat_answer_box .sort_error_tips").show();
+                $(".creat_answer_box .sort_error_tips").show().find("span:eq(0)").html(tr_num).end().find("span:eq(1)").html(tr_num+1);
             }
         }
     });
@@ -373,32 +345,33 @@ window.onload = $(function () {
         var state = judge();
         if (state==true){
             $tbody.append("<tr data='other'><td>"+(l+1)+"</td><td>其他___</td><td> <div class='btn btn-default btn_box_delete_answer'>删除</div></td></tr>");
-            $(".max_choose").append("<option>"+(l+1)+"</option>")
+            $(".max_choose").append("<option>"+(l+1)+"</option>");
             $this.css("color","#ccc");
         }
     });
-    function judge() {
-        var $tbody =  $(".creat_answer_box .answer_content tbody");
-        var state = true;
-        $tbody.find("tr").each(function (id,item) {
-            var data = $(this).attr("data");
-            if (data=="other"){
-                state = false ;
-            }
-        });
-        return state;
-    }
+
     //点击确认创建答案
     $(".creat_answer_box .creat_answer_submit").click(function () {
         var data_id=$("#modal-creat-answer").attr("data-id")-1;
         var choice=  $(".creat_answer_box .creat_answer_box_choice span").html();
         var max_num = $(".max_choose option:selected").val();
 
+        //创建单选多选多项填空选项的ajax方法
         if(!isNaN(max_num)){
-            $(".question_content table:eq("+ data_id +") i").remove();
-            $(".question_content table:eq("+ data_id +") thead th:eq(1) span:last").before("<i>(最多可选<span>"+max_num+"</span>项) &nbsp;</i>");
+            max_number = max_num == "不限" ? 0 : max_num_raw;
+        } else {
+            max_number = null;
         }
-        if(choice=="【单选】" || choice =="【填空】"){
+        var choices = [];
+        $(".creat_answer_box .table tbody tr").each(function () {
+            order = $(this).children('td:eq(0)').text();
+            content = $(this).children('td:eq(1)').text();
+            if(choice == "【多项填空题】") choices[order-1] = content + "________";
+            else choices[order-1] = content;
+        });
+        create_single_multi_ajax(data_id + 1, choices, max_number);
+
+        if(choice=="【单选】"){
             $(".question_content table:eq("+ data_id +") tbody").empty();
             $(".answer_content tbody tr").each(function(index,item) {
                 var answer=$(item).find("td:eq(1)").html();
@@ -410,12 +383,37 @@ window.onload = $(function () {
                     $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='radio' name='radio'> </td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>");
                 }
-
-
+            });
+            $(".question_content table:eq("+ data_id +") tbody tr").each(function (index,element) {
+                $(element).attr("tr-id",index+1);
+            });
+            $("#modal-creat-answer").modal("hide");
+        }
+        if(choice =="【多项填空题】"){
+            $(".question_content table:eq("+ data_id +") tbody").empty();
+            $(".answer_content tbody tr").each(function(index,item) {
+                var answer=$(item).find("td:eq(1)").html();
+                var data = $(item).attr("data");
+                if(data){
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td></td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
+                        "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>");
+                }else{
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr><td></td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
+                        "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>");
+                }
+            });
+            $(".question_content table:eq("+ data_id +") tbody tr").each(function (index,element) {
+                $(element).attr("tr-id",index+1);
             });
             $("#modal-creat-answer").modal("hide");
         }
         if(choice=="【多选】"){
+            if(!isNaN(max_num)){
+                $(".question_content table:eq("+ data_id +") i").remove();
+                $(".question_content table:eq("+ data_id +") thead th:eq(1) span:last").before("<i>(最多可选<span>"+max_num+"</span>项) &nbsp;</i>");
+            }else{
+                $(".question_content table:eq("+ data_id +") i").remove();
+            }
             $(".question_content table:eq("+ data_id +") tbody").empty();
             $(".answer_content tbody tr").each(function(index,item) {
                 var answer=$(item).find("td:eq(1)").html();
@@ -427,24 +425,42 @@ window.onload = $(function () {
                     $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='checkbox'></td><td><span>"+ answer +"</span></td><td><div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div><div class='btn btn-default btn_delete_answer'>删除</div></div></td></tr>")
                 }
-
-
+            });
+            $(".question_content table:eq("+ data_id +") tbody tr").each(function (index,element) {
+                $(element).attr("tr-id",index+1);
             });
             $("#modal-creat-answer").modal("hide");
         }
     });
-
+    function judge() {
+        var $tbody =  $(".creat_answer_box .answer_content tbody");
+        var state = true;
+        $tbody.find("tr").each(function () {
+            var data = $(this).attr("data");
+            if (data=="other"){
+                console.log("有other")
+                state = false ;
+                return false;
+            }
+        });
+        return state;
+    }
     //点击编辑答案
     $(".question_content").delegate("table tbody .btn_edit_answer","click",function () {
         var tr=$(this).parents("tr");
         var table=$(this).parents("table");
         var cur_answer=tr.find("td:eq(1) span:eq(0)").text();
         var table_id=table.attr("data-id");
+        var choice = table.find("th:eq(1) span:eq(1)").text();
+        if(choice=="【单选】"){
+            $(".jump_content").show();
+        }else{
+            $(".jump_content").hide();
+        }
         table.find("tbody tr").each(function (index,element) {
             $(element).attr("tr-id",index+1);
         });
         var tr_id=tr.attr("tr-id");
-        console.log('答案的位置',tr_id)
         $("#modal-edit-answer").modal("show").attr({"table-id":table_id,"tr-id":tr_id});
         $(".edit_answer_box .input_answer").val(cur_answer);
         $(".edit_answer_box .input_sort_num").val(tr_id);
@@ -474,6 +490,13 @@ window.onload = $(function () {
         var jump = $(".jump input").val();
         var l =$(".question_content table").length;
         if(input_num<=tr_num && input_num>0){
+
+            //编辑单选多选多项填空选项的ajax方法
+            jump_to = $(".jump_que").is(":checked") ? $(".jump input").val() : null;
+            if((jump_to<=l &&jump_to>table_id+1) || jump_to==0 || jump_to==null) {
+                edit_single_multi_ajax(table_id + 1, tr_id + 1, input_num, input_answer, jump_to);
+            }
+
             if(input_num==1){
                 tr.find("td:eq(1) span").text(input_answer);
                 var $r_tr= tr.remove();
@@ -485,7 +508,11 @@ window.onload = $(function () {
                     if(jump<=l &&jump>table_id+1){
                         tr.find("td:eq(1) span:eq(1)").remove();
                         tr.find("td:eq(1) span").after("<span style='color: #00bfd7'>(跳转到第<span>"+jump+"</span>题）</span>");
-                    }else{
+                    }else if(jump==0){
+                        tr.find("td:eq(1) span:eq(1)").remove();
+                        tr.find("td:eq(1) span").after("<span style='color: #00bfd7'>(跳转到最后）</span>");
+                    }
+                    else{
                         $(".jump_error_tips").show().find("span").text(l).end().find("span:eq(1)").text(table_id+2);
                         return false
                     }
@@ -505,6 +532,9 @@ window.onload = $(function () {
                     if(jump<=l &&jump>table_id+1){
                         tr.find("td:eq(1) span:eq(1)").remove();
                         tr.find("td:eq(1) span").after("<span style='color: #00bfd7'>(跳转到第<span>"+jump+"</span>题）</span>");
+                    }else if(jump==0){
+                        tr.find("td:eq(1) span:eq(1)").remove();
+                        tr.find("td:eq(1) span").after("<span style='color: #00bfd7'>(跳转到最后）</span>");
                     }else{
                         $(".jump_error_tips").show().find("span").text(l).end().find("span:eq(1)").text(table_id+2);
                         return false
@@ -525,12 +555,24 @@ window.onload = $(function () {
     //点击答案中的删除
     $(".question_content").delegate("table tbody .btn_delete_answer","click",function (){
         var $this=$(this);
-        $("#modal-delete").modal("show");
-        $("#modal-delete").find(".modal-body p").html("确认删除当前答案？");
-        $(".confirm_delete_box .delete_submit").click(function () {
+        $("#modal-delete-choice").modal("show");
+        $("#modal-delete-choice").find(".modal-body p").html("确认删除当前答案？");
+        $(".confirm_delete_choice_box .delete_choice_submit").click(function () {
+
+            //矩阵单选 矩阵多选 删除行ajax方法
+            //删除单选多选多项填空的ajax方法
+            question_order = $this.parents("table").attr('data-id');
+            order = $this.parents("tr").attr('tr-id');
+            type = $this.parents("table").find("thead tr th:eq(1) span:eq(1)").text();
+            if(type == "【矩阵单选题】" || type == "【矩阵量表题】") {
+                ques_type = type == "【矩阵单选题】" ? 4 : 5;
+                delete_matrix_sub_question_ajax(question_order, order, ques_type)
+            } else {
+                delete_single_multi_ajax(question_order, order);
+            }
 
             $this.parents("tr").remove();
-            $("#modal-delete").modal("hide");
+            $("#modal-delete-choice").modal("hide");
         });
     });
 
@@ -587,10 +629,14 @@ window.onload = $(function () {
             }
 
         });
-
         var $table = $(".question_content table:eq("+parseInt(id-1)+")");
         var length = option_array.length;
         if(state==true){
+
+            //矩阵单选配置选项ajax方法
+            question_order = $("#modal-config-single").attr("data-id");
+            create_matrix_single_ajax(question_order, que_array, option_array);
+
             $table.find("tbody").empty().append('<tr> <td></td>'+
                 '<td class="span_group"></td></tr>');
             $.each(option_array,function (id,item) {
@@ -622,6 +668,7 @@ window.onload = $(function () {
         $("#modal-config-rank").attr("data-id",data_id);
         //初始化模态框，后期有时间加回填
         $(".pro_manage_content").html("");
+        $(".ui-spinner-input").val("5")
         addContent("que",".pro_manage_content");
 
     });
@@ -648,9 +695,12 @@ window.onload = $(function () {
                 state = true;
             }
         });
-
-
         if(state==true){
+
+            //矩阵量表创建配置选项ajax方法
+            question_order = $("#modal-config-rank").attr("data-id");
+            create_matrix_scale_ajax(question_order, pro_array, range, txt);
+
             $table.find("tbody").empty().append('<tr>'+
                 '<td> </td>'+
                 '<td class="rank_span"><span>非常不'+txt+'</span><span>非常'+txt+'</span> </td>'+
@@ -723,175 +773,14 @@ window.onload = $(function () {
         })
     }
 
-
-    //动态显示创建的文字
-    $(".step3 .creat-txt").keyup(function () {
-        var txt=$(this).val();
-        var num=txt.length;
-        $(".step3 .phone-txt").empty().append(txt);
-        $(".step3 .txt-limit").html(num);
-    })
-    //点击选取卡券
-    $(".choose-card").click(function () {
-        $("#modal-card").modal("show");
-    })
-    //点击拉取更新卡券
-    $(".upgrade-card").click(function(){
-        $("#modal-card").modal("hide");
-        $(".modal_progress").modal("show");
-        setTimeout("$('.modal_progress').modal('hide')",3000);
-        setTimeout("$('#modal-card').modal('show')",3000);
+    $("#spinner").spinner({
+        min:1,
+        max:10
     });
-    //点击确定选取卡券
-    $(".card-box .card-submit").click(function () {
-        var checked= $(".card-box-content table tbody input:radio:checked");
-        var tr=checked.parents("tr");
-        var type=tr.find("td:eq(1)").html();
-        var name=tr.find("td:eq(2)").html();
-        console.log(name)
-        var inventory=tr.find("td:eq(3)").html();
-        $(".card-content table tbody").empty().append("<tr> <td>"+type+"</td> <td>"+name+"</td> " +
-            "<td>"+inventory+"</td> <td> <div class='btn btn-default btn-delete-card'>删除</div> </td> </tr>")
-        $(".step3 .phone-card").empty().append("卡券").css({"background":"green","height":"60px"});//获取卡券的图片
-        $("#modal-card").modal("hide");
-    });
-    //点击删除卡券
-    $(".step3 .card-content table").delegate(".btn-delete-card","click",function () {
-        var $this=$(this);
-        $("#modal-delete").modal("show");
-        $("#modal-delete").find(".modal-body p").html("确认删除当前卡券？");
-        $(".confirm_delete_box .delete_submit").click(function () {
-            $this.parents("tr").remove();
-            $("#modal-delete").modal("hide");
-        });
-    });
-    $("#spinner").spinner();
     //点击完成创建, 传数据
     $(".finish-creat .finish").click(function () {
-        var city=$(".city_content");
-        var question=$(".question_content");
-        var award=$(".card-content")
-        var city_name=[];
-        var city_id=[];
-        var cities=[];
-        var questions=[];
-        var que_id=[];
-        var que_form=[];
-        var que_content=[];
-        var answers=[];
-        var ans_id=[];
-        var ans_content=[];
-        var act_info_id=$(".activity_info_id").html();
-        //获取城区名称和城区id
-        city.find("li").each(function (index,element) {
-            city_name[index]= $(element).find("div").html();
-            city_id[index]= index+1;
-            cities[index]={"city_id":city_id[index],"city":city_name[index]}
-        });
-        //获取问题内容和问题序号
-        question.find("table").each(function (index,element) {
-            var answer = [];
-            que_id[index]=$(this).find("thead th:eq(0) span").html();
-            que_content[index]=$(this).find("thead th:eq(1) span:first").html();
-            var que_choice=$(this).find("thead th:eq(1) span:last").html();
-            if(que_choice=="【单选】"){
-                que_form[index]=1;
-            }
-            if(que_choice=="【多选】"){
-                que_form[index]=2;
-            }
-            questions[index]={"que_id":que_id[index],"que_form":que_form[index],"question":que_content[index]};
-            //-------------修改-------------------
-            $(this).find("tbody tr").each(function (id,item) {
-                ans_content[id]= $(this).find("td:eq(1)").html();
-                ans_id[id] = id+1 ;
-                que_id[id]=$(this).parents("table").find("thead th:eq(0) span").html();
-                answer[id]={"que_id":que_id[id],"inner_id":ans_id[id],"content":ans_content[id]}
-            });
-            answers.push(answer);
-            //-------------修改-------------------
-        });
-        //获取答案和问题序号
-        // question.find("tbody tr").each(function(id,item){
-        //     ans_content[id]= $(this).find("td:eq(1)").html();
-        //     ans_id[id]=id+1;
-        //     que_id[id]=$(this).parents("table").find("thead th:eq(0) span").html();
-        //     answers[id]={"que_id":que_id[id],"inner_id":ans_id[id],"content":ans_content[id]}
-        // });
-        //获取奖励名称及描述
-        var award_name=award.find("tbody td:eq(1)").html();
-        var award_des=$(".creat-txt").val();
-        var awards={"award_name":award_name,"award_des":award_des};
-
-        console.log(answers)
-        console.log(questions)
-        console.log(cities)
-        console.log(awards)
-        if(city_name.length==0){
-            window.scrollTo(0,0);
-            alertShow("danger",3,"请创建城区！")
-        }
-        if(que_content.length==0){
-            window.scrollTo(0,0);
-            alertShow("danger",3,"请创建问题！")
-        }
-        if(city_name.length!==0 && que_content.length!==0){
-            window.scrollTo(0,0);
-            alertShow("success",3,"创建成功！")
-
-            $.ajax({
-                url:"",
-                data:{
-                    "activity":act_info_id,
-                    "cities":cities,
-                    "questions":questions,
-                    "answers":answers,
-                    "awards":awards
-
-                },
-                type:"post",
-                dataType:"json",
-                success:function (data) {
-                    alert("success")
-                }
-            })
-
-        }
-
-
-
-
+        alertShow("保存成功")
     });
-
-
-
-
-
-
-    // //超出部分省略号
-    // $.fn.extend({
-    //     displayPart:function () {
-    //         var displayLength = 100;
-    //         displayLength = this.attr("displayLength") || displayLength;
-    //         var text = this.text();
-    //         if (!text) return "";
-    //         var result = "";
-    //         var count = 0;
-    //         for (var i = 0; i < displayLength; i++) {
-    //             var _char = text.charAt(i);
-    //             if (count >= displayLength) break;
-    //             if (/[^x00-xff]/.test(_char)) count++; //双字节字符，//[u4e00-u9fa5]中文
-    //             result += _char;
-    //             count++;
-    //         }
-    //         if (result.length < text.length) {
-    //             result += "...";
-    //         }
-    //         this.text(result);
-    //     }
-    // });
-
-
-})
+});
 
 

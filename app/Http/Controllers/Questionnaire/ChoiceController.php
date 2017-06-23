@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Questionnaire;
 
-use App\Question;
+use App\Http\Requests\ConfigureChoiceRequest;
+use App\Http\Requests\CreateChoiceRequest;
+use App\Http\Requests\DeleteChoiceRequest;
+use App\Http\Requests\EditChoiceRequest;
 use App\Repositories\ChoiceRepository;
 use App\Repositories\QuestionRepository;
 use Illuminate\Http\Request;
@@ -25,7 +28,7 @@ class ChoiceController extends Controller
     }
 
     //创建选项，对应单选 多选题
-    public function createChoice(Request $request)
+    public function createChoice(CreateChoiceRequest $request)
     {
         $question = $this->question->getSpecifiedQuestion($request);
         //删除对应选项
@@ -50,7 +53,7 @@ class ChoiceController extends Controller
     }
 
     //编辑选项 单选多选题型的选项涉及编辑功能
-    public function editChoice(Request $request)
+    public function editChoice(EditChoiceRequest $request)
     {
         $order = $request->get('order');
         $old_order = $request->get('old_order');
@@ -73,7 +76,7 @@ class ChoiceController extends Controller
     }
 
     //配置选项 矩阵单选题 矩阵量表题
-    public function configureChoice(Request $request)
+    public function configureChoice(ConfigureChoiceRequest $request)
     {
         $type = $request->get('type');
         $questionnaire_id = $request->get('questionnaire_id');
@@ -118,11 +121,11 @@ class ChoiceController extends Controller
         return response()->json(['status' => 200]);
     }
 
-    //删除选项 单选多选
-    public function deleteChoice(Request $request)
+    //删除选项
+    public function deleteChoice(DeleteChoiceRequest $request)
     {
-        $question_type = $request->type;
-        if($question_type == 1 || $question_type == 2) {
+        $question_type = $request->get('type');
+        if($question_type == null) {
             $order = $request->get('order');
             //获取该选项所在的问题
             $question = $this->question->getSpecifiedQuestion($request);

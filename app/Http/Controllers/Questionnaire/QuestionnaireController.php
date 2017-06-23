@@ -33,7 +33,7 @@ class QuestionnaireController extends Controller
     public function index()
     {
         //
-        $questionnaires = $this->questionnaire->questionnaire_paginate(8);
+        $questionnaires = $this->questionnaire->questionnaire_paginate(2);
         return view('questionnaire.index', compact('questionnaires'));
 
     }

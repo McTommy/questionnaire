@@ -8,12 +8,12 @@
 @section('question_content')
     <!--右侧内容主体开始-->
     <div class="content_main">
-        <div class="content_route"><a href="{{ url('home') }}">首页</a>
-            <span class="content_route_pathname">>调查问卷>创建调查问卷</span></div>
+        <div class="content_route"><a href="#none">首页</a>
+            <span class="content_route_pathname">>CRM系统>消费者管理</span></div>
 
         <!--主体内容开始-->
         <div class="content_mb">
-            <h2 class="content_mb_title">创建调查问卷模板</h2>
+            <h2 class="content_mb_title">调查问卷模板</h2>
 
             <!--警告框-范例开始-->
             <div class="alert alert-example" role="alert">
@@ -22,26 +22,44 @@
             </div>
             <!--警告框-范例结束-->
 
+
             <!--自己的内容开始-->
             <div class="content_mb_subject">
 
                 <!--你可以在这里写你自己的内容了-->
+                <div class="step1 clearfix" >
+                    <p class="step1_title">Step1 : 创建固定问题</p>
+                    <div class="fixed_content">
+                        <input type="checkbox" class="phone_num"
+                        @if($has_phone_number)
+                            disabled="disabled" checked
+                        @endif
+                        >
+                        <label>请输入您的手机号____________________</label>
+                    </div>
+                </div>
 
                 <!--创建问题部分-->
                 <div class="step2">
-                    <p class="step2_title">创建问题</p>
+                    <p class="step2_title">Step2 : 创建问题</p>
                     <div class="creat_question_btn btn btn-primary">创建问题</div>
                     <div class="question_content">
                         @foreach($questions as $question)
                             @if($question->parent_order == null)
-                            <table class="table table-bordered" data-id="{{ $question->order }}" data-type="{{ $question->type }}">
+                            <table class="table table-bordered" data-id="{{ $question->order }}">
                                 <thead>
                                 <tr>
                                     <th>Q<span>{{ $question->order }}</span></th>
-                                    <th><span>{{ $question->name }}</span> <span>【{{ question_type($question->type) }}】</span></th>
+                                    <th>
+                                        <span>{{ $question->name }}</span>
+                                        <span>【{{ question_type($question->type) }}】</span>
+                                        @if($question->is_required == 1)
+                                            <span style="color: red;">*</span>
+                                        @endif
+                                    </th>
                                     <th>
                                         <div class="btn-group">
-                                            @if($question->type == 1 || $question->type == 2)
+                                            @if($question->type == 1 || $question->type == 2 || $question->type == 7)
                                                 <div class="btn btn-default btn_creat_answer">创建答案</div>
                                             @elseif($question->type == 4)
                                                 <div class="btn btn-default btn_config_option">配置选项</div>
@@ -56,11 +74,19 @@
                                 </thead>
                                 @endif
                                 <tbody>
-                                {{--单选题--}}
-                                @if($question->type == 1)
+                                {{--单选题 多项填空题--}}
+                                @if($question->type == 1 || $question->type == 7)
                                     @foreach($question->choices as $choice)
-                                        <tr data="" tr-id="{{ $choice->order }}">
-                                            <td><input type="radio" name="radio"></td>
+                                        <tr
+                                                @if($choice->content == "其他___" || $question->type == 1)
+                                                    data="other"
+                                                @endif
+                                                    tr-id="{{ $choice->order }}">
+                                            <td>
+                                                @if($question->type == 1)
+                                                    <input type="radio" name="radio">
+                                                @endif
+                                            </td>
                                             <td>
                                                 <span>{{ $choice->content }}</span>
                                                 @if($choice->next_question_order != null)
@@ -78,13 +104,14 @@
                                 {{--多选题    --}}
                                 @elseif($question->type == 2)
                                     @foreach($question->choices as $choice)
-                                        <tr data="" tr-id="{{ $choice->order }}">
+                                        <tr
+                                                @if($choice->content == "其他___")
+                                                data="other"
+                                                @endif
+                                                tr-id="{{ $choice->order }}">
                                             <td><input type="checkbox"></td>
                                             <td>
                                                 <span>{{ $choice->content }}</span>
-                                                @if($choice->next_question_order != null)
-                                                    <span style="color: #00bfd7">(跳转到第<span>{{ $choice->next_question_order }}</span>题）</span>
-                                                @endif
                                             </td>
                                             <td>
                                                 <div class="btn btn-group">
@@ -101,7 +128,8 @@
                                             @if(!isset($choice_num))
                                                 <tr>
                                                     <td></td>
-                                                    <td class="span_group" default-order="{{ $choice_num = 1 }}">
+                                                    <td class="span_group">
+                                                        @php($choice_num = 1)
                                                         @foreach($sub_question->choices as $choice)
                                                             <span order="{{ $choice_num++ }}">
                                                                 {{ $choice->content }}
@@ -131,7 +159,8 @@
                                     @foreach($sub_questions as $sub_question)
                                         @if($question->order == $sub_question->parent_order)
                                             @if(!isset($num))
-                                                <tr data-status="{{ $num = 1 }}">
+                                                <tr>
+                                                    @php($num = 1)
                                                     <td></td>
                                                     <td class="rank_span">
                                                         <span>非常不{{ mb_substr($question->measure_word, 0, 2) }}</span>
@@ -160,7 +189,6 @@
                                 </tbody>
                             </table>
                         @endforeach
-
                     </div>
                 </div>
                 <div class="finish-creat">
