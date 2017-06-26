@@ -83,7 +83,7 @@
                                 <td>{{ $questionnaire->end_time }}</td>
                                 <td>
                                     <div class="btn-group table_btn_group" role="group">
-                                        <a type="button" href="/questionnaire/question/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑</a>
+                                        <a type="button" href="/questionnaire/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑问题</a>
                                         <a type="button" href="#none" class="btn btn-black btn_delete">删除</a>
                                     </div>
                                 </td>

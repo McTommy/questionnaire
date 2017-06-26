@@ -21,4 +21,10 @@ class Answer extends Model
     {
         return $this->belongsTo(Choice::class);
     }
+
+    //定义与questionnaires表关系为多对一
+    public function questionnaire()
+    {
+        return $this->belongsTo(Questionnaire::class);
+    }
 }

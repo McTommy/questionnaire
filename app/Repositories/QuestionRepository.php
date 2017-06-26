@@ -185,7 +185,7 @@ class QuestionRepository
             'name' => $array['name'],
             'type' => 6,
             'order' => $array['order'],
-            'is_required' => 0,
+            'is_required' => $array['is_required'],
         ];
 
         return Question::create($data);

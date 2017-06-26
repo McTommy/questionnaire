@@ -46,7 +46,11 @@
                     <div class="question_content">
                         @foreach($questions as $question)
                             @if($question->parent_order == null)
-                            <table class="table table-bordered" data-id="{{ $question->order }}">
+                                <table class="table table-bordered" data-id="{{ $question->order }}"
+                                       @if($question->is_phone_number == 1)
+                                       id="phone_que"
+                                        @endif
+                                >
                                 <thead>
                                 <tr>
                                     <th>Q<span>{{ $question->order }}</span></th>
@@ -55,6 +59,13 @@
                                         <span>【{{ question_type($question->type) }}】</span>
                                         @if($question->is_required == 1)
                                             <span style="color: red;">*</span>
+                                        @endif
+                                        @if($question->type == 2)
+                                            <i>
+                                                (最多可选
+                                                <span>{{ $question->maximum_option }}</span>
+                                                项) &nbsp;
+                                            </i>
                                         @endif
                                     </th>
                                     <th>
@@ -89,8 +100,12 @@
                                             </td>
                                             <td>
                                                 <span>{{ $choice->content }}</span>
-                                                @if($choice->next_question_order != null)
-                                                    <span style="color: #00bfd7">(跳转到第<span>{{ $choice->next_question_order }}</span>题）</span>
+                                                @if($choice->next_question_order !== null)
+                                                    @if($choice->next_question_order === 0)
+                                                        <span>(跳转到最后)</span>
+                                                    @else
+                                                        <span style="color: #00bfd7">(跳转到第<span>{{ $choice->next_question_order }}</span>题)</span>
+                                                    @endif
                                                 @endif
                                             </td>
                                             <td>
@@ -193,6 +208,7 @@
                 </div>
                 <div class="finish-creat">
                     <button class="btn btn-primary finish">保存</button>
+                    <button class="btn btn-primary save_as_template">保存为模板</button>
                 </div>
             </div>
             <!--自己的内容结束-->

@@ -358,7 +358,7 @@ window.onload = $(function () {
 
         //创建单选多选多项填空选项的ajax方法
         if(!isNaN(max_num)){
-            max_number = max_num == "不限" ? 0 : max_num_raw;
+            max_number = max_num == "不限" ? 0 : max_num;
         } else {
             max_number = null;
         }
@@ -643,7 +643,7 @@ window.onload = $(function () {
                 $table.find("tbody .span_group").append("<span>"+item+"</span>");
             });
             $.each(que_array,function (id,item) {
-                $table.find("tbody").append('<tr><td>'+item+'</td> <td class="radio_group"></td><td>' +
+                $table.find("tbody").append('<tr tr-id="'+(id+1)+'"><td>'+item+'</td> <td class="radio_group"></td><td>' +
                     '<div class="btn btn-group">' +
                     '<div class="btn btn-default btn_delete_answer">删除</div>' +
                     '</div> </td></tr>');

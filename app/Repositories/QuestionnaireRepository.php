@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Question;
 use App\Questionnaire;
 
 class QuestionnaireRepository
@@ -23,4 +24,5 @@ class QuestionnaireRepository
     {
         return Questionnaire::find($id);
     }
+
 }

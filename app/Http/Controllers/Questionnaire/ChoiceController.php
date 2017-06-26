@@ -8,7 +8,6 @@ use App\Http\Requests\DeleteChoiceRequest;
 use App\Http\Requests\EditChoiceRequest;
 use App\Repositories\ChoiceRepository;
 use App\Repositories\QuestionRepository;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ChoiceController extends Controller
