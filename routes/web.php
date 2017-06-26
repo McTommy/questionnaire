@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 //展示问卷与填写提交问卷，不需要登录
-Route::group(function () {
+Route::group(['middleware' => 'respondent'], function () {
     Route::get('questionnaire/show/{id}', 'Questionnaire\ShowQuestionnaireController@index');
     Route::post('questionnaire/store_answers', 'Questionnaire\StoreAnswersController@store');
 });
