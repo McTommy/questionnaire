@@ -65,7 +65,7 @@ class QuestionnaireController extends Controller
           'start_time' => $start_time,
           'end_time' => $end_time,
           'author' => $request->get('author'),
-          'subtitle' => $request->get('sub_title'),
+          'sub_title' => $request->get('sub_title'),
         ];
         $id = $this->questionnaire->create($data)->id;
 
