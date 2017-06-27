@@ -14,7 +14,7 @@
     <title>调查问卷</title>
 
     <!--全局css开始-->
-    <link href="{{ URL::asset('static/plugin_folder//bootstrap_v3.3.5/css/bootstrap.min.css') }}" rel="stylesheet"/>
+    <link href="{{ URL::asset('static/plugin_folder/bootstrap_v3.3.5/css/bootstrap.min.css') }}" rel="stylesheet"/>
     <link href="{{ URL::asset('static/plugin_folder/font-awesome/font-awesome.min.css') }}" rel="stylesheet"/>
     <link href="{{ URL::asset('static/common_folder/stylesheets/common_base.css') }}" rel="stylesheet"/>
     <link href="{{ URL::asset('static/common_folder/less/PC_index.less') }}" rel="stylesheet/less"/>

@@ -25,7 +25,7 @@ class ShowQuestionnaireController extends Controller
     {
         $questions = $this->question->byQuestionnaireId($id);
         $sub_question = $this->question->getAllSubQuestion($id);
-        return view('questionnaire.question.show_questionnaire', [
+        return view('questionnaire.mobile_questionnaire.show_questionnaire', [
             'activity_info_id' => $id,
             'questions' => $questions,
             'sub_questions' => $sub_question,
