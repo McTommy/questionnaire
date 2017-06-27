@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Questionnaire;
 
 use App\Http\Requests\StoreQuestionnaireRequest;
-use App\Question;
+use App\Http\Requests\ToggleTemplateRequest;
 use App\Repositories\QuestionnaireRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -34,7 +34,9 @@ class QuestionnaireController extends Controller
     {
         //
         $questionnaires = $this->questionnaire->questionnaire_paginate(8);
-        return view('questionnaire.index', compact('questionnaires'));
+        $templates = $this->questionnaire->getAllTemplate();
+        return view('questionnaire.index',
+            ['questionnaires' => $questionnaires, 'templates' => $templates]);
 
     }
 
@@ -56,10 +58,21 @@ class QuestionnaireController extends Controller
      */
     public function store(StoreQuestionnaireRequest $request)
     {
+        $start_time = date("Y-m-d H:i:s", strtotime($request->start_time));
+        $end_time = date("Y-m-d H:i:s", strtotime($request->end_time));
         $data = [
           'title' => $request->get('title'),
+          'start_time' => $start_time,
+          'end_time' => $end_time,
+          'author' => $request->get('author'),
+          'subtitle' => $request->get('sub_title'),
         ];
         $id = $this->questionnaire->create($data)->id;
+
+        //复制所选模板问题与选项到新建问题
+        $template_id = $request->get('template');
+        if($template_id)
+            $this->questionnaire->loadSelectTemplate($template_id, $id);
 
         return redirect()->route('questionnaire.question', [$id]);
     }
@@ -109,5 +122,13 @@ class QuestionnaireController extends Controller
         $questionnaire = $this->questionnaire->byId($id);
         $questionnaire->delete();
         return redirect('/questionnaire');
+    }
+
+    //更改当前调查问卷的模板状态
+    public function toggleTemplate(ToggleTemplateRequest $request)
+    {
+        $id = $request->get('questionnaire_id');
+        $this->questionnaire->toggleTemplate($id);
+        return response()->json(['code' => 200]);
     }
 }

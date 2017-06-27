@@ -7,13 +7,40 @@
                     <h4 class="modal-title"><strong>创建调查问卷</strong></h4>
                 </div>
                 <div class="modal-body">
-                    <p>请输入调查问卷名称</p>
+
                     <form class="form_title" method="post" action="{{ url('questionnaire') }}">
                         {{ csrf_field() }}
+                        <p>请输入调查问卷名称</p>
                         <div class="box_title form-group">
-                            <input  class="input_title" name="title" type="text" value="{{ old('title') }}">
+                            <input  class="input_title" name="title" type="text">
                         </div>
                         <p class="error_tips" style="display: none">*请输入问卷名</p>
+                        <div class="questionnaire_author">
+                            <p>请输入问卷作者（可为空）</p>
+                            <input class="input_author" type="text" name="author">
+                        </div>
+                        <div class="sub_title">
+                            <p>请输入问卷副标题（可为空）</p>
+                            <input class="input_sub_title" type="text" name="sub_title">
+                        </div>
+                        <div class="frm_box">
+                            <label>请选择调查问卷活动时间范围</label>
+                            <div class="time_range">
+                                <input type="text" name="start_time" class="start_time" id="from" >
+                                <span>至</span>
+                                <input type="text" name="end_time" class="end_time" id="to" >
+                            </div>
+                        </div>
+                        <p class="time_error_tips" style="display: none; color: #ff0000;">*请输入开始结束时间</p>
+                        <div class="select_template">
+                            <label for="template">请选择采用的模板（可为空）</label>
+                            <select id="template" name="template">
+                                <option value="" selected>空</option>
+                                @foreach($templates as $template)
+                                    <option value="{{ $template->id }}">{{ $template->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <button id="submit" type="submit" style="display: none"></button>
                     </form>
                 </div>

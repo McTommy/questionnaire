@@ -83,7 +83,13 @@
                                 <td>{{ $questionnaire->end_time }}</td>
                                 <td>
                                     <div class="btn-group table_btn_group" role="group">
-                                        <a type="button" href="/questionnaire/question/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑</a>
+
+                                        @if($questionnaire->start_time < date("Y-m-d H:i:s") && date("Y-m-d H:i:s") < $questionnaire->end_time && $questionnaire->end_time && $questionnaire->start_time)
+                                            <a type="button" href=#none class="btn btn-primary btn_edit" disabled>编辑问题</a>
+                                        @else
+                                            <a type="button" href="/questionnaire/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑问题</a>
+                                        @endif
+
                                         <a type="button" href="#none" class="btn btn-black btn_delete">删除</a>
                                     </div>
                                 </td>

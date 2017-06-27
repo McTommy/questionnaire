@@ -15,4 +15,10 @@ class Blank extends Model
     {
         return $this->belongsTo(Question::class);
     }
+
+    //定义与questionnaires表关系为多对一
+    public function questionnaire()
+    {
+        return $this->belongsTo(Questionnaire::class);
+    }
 }

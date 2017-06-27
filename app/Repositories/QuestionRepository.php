@@ -14,6 +14,16 @@ use App\Question;
 
 class QuestionRepository
 {
+
+    public function getFirstQuestion($id)
+    {
+        $condition = [
+            ['questionnaire_id', $id],
+            ['parent_order', null]
+        ];
+        return Question::where($condition)->first();
+    }
+
     /**
      * @param $id
      * @return mixed
@@ -29,6 +39,21 @@ class QuestionRepository
         }])->where($condition)->orderBy('order')->get();
     }
 
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function hasPhoneNumber($id)
+    {
+        $condition = [
+            ['questionnaire_id', $id],
+            ['is_phone_number', 1]
+        ];
+        $question = Question::where($condition)->first();
+        if($question) return true;
+        return false;
+    }
 
     /**
      * @param $id
@@ -170,11 +195,29 @@ class QuestionRepository
             'name' => $array['name'],
             'type' => 6,
             'order' => $array['order'],
-            'is_required' => 0,
+            'is_required' => $array['is_required'],
         ];
 
         return Question::create($data);
     }
+
+    /**
+     * @param $array
+     * @return mixed
+     */
+    public function saveMultiBlank($array)
+    {
+        $data = [
+            'questionnaire_id' => $array['questionnaire_id'],
+            'name' => $array['name'],
+            'type' => 7,
+            'order' => $array['order'],
+            'is_required' => $array['is_required']
+        ];
+
+        return Question::create($data);
+    }
+
 
     /**
      * @param $questionnaire_id
@@ -254,12 +297,19 @@ class QuestionRepository
         //删除关联的选项
         $question = Question::where($condition1)->first();
         Choice::where('question_id', $question->id)->delete();
-        //删除关联的子问题
+        //删除子问题关联的选项
         $condition2 = [
             ['questionnaire_id', $questionnaire],
             ['parent_order', $order],
         ];
-        Question::where($condition2)->delete();
+        $sub_questions = Question::where($condition2)->get();
+        foreach ($sub_questions as $sub_question) {
+            foreach ($sub_question->choices as $choice) {
+                $choice->delete();
+            }
+            //删除子问题
+            $sub_question->delete();
+        }
         //删除该问题
         $question->delete();
         //order大于该问题的order减一
@@ -306,13 +356,4 @@ class QuestionRepository
     {
         return Question::create($data);
     }
-
-    /**
-     *
-     */
-    public function updateMeasureWord()
-    {
-
-    }
-
 }

@@ -15,6 +15,8 @@ class CreateBlanksTable extends Migration
     {
         Schema::create('blanks', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('questionnaire_id')->index()->comment('调查问卷问题id');
+            $table->unsignedInteger('respondent_id')->index()->comment('被调查者id');
             $table->unsignedInteger('question_id')->index()->comment('问题id');
             $table->string('content')->index()->comment('填空题答案内容');
             $table->unsignedInteger('order')->default(1)->comment('填空题答案序号');

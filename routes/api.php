@@ -17,12 +17,18 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-//创建调查问卷页面ajax调用的url
-Route::middleware('api')->post('question/create_question', 'Questionnaire\QuestionController@createQuestion');
-Route::middleware('api')->post('question/update_question', 'Questionnaire\QuestionController@updateQuestion');
-Route::middleware('api')->post('question/delete_question', 'Questionnaire\QuestionController@deleteQuestion');
-Route::middleware('api')->post('choice/configure_choice', 'Questionnaire\ChoiceController@configureChoice');
-Route::middleware('api')->post('choice/create_choice', 'Questionnaire\ChoiceController@createChoice');
-Route::middleware('api')->post('choice/update_choice', 'Questionnaire\ChoiceController@editChoice');
-Route::middleware('api')->post('choice/delete_choice', 'Questionnaire\ChoiceController@deleteChoice');
+//创建调查问卷页面ajax调用的api
+Route::group(['middleware' => 'api'], function () {
+    //新建 编辑 删除问题
+    Route::post('question/create_question', 'Questionnaire\QuestionController@createQuestion');
+    Route::post('question/update_question', 'Questionnaire\QuestionController@updateQuestion');
+    Route::post('question/delete_question', 'Questionnaire\QuestionController@deleteQuestion');
+    //存为模板或取消该模板
+    Route::post('question/toggle_template', 'Questionnaire\QuestionnaireController@toggleTemplate');
+    //新建选项 配置选项 编辑选项 删除选项
+    Route::post('choice/configure_choice', 'Questionnaire\ChoiceController@configureChoice');
+    Route::post('choice/create_choice', 'Questionnaire\ChoiceController@createChoice');
+    Route::post('choice/update_choice', 'Questionnaire\ChoiceController@editChoice');
+    Route::post('choice/delete_choice', 'Questionnaire\ChoiceController@deleteChoice');
+});
 

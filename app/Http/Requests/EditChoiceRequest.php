@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreQuestionnaireRequest extends FormRequest
+class EditChoiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,12 @@ class StoreQuestionnaireRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'questionnaire_id' => 'required',
+            'question_order' => 'required',
+            'old_order' => 'required',
+            'order' => 'required',
+            'content' => 'required',
+            'jump_to' => 'required',
         ];
     }
 }

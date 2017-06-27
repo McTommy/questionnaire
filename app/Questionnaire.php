@@ -22,4 +22,16 @@ class Questionnaire extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    //定义与answers表关系为一对多
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    //定义与blanks表关系为一对多
+    public function blanks()
+    {
+        return $this->hasMany(Blank::class);
+    }
 }

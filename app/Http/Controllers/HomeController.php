@@ -23,7 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $activity_info_id = ['activity_info_id' => 1];
-        return view('home', $activity_info_id);
+        return view('home');
     }
 }
