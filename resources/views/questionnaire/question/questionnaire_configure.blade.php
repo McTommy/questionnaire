@@ -208,7 +208,13 @@
                 </div>
                 <div class="finish-creat">
                     <button class="btn btn-primary finish">保存</button>
-                    <button class="btn btn-primary save_as_template">保存为模板</button>
+                    @if($first_question)
+                        @if($first_question->questionnaire->is_template == 1)
+                            <button class="btn btn-primary toggle_template">已保存为模板</button>
+                        @else
+                            <button class="btn btn-primary toggle_template">保存为模板</button>
+                        @endif
+                    @endif
                 </div>
             </div>
             <!--自己的内容结束-->

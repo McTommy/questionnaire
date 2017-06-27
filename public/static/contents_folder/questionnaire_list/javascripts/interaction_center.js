@@ -19,12 +19,16 @@ $(function () {
 
     //提交创建表单
     $(".questionnaire_submit").click(function () {
-       var title = $(".input_title").val();
+       var title = $(".input_title").val()
+       var start_time = $(".start_time").val()
+       var end_time = $(".end_time").val()
        if(title == "" || title == null) {
            $(".error_tips").show();
+       } else if(start_time == "" || start_time == null || end_time == "" || end_time == null) {
+           $(".time_error_tips").show();
        } else {
-           $("#submit").trigger("click");
-       }
+            $("#submit").trigger("click");
+        }
     });
 
     //点击删除

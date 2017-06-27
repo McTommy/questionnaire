@@ -29,11 +29,13 @@ class QuestionController extends Controller
         $questions = $this->question->byQuestionnaireId($id);
         $sub_question = $this->question->getAllSubQuestion($id);
         $has_phone_number = $this->question->hasPhoneNumber($id);
+        $first_question = $this->question->getFirstQuestion($id);
         return view('questionnaire.question.questionnaire_configure', [
                 'activity_info_id' => $id,
                 'questions' => $questions,
                 'sub_questions' => $sub_question,
                 'has_phone_number' => $has_phone_number,
+                'first_question' => $first_question,
             ]);
     }
 

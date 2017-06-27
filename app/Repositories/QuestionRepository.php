@@ -14,6 +14,16 @@ use App\Question;
 
 class QuestionRepository
 {
+
+    public function getFirstQuestion($id)
+    {
+        $condition = [
+            ['questionnaire_id', $id],
+            ['parent_order', null]
+        ];
+        return Question::where($condition)->first();
+    }
+
     /**
      * @param $id
      * @return mixed
@@ -346,13 +356,4 @@ class QuestionRepository
     {
         return Question::create($data);
     }
-
-    /**
-     *
-     */
-    public function updateMeasureWord()
-    {
-
-    }
-
 }

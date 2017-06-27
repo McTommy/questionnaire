@@ -23,6 +23,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('question/create_question', 'Questionnaire\QuestionController@createQuestion');
     Route::post('question/update_question', 'Questionnaire\QuestionController@updateQuestion');
     Route::post('question/delete_question', 'Questionnaire\QuestionController@deleteQuestion');
+    //存为模板或取消该模板
+    Route::post('question/toggle_template', 'Questionnaire\QuestionnaireController@toggleTemplate');
     //新建选项 配置选项 编辑选项 删除选项
     Route::post('choice/configure_choice', 'Questionnaire\ChoiceController@configureChoice');
     Route::post('choice/create_choice', 'Questionnaire\ChoiceController@createChoice');

@@ -252,21 +252,23 @@ function delete_matrix_sub_question_ajax(question_order, order, ques_type) {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url:"/api/choice/delete_choice",
-        data:{
-            "questionnaire_id":$(".activity_info_id").text(),
-            "question_order":question_order,
-            "order":order,
-            "type":ques_type
+        url: "/api/choice/delete_choice",
+        data: {
+            "questionnaire_id": $(".activity_info_id").text(),
+            "question_order": question_order,
+            "order": order,
+            "type": ques_type
         },
-        type:"post",
-        dataType:"json",
-        success:function (data) {
-            if(data.status == 200) alertShow("操作成功");
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            if (data.status == 200) alertShow("操作成功");
             else alertShow("操作失败，请刷新重试");
         },
-        error:function () {
+        error: function () {
             alertShow("操作失败，请刷新重试")
         }
     });
 }
+
+

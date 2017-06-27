@@ -781,6 +781,39 @@ window.onload = $(function () {
     $(".finish-creat .finish").click(function () {
         alertShow("保存成功")
     });
+
+    //点击保存为模板按钮
+    $(".toggle_template").click(function () {
+        $.ajax({
+            // csrf-token
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "/api/question/toggle_template",
+            data: {
+                "questionnaire_id": $(".activity_info_id").text()
+            },
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200){
+                    var text = $(".toggle_template").text();
+                    if(text == "已保存为模板") {
+                        $(".toggle_template").text("保存为模板")
+                    } else {
+                        $(".toggle_template").text("已保存为模板")
+                    }
+                    alertShow("操作成功");
+                } else {
+                    alertShow("操作失败，请刷新重试");
+                }
+            },
+            error: function () {
+                alertShow("操作失败，请刷新重试")
+            }
+        });
+
+    })
 });
 
 

@@ -22,5 +22,12 @@ class DatabaseSeeder extends Seeder
             ['type' => 6, 'en_name' => 'paragraph_description', 'cn_name' => '段落说明'],
             ['type' => 7, 'en_name' => 'multi_blank', 'cn_name' => '多项填空题']
         ]);
+
+        DB::table('users')->insert([
+           ['name' => 'meezao_root', 'email' => 'meezao_root@meezao.com', 'password' => bcrypt('123456')],
+           ['name' => 'root_meezao', 'email' => 'root_meezao@meezao.com', 'password' => bcrypt('123456')],
+           ['name' => 'mshucheng', 'email' => 'mshucheng@meezao.com', 'password' => bcrypt('123456')],
+           ['name' => 'moushucheng', 'email' => 'mshucheng@qq.com', 'password' => bcrypt('123456')],
+        ]);
     }
 }
