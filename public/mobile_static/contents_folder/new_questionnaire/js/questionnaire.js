@@ -11,12 +11,30 @@
  */
 var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
 
+//单选按钮点击效果
 $(".option label input[type='radio']").click(function () {
     var $radio = $(this).parents("label");
     var radio_new = $radio.find(".radio_new");
     var sib = $radio.parents(".option").siblings(".option").find(".radio_new");
     changeBlue(radio_new);changeWhite(sib);
     $(this).parents(".question").find(".error_tips").hide();
+    var jump = parseInt($(this).parents(".option").attr("data-jump")) ;
+    var id = parseInt($(this).parents(".question").attr("data-id"));
+    if(jump){
+
+        $(".question").each(function () {
+            var index = parseInt($(this).attr("data-id"));
+            if(index>id && index<jump){
+                $(this).hide();
+            }else{
+                $(this).show();
+            }
+        })
+    }
+
+
+
+
 });
 $(".rank_item input[type='radio']").click(function () {
     var radio_new = $(this).parents("label").find(".radio_new");
@@ -44,16 +62,33 @@ $(".option label input[type='checkbox']").click(function () {
     if(limit){
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
         if(check_num>limit){
-            $(".limit_tips").show();
+            $(".limit_tips").show().focus();
+            return false;
         }else{
             $(".limit_tips").hide();
         }
     }
 });
 
+// 选择其他焦点到输入框
 $(".other_click").click(function () {
-    $(this).siblings(".option_content").find(".other").focus();
+    var type = $(this).parents(".question").attr("data-type");
+    if(type=='1'){
+        $(this).siblings(".option_content").find(".other").focus();
+    }
+    if(type=="2"){
+        var choice= $(this).is(":checked");
+        choice? $(this).siblings(".option_content").find(".other").focus():"";
+    }
+
 });
+
+// 焦点到输入框默认选中此选项
+$(".question .option_content>.other").click(function () {
+    console.log(111)
+    $(this).parents("label").find(".other_click").trigger("click");
+});
+
 $(".fill_in,.mul_fill_input").keyup(function () {
     $(this).parents(".question").find(".error_tips").hide();
 });

@@ -40,7 +40,7 @@ strong{
 }
 .answer .fill_in{
     width:100%;
-    height:1.4rem;
+    height:1.5rem;
     border:1px solid #ccc;
     border-radius: 0.15rem;
     padding: 0.2rem 0.2rem;
@@ -152,7 +152,7 @@ table tr td{
     text-align: center;
 }
 .mul_fill_input{
-    height: 1.4rem;
+    height: 1.5rem;
     border:1px solid #ccc;
     width:93%;
     margin:0.1rem 0.3rem 0.1rem 0;

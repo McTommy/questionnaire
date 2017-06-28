@@ -12,7 +12,7 @@
             <div class="answer">
                 <div class="options">
                     @foreach($question->choices as $choice)
-                        <div class="option">
+                        <div class="option" data-jump="{{ $choice->next_question_order }}">
                             <label><input type="radio" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
                                           class="other_click"><span class="radio_new"></span>
                                 <div class="option_content">
