@@ -33,6 +33,7 @@
             <div class="question_title" >
                 <span class="que_num">1. </span><span class="que_content">您的姓名：</span><span class="star">* </span><span class="type">(填空)</span>
             </div>
+            <div class="error_tips"  tabindex="2">请填写此题</div>
             <div class="answer">
                 <input type="text" class="fill_in">
             </div>
@@ -41,6 +42,7 @@
             <div class="question_title" >
                 <span class="que_num">2. </span><span class="que_content">您的电话：</span><span class="star">* </span><span class="type">(填空)</span>
             </div>
+            <div class="error_tips"  tabindex="2">请填写此题</div>
             <div class="answer">
                 <input type="text" class="fill_in">
             </div>
@@ -49,6 +51,7 @@
             <div class="question_title" >
                 <span class="que_num">3. </span><span class="que_content">您的住址：</span><span class="star">* </span><span class="type">(填空)</span>
             </div>
+            <div class="error_tips"  tabindex="2">请填写此题</div>
             <div class="answer">
                 <input type="text" class="fill_in">
             </div>
@@ -57,6 +60,7 @@
             <div class="question_title" >
                 <span class="que_num">4. </span><span class="que_content">受访地点：</span><span class="star">* </span><span class="type">(单选)</span>
             </div>
+            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">
                     <div class="option">
@@ -89,6 +93,7 @@
             <div class="question_title" >
                 <span class="que_num">6. </span><span class="que_content">您今天在哪些场所进行了消费：</span><span class="star">* </span><span class="type">(多选)</span>
             </div>
+            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">
                     <div class="option">
@@ -114,26 +119,27 @@
             <div class="question_title" >
                 <span class="que_num">7. </span><span class="que_content">受访地点：</span><span class="star">* </span><span class="type">(单选)</span>
             </div>
+            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">
-                    <div class="option">
-                        <label><input type="radio" name="4"><span class="radio_new"></span>
+                    <div class="option" data-jump="9">
+                        <label><input type="radio" name="7"><span class="radio_new"></span>
+                            <div class="option_content"> 通州万达广场</div></label>
+                    </div>
+                    <div class="option"data-jump="11">
+                        <label><input type="radio" name="7"><span class="radio_new"></span>
+                            <div class="option_content"> 通州万达广场</div></label>
+                    </div>
+                    <div class="option"data-jump="8">
+                        <label><input type="radio" name="7"><span class="radio_new"></span>
+                            <div class="option_content"> 通州万达广场</div></label>
+                    </div>
+                    <div class="option" data-jump="10">
+                        <label><input type="radio" name="7"><span class="radio_new"></span>
                             <div class="option_content"> 通州万达广场</div></label>
                     </div>
                     <div class="option">
-                        <label><input type="radio" name="4"><span class="radio_new"></span>
-                            <div class="option_content"> 通州万达广场</div></label>
-                    </div>
-                    <div class="option">
-                        <label><input type="radio" name="4"><span class="radio_new"></span>
-                            <div class="option_content"> 通州万达广场</div></label>
-                    </div>
-                    <div class="option">
-                        <label><input type="radio" name="4"><span class="radio_new"></span>
-                            <div class="option_content"> 通州万达广场</div></label>
-                    </div>
-                    <div class="option">
-                        <label><input type="radio" name="4" class="other_click"><span class="radio_new"></span>
+                        <label><input type="radio" name="7" class="other_click"><span class="radio_new"></span>
                             <div class="option_content">其他<input type="text" class="other"></div>
 
                         </label>
@@ -146,7 +152,8 @@
                 <span class="que_num">8. </span><span class="que_content">您平时最常光顾的购物中心是哪两家：</span><span class="star">* </span><span class="type">(多选)</span>
                 <span class="max_choose">(最多选<span>2</span>项)</span>
             </div>
-            <div class="limit_tips">最多选2项</div>
+            <div class="limit_tips" tabindex="2">最多选2项</div>
+            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">
                     <div class="option">
@@ -178,6 +185,7 @@
             <div class="question_title" >
                 <span class="que_num">9. </span><span class="que_content">以下是一些关于价值观和生活方式等方面等描述，请您根据自己的认可程度选择？</span><span class="star">* </span><span class="type">(打分题，请点选)</span>
             </div>
+            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
 
                 <table class="rank">
@@ -259,6 +267,7 @@
             <div class="question_title" >
                 <span class="que_num">10. </span><span class="que_content">您在亲子消费经常购买的单品价格？（¥元）</span><span class="star">* </span><span class="type">(单选)</span>
             </div>
+            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <table class="array_single">
                     <thead>
@@ -369,6 +378,7 @@
             <div class="question_title" >
                 <span class="que_num">11. </span><span class="que_content">请您写出自己的爱好？</span><span class="star">* </span><span class="type">(填空)</span>
             </div>
+            <div class="error_tips">请填写此题</div>
             <div class="answer">
                 <div class="options">
                     <div class="option">
