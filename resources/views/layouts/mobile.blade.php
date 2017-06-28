@@ -83,7 +83,6 @@
                 <strong>
                     <span class="que_num">5. </span><span class="que_content">一、甄别信息</span>
                 </strong>
-
             </div>
         </div>
         <div class="question" data-type="2" data-id="6">
@@ -134,7 +133,7 @@
                             <div class="option_content"> 通州万达广场</div></label>
                     </div>
                     <div class="option">
-                        <label><input type="radio" name="4"><span class="radio_new"></span>
+                        <label><input type="radio" name="4" class="other_click"><span class="radio_new"></span>
                             <div class="option_content">其他<input type="text" class="other"></div>
 
                         </label>
@@ -147,6 +146,7 @@
                 <span class="que_num">8. </span><span class="que_content">您平时最常光顾的购物中心是哪两家：</span><span class="star">* </span><span class="type">(多选)</span>
                 <span class="max_choose">(最多选<span>2</span>项)</span>
             </div>
+            <div class="limit_tips">最多选2项</div>
             <div class="answer">
                 <div class="options">
                     <div class="option">
@@ -166,7 +166,7 @@
                             <div class="option_content"> 通州万达广场</div></label>
                     </div>
                     <div class="option">
-                        <label><input type="checkbox" name="4"><span class="check_new"></span>
+                        <label><input type="checkbox" name="4" class="other_click"><span class="check_new"></span>
                             <div class="option_content">其他<input type="text" class="other"></div>
 
                         </label>
