@@ -177,8 +177,6 @@ class QuestionRepository
             'type' => 5,
             'order' => $array['order'],
             'is_required' => $array['is_required'],
-            'parent_order' => isset($array['parent_order']) ? $array['parent_order'] : null,
-            'measure_word' => isset($array['measure_word']) ? $array['measure_word'] : null
         ];
 
         return Question::create($data);
@@ -249,16 +247,22 @@ class QuestionRepository
                 }
             } else {
                 //如果矩阵题parent_order
-                if($question->parent_order >= $order && $question->parent_order < $old_order) {
+                if($old_order) {
+                    if($question->parent_order >= $order && $question->parent_order < $old_order) {
+                        $question->parent_order++;
+                        $question->save();
+                    } elseif ($question->parent_order <= $order && $question->parent_order > $old_order) {
+                        $question->parent_order--;
+                        $question->save();
+                    } elseif($question->parent_order == $old_order) {
+                        $question->parent_order = $order;
+                        $question->save();
+                    }
+                } elseif($question->parent_order >= $order) {
                     $question->parent_order++;
                     $question->save();
-                } elseif ($question->parent_order <= $order && $question->parent_order > $old_order) {
-                    $question->parent_order--;
-                    $question->save();
-                } elseif($question->parent_order == $old_order) {
-                    $question->parent_order = $order;
-                    $question->save();
                 }
+
             }
         }
     }
