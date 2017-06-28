@@ -8,13 +8,11 @@
                 <span class="star">@if($question->is_required == 1)*@endif </span>
                 <span class="type">(单选)</span>
             </div>
-            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">
                     @foreach($question->choices as $choice)
                         <div class="option">
-                            <label><input type="radio" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
-                                          class="other_click"><span class="radio_new"></span>
+                            <label><input type="radio" name="{{ $choice->id }}"><span class="radio_new"></span>
                                 <div class="option_content">
                                     @if($choice->content == "其他___")
                                         其他<input type="text" class="other">
@@ -38,14 +36,12 @@
                 <span class="type">(多选)</span>
                 <span class="max_choose">(最多选<span>{{ $question->maximum_option }}</span>项)</span>
             </div>
-            <div class="limit_tips">最多选{{ $question->maximum_option }}项</div>
-            <div class="error_tips" tabindex="2">请填写此题</div>
+            {{--<div class="limit_tips">最多选{{ $question->maximum_option }}项</div>--}}
             <div class="answer">
                 <div class="options">
                     @foreach($question->choices as $choice)
                         <div class="option">
-                            <label><input type="checkbox" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
-                                          class="other_click"><span class="check_new"></span>
+                            <label><input type="checkbox" name="{{ $choice->id }}"><span class="check_new"></span>
                                 <div class="option_content">
                                     @if($choice->content == "其他___")
                                         其他<input type="text" class="other">
@@ -67,7 +63,6 @@
                 <span class="star">@if($question->is_required == 1)*@endif </span>
                 <span class="type">(填空)</span>
             </div>
-            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <input type="text" class="fill_in">
             </div>
@@ -81,7 +76,6 @@
                 <span class="star">@if($question->is_required == 1)*@endif </span>
                 <span class="type">(单选)</span>
             </div>
-            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <table class="array_single">
                     @foreach($sub_questions as $sub_question)
@@ -130,7 +124,6 @@
                 <span class="star">@if($question->is_required == 1)*@endif </span>
                 <span class="type">(打分题，请点选)</span>
             </div>
-            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <table class="rank">
                     <thead>
@@ -183,7 +176,6 @@
                 <span class="star">@if($question->is_required == 1)*@endif </span>
                 <span class="type">(填空)</span>
             </div>
-            <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">
                     @foreach($question->choices as $choice)
