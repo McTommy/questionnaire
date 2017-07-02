@@ -17,7 +17,6 @@
 namespace App\Repositories;
 
 use App\Blank;
-use Illuminate\Support\Facades\DB;
 use App\Answer;
 
 class AnswerRepository
@@ -29,62 +28,42 @@ class AnswerRepository
         //
         $max_respondent_id = Answer::max('respondent_id');
         $respondent_id = $max_respondent_id ? $max_respondent_id + 1 : 1;
-        $status = 0;
-        DB::beginTransaction();
-
         foreach ($datas as $data) {
-            if($data['type'] == 3) {
-                $this->storeBlanks($data);
+            if ($data['type'] == 3) {
+                $this->storeBlanks($data, $questionnaire_id, $respondent_id);
             } else {
-                $this->storeAnswers($data);
+                $this->storeAnswers($data, $questionnaire_id, $respondent_id);
             }
-        }
-
-        if($status == 0) {
-            DB::rollback();
-            return false;
-        } else {
-            DB::commit();
-            return true;
         }
     }
 
     //存储填空题
-    public function storeBlanks($data)
+    public function storeBlanks($data, $questionnaire_id, $respondent_id)
     {
-        try{
-            $store_data = [
-                'questionnaire_id' => $data['questionnaire_id'],
-                'question_id' => $data['question_id'],
-                'respondent_id' => $data['respondent_id'],
-                'content' => $data['content'],
-            ];
-            $answer = Blank::create($store_data);
-            if($answer == null) return false;
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
+
+        $store_data = [
+            'questionnaire_id' => $questionnaire_id,
+            'question_id' => $data['question_id'],
+            'respondent_id' => $respondent_id,
+            'content' => $data['content'],
+        ];
+        Blank::create($store_data);
+
     }
 
     //存储除了填空外其他题型
-    public function storeAnswers($data)
+    public function storeAnswers($data, $questionnaire_id, $respondent_id)
     {
-        try{
-            $store_data = [
-                'questionnaire_id' => $data['questionnaire_id'],
-                'question_id' => $data['question_id'],
-                'respondent_id' => $data['respondent_id'],
-                'choice_id' => $data['content'],
-                'other' => $data['other'],
-                'multi_blank' => $data['multi_blank'],
-            ];
-            $answer = Answer::create($store_data);
-            if($answer == null) return false;
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
+        $store_data = [
+            'questionnaire_id' => $questionnaire_id,
+            'question_id' => $data['question_id'],
+            'respondent_id' => $respondent_id,
+            'choice_id' => $data['choice_id'],
+            'other' => isset($data['other']) ? $data['other'] : null,
+            'multi_blank' => isset($data['multi_blank']) ? $data['multi_blank'] : null,
+        ];
+        Answer::create($store_data);
+
     }
 
 }

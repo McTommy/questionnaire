@@ -13,7 +13,7 @@ class StoreAnswersRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class StoreAnswersRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'questionnaire_id' => 'required',
+            'datas' => 'required',
         ];
     }
 }

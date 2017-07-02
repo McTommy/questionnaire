@@ -14,11 +14,12 @@
 @stop
 
 @section('content')
-    @parent
-    {{--@include('questionnaire.mobile_questionnaire.questions_choices')--}}
+    {{--@parent--}}
+    @include('questionnaire.mobile_questionnaire.questions_choices')
 @stop
 
 @section('footer')
+    @parent
     <div class="footer">
         <div class="submit">提交问卷</div>
     </div>

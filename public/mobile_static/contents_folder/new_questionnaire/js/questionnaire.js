@@ -11,7 +11,7 @@
  */
 var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
 
-//单选按钮点击效果
+//----------------单选按钮点击效果-----------------
 $(".option label input[type='radio']").click(function () {
     var $radio = $(this).parents("label");
     var radio_new = $radio.find(".radio_new");
@@ -21,7 +21,7 @@ $(".option label input[type='radio']").click(function () {
     var jump = parseInt($(this).parents(".option").attr("data-jump")) ;
     var id = parseInt($(this).parents(".question").attr("data-id"));
     if(jump){
-
+        //跳题效果
         $(".question").each(function () {
             var index = parseInt($(this).attr("data-id"));
             if(index>id && index<jump){
@@ -30,11 +30,10 @@ $(".option label input[type='radio']").click(function () {
                 $(this).show();
             }
         })
+    }else{
+        $(".question").show();
+
     }
-
-
-
-
 });
 $(".rank_item input[type='radio']").click(function () {
     var radio_new = $(this).parents("label").find(".radio_new");
@@ -50,7 +49,7 @@ $(".array_single input[type='radio']").click(function () {
     changeWhite(sib);
     $(this).parents(".question").find(".error_tips").hide();
 });
-//多选按钮点击效果
+//----------------多选按钮点击效果----------------
 $(".option label input[type='checkbox']").click(function () {
     var choice= $(this).is(":checked");
     var $checkbox = $(this).parents("label").find(".check_new");
@@ -63,14 +62,13 @@ $(".option label input[type='checkbox']").click(function () {
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
         if(check_num>limit){
             $(".limit_tips").show().focus();
-            return false;
         }else{
             $(".limit_tips").hide();
         }
     }
 });
 
-// 选择其他焦点到输入框
+//-------------选择其他焦点到输入框----------------------
 $(".other_click").click(function () {
     var type = $(this).parents(".question").attr("data-type");
     if(type=='1'){
@@ -83,17 +81,26 @@ $(".other_click").click(function () {
 
 });
 
-// 焦点到输入框默认选中此选项
+//-----------焦点到输入框默认选中此选项------------------
 $(".question .option_content>.other").click(function () {
-    console.log(111)
-    $(this).parents("label").find(".other_click").trigger("click");
+    var other = $(this).parents("label").find(".other_click");
+    var choice = other.is(":checked");
+    choice ? "":other.trigger("click");
 });
 
 $(".fill_in,.mul_fill_input").keyup(function () {
     $(this).parents(".question").find(".error_tips").hide();
 });
 
-//点击提交按钮
+
+//------------验证手机号那道题-----------------
+$("#phone_que").blur(function () {
+    var phone_num= $(this).find(".fill_in").val();
+});
+
+
+
+//------------点击提交按钮---------------------
 $(".submit").click(function () {
     //验证没填的题目
     var state = true;
@@ -101,58 +108,145 @@ $(".submit").click(function () {
         var $this = $(this);
         var type = $this.attr("data-type");
         var anw =  $this.find(".answer");
-
-        if(type == "1" ||type =="2"){
-            var l = anw.find(".option input:checked").length;
-            if(l==0){
-                $this.children(".error_tips").show().focus();
-                state = false;
-                return false;
-            }
-        }
-        if(type == "3"){
-            var con =$.trim(anw.find(".fill_in").val());
-            if(con==""){
-                anw.children(".fill_in").focus();
-                $this.children(".error_tips").show();
-                state = false;
-                return false;
-            }
-        }
-        if(type == "4" || type =="5"){
-            var tr = anw.find("table tbody tr");
-            tr.each(function () {
-                var l = $(this).find("input:checked").length;
+        if($this.is(":visible")){
+            if(type == "1" ||type =="2"){
+                var l = anw.find(".option input:checked").length;
                 if(l==0){
                     $this.children(".error_tips").show().focus();
                     state = false;
                     return false;
                 }
-            })
-        }
-        if(type == "7"){
-            var option = anw.find(".option");
-            option.each(function () {
-                var con = $.trim($(this).find(".mul_fill_input").val());
+            }
+            if(type == "3"){
+                var con =$.trim(anw.find(".fill_in").val());
                 if(con==""){
-                    $(this).parents('.question').find(".error_tips").show();
-                    $(this).find(".mul_fill_input").focus();
-                    state=false;
+                    anw.children(".fill_in").focus();
+                    $this.children(".error_tips").show();
+                    state = false;
                     return false;
                 }
-            });
+            }
+            if(type == "4" || type =="5"){
+                var tr = anw.find("table tbody tr");
+                tr.each(function () {
+                    var l = $(this).find("input:checked").length;
+                    if(l==0){
+                        $this.children(".error_tips").show().focus();
+                        state = false;
+                        return false;
+                    }
+                })
+            }
+            if(type == "7"){
+                var option = anw.find(".option");
+                option.each(function () {
+                    var con = $.trim($(this).find(".mul_fill_input").val());
+                    if(con==""){
+                        $(this).parents('.question').find(".error_tips").show();
+                        $(this).find(".mul_fill_input").focus();
+                        state=false;
+                        return false;
+                    }
+                });
+            }
         }
+
     });
 
     //传数据
     if(state==true){
+        var datas = [];
+        $(".question").each(function () {
+            var data = {};
+            var $this = $(this);
+            var type = $this.attr("data-type");
+            var que_id = $this.attr("question-id");    //问题的id
+            var $ops = $this.find(".option");
+            if($this.is(":visible")){       //判断这道题被没被隐藏，跳过的题不传
+                if(type=="1"){
+                    var option = $this.find("input[type='radio']:checked");    //  被选中的那个选项
+                    var option_id = option.attr("choice-id");                //选中选项的id
+                    // var option_con = option.siblings(".option_content").text();    // 选中选项的内容
+                    if($this.find('.other_click').is(":checked")){         // 如果选的是其他，获取填的内容
+                        var other_fill = $this.find(".other").val();
+                    }
+                    data.question_id = que_id;
+                    data.type = 1;
+                    data.choice_id = option_id;
+                    data.other = other_fill;
+                    datas.push(data);
+                }
+                if(type=="2"){
+                    $ops.each(function () {
+                        var data = {};
+                        var option = $(this).find("input[type='checkbox']:checked");
+                        if(option.length) {
+                            var option_id = option.attr("choice-id");
+                            if($this.find('.other_click').is(":checked")){         // 如果选的是其他，获取填的内容
+                                var other_fill = $this.find(".other").val();
+                            }
+                            data.question_id = que_id;
+                            data.type = 2;
+                            data.choice_id = option_id;
+                            data.other = other_fill;
+                            datas.push(data);
+                        }
+                    });
+                }
+                if(type=="3"){
 
+                    var fill = $this.find(".fill_in").val();
+                    data.question_id = que_id;
+                    data.type = 3;
+                    data.content = fill;
+                    datas.push(data);
+                }
+                if(type=="4" ||type=="5"){
+                    var $tr = $this.find("table tbody tr");
+                    $tr.each(function () {
+                        var data = {};
+                        var rank_option = $(this).find("input[type='radio']:checked");
+                        data.question_id = rank_option.attr("question-id");
+                        data.type = type;
+                        data.choice_id = rank_option.attr("choice-id");
+                        datas.push(data);
+                    })
+                }
+                if(type=="7"){
+                    $ops.each(function () {
+                        var data = {};
+                        var mul_fill = $(this).find(".mul_fill_input").val();
+                        data.choice_id = $(this).find(".mul_fill_input").attr("choice-id");
+                        data.question_id = que_id;
+                        data.type = 7;
+                        data.multi_blank = mul_fill;
+                        datas.push(data)
+                    })
+                }
+
+            }
+        });
+        $.ajax({
+            // csrf-token
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url:"/api/answer/store",
+            data:{
+                "questionnaire_id":$(".questionnaire_id").text(),
+                "datas":datas
+            },
+            type:"post",
+            dataType:"json",
+            success:function (data) {
+                if(data.status == 200) alert("操作成功");
+                else alert("提交失败");
+            },
+            error:function () {
+                alert("操作失败，请刷新重试")
+            }
+        });
     }
-
-
-
-
-
 
 });
 

@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Answer extends Model
 {
     protected $fillable = [
-        'question_id', 'choice_id', 'other', 'status'
+        'question_id', 'respondent_id', 'multi_blank',
+        'choice_id', 'other', 'status', 'questionnaire_id'
     ];
 
     //定义与questions表关系为多对一

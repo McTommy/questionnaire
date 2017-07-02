@@ -45,7 +45,10 @@
                     @foreach($question->choices as $choice)
                         <div class="option">
                             <label><input type="checkbox" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
-                                          class="other_click"><span class="check_new"></span>
+                                          @if($choice->content == "其他___")
+                                          class="other_click"
+                                          @endif
+                                ><span class="check_new"></span>
                                 <div class="option_content">
                                     @if($choice->content == "其他___")
                                         其他<input type="text" class="other">
@@ -98,8 +101,11 @@
                                 </tr>
                                 </thead>
                             @endif
-                            <tbody>
-
+                        @endif
+                    @endforeach
+                    <tbody>
+                    @foreach($sub_questions as $sub_question)
+                        @if($question->order == $sub_question->parent_order)
                             <tr question-id="{{ $sub_question->id }}">
                                 <td>{{ $sub_question->name }}</td>
                                 @foreach($sub_question->choices as $choice)
@@ -113,10 +119,9 @@
                                     </td>
                                 @endforeach
                             </tr>
-
-                            </tbody>
                         @endif
                     @endforeach
+                    </tbody>
                 </table>
 
             </div>
@@ -142,9 +147,9 @@
                         </td>
                     </tr>
                     </thead>
+                    <tbody>
                     @foreach($sub_questions as $sub_question)
                         @if($question->order == $sub_question->parent_order)
-                            <tbody>
                             <tr>
                                 <td>{{ $sub_question->name }}</td>
                                 <td>
@@ -159,9 +164,9 @@
 
                                 </td>
                             </tr>
-                            </tbody>
                         @endif
                     @endforeach
+                    </tbody>
                 </table>
 
             </div>

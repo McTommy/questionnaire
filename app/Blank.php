@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Blank extends Model
 {
     protected $fillable = [
-      'question_id', 'content', 'order', 'status'
+      'question_id', 'content', 'order',
+        'status', 'questionnaire_id', 'respondent_id'
     ];
 
     //定义与questions表关系为多对一

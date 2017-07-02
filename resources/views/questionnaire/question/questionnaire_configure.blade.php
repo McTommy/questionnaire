@@ -102,7 +102,7 @@
                                                 <span>{{ $choice->content }}</span>
                                                 @if($choice->next_question_order !== null)
                                                     @if($choice->next_question_order === 0)
-                                                        <span>(跳转到最后)</span>
+                                                        <span style='color: #00bfd7'>(跳转到最后)</span>
                                                     @else
                                                         <span style="color: #00bfd7">(跳转到第<span>{{ $choice->next_question_order }}</span>题)</span>
                                                     @endif

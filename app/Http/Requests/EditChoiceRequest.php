@@ -29,7 +29,6 @@ class EditChoiceRequest extends FormRequest
             'old_order' => 'required',
             'order' => 'required',
             'content' => 'required',
-            'jump_to' => 'required',
         ];
     }
 }

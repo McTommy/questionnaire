@@ -30,5 +30,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('choice/create_choice', 'Questionnaire\ChoiceController@createChoice');
     Route::post('choice/update_choice', 'Questionnaire\ChoiceController@editChoice');
     Route::post('choice/delete_choice', 'Questionnaire\ChoiceController@deleteChoice');
+    //存储调查问卷填写的答案
+    Route::post('answer/store', 'Questionnaire\StoreAnswersController@store');
+
 });
 
