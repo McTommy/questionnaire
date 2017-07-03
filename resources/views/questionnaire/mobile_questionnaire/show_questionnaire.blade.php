@@ -14,8 +14,8 @@
 @stop
 
 @section('content')
-    @parent
-    {{--@include('questionnaire.mobile_questionnaire.questions_choices')--}}
+    {{--@parent--}}
+    @include('questionnaire.mobile_questionnaire.questions_choices')
 @stop
 
 @section('footer')

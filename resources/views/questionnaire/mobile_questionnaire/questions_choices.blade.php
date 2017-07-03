@@ -47,7 +47,7 @@
                             <label><input type="checkbox" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
                                           @if($choice->content == "其他___")
                                           class="other_click"
-                                          @endif
+                                        @endif
                                 ><span class="check_new"></span>
                                 <div class="option_content">
                                     @if($choice->content == "其他___")
@@ -72,7 +72,10 @@
             </div>
             <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
-                <input type="text" class="fill_in">
+                <input type="text" class="fill_in"
+                       @if($question->is_phone_number == 1)
+                       id="phone_que" question-id="{{ $question->id }}"
+                        @endif>
             </div>
         </div>
     @elseif($question->type == 4)

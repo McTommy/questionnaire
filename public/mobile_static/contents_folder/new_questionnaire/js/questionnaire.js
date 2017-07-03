@@ -95,7 +95,32 @@ $(".fill_in,.mul_fill_input").keyup(function () {
 
 //------------验证手机号那道题-----------------
 $("#phone_que").blur(function () {
-    var phone_num= $(this).find(".fill_in").val();
+    var phone_number= $(this).val();
+    $.ajax({
+        // csrf-token
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url:"/api/answer/verify_phone",
+        data:{
+            "questionnaire_id":$(".questionnaire_id").text(),
+            "question_id":$(this).attr("question-id"),
+            "phone_number":phone_number
+        },
+        type:"post",
+        dataType:"json",
+        success:function (data) {
+            if(data.code == 200) {
+
+            } else {
+                $("#phone_que").val("");
+                alert("您已参与此次调查问卷")
+            }
+        },
+        error:function () {
+            alert("操作失败，请刷新重试")
+        }
+    });
 });
 
 
@@ -239,8 +264,8 @@ $(".submit").click(function () {
             type:"post",
             dataType:"json",
             success:function (data) {
-                if(data.status == 200) alert("操作成功");
-                else alert("提交失败");
+                if(data.code == 200) alert(data.message);
+                else alert(data.message);
             },
             error:function () {
                 alert("操作失败，请刷新重试")

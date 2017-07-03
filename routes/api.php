@@ -32,6 +32,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('choice/delete_choice', 'Questionnaire\ChoiceController@deleteChoice');
     //存储调查问卷填写的答案
     Route::post('answer/store', 'Questionnaire\StoreAnswersController@store');
+    //验证该手机号是否参与了此次调查问卷
+    Route::post('answer/verify_phone', 'Questionnaire\StoreAnswersController@verifyPhoneNumber');
 
 });
 
