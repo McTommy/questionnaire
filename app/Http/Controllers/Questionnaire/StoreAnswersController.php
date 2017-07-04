@@ -29,8 +29,14 @@ class StoreAnswersController extends Controller
     //存储调查问卷信息到answer以及blank表中
     public function store(StoreAnswersRequest $request)
     {
-        //组织数据格式
         $questionnaire_id = $request->get('questionnaire_id');
+        $phone_info = $request->get("phone");
+        if($phone_info) {
+            $is_exist = $this->blank->verifyPhoneNumber($questionnaire_id,
+                $phone_info['question_id'], $phone_info['content']);
+            if($is_exist) return response()->json(['code' => 500, 'message' => '该用户已参与此次活动']);
+        }
+        //组织数据格式
         $datas = $request->get('datas');
         //存储到数据库
         $this->answer->store($datas, $questionnaire_id);

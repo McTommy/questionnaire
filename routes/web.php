@@ -31,4 +31,8 @@ Route::group(['middleware' => 'auth'], function () {
 Route::group(['middleware' => 'respondent'], function () {
     Route::get('questionnaire/show/{id}', 'Questionnaire\ShowQuestionnaireController@index');
     Route::post('questionnaire/store_answers', 'Questionnaire\StoreAnswersController@store');
+    //展示填写完后的页面
+    Route::get('questionnaire/mobile/thanks', function () {
+        return view('questionnaire.mobile_questionnaire.thanks');
+    });
 });

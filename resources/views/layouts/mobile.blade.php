@@ -400,7 +400,6 @@
 @show
 
 @section('footer')
-    <div class="questionnaire_id" style="display: none">{{ $questionnaire_id }}</div>
 @show
 </body>
 <!--全局js开始-->

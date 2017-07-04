@@ -16,21 +16,22 @@ $(".option label input[type='radio']").click(function () {
     var $radio = $(this).parents("label");
     var radio_new = $radio.find(".radio_new");
     var sib = $radio.parents(".option").siblings(".option").find(".radio_new");
-    changeBlue(radio_new);changeWhite(sib);
+    changeBlue(radio_new);
+    changeWhite(sib);
     $(this).parents(".question").find(".error_tips").hide();
-    var jump = parseInt($(this).parents(".option").attr("data-jump")) ;
+    var jump = parseInt($(this).parents(".option").attr("data-jump"));
     var id = parseInt($(this).parents(".question").attr("data-id"));
-    if(jump){
+    if (jump) {
         //跳题效果
         $(".question").each(function () {
             var index = parseInt($(this).attr("data-id"));
-            if(index>id && index<jump){
+            if (index > id && index < jump) {
                 $(this).hide();
-            }else{
+            } else {
                 $(this).show();
             }
         })
-    }else{
+    } else {
         $(".question").show();
 
     }
@@ -51,18 +52,24 @@ $(".array_single input[type='radio']").click(function () {
 });
 //----------------多选按钮点击效果----------------
 $(".option label input[type='checkbox']").click(function () {
-    var choice= $(this).is(":checked");
+    var choice = $(this).is(":checked");
     var $checkbox = $(this).parents("label").find(".check_new");
     var question = $(this).parents(".question");
     var limit = question.attr("data-max");
-    choice? $checkbox.css({"background":"url('" + png_path + "check.png') no-repeat left top 0", "background-size":"cover"}):
-        $checkbox.css({"background":"url('" + png_path + "check.png') no-repeat left top -1.29rem", "background-size":"cover"});
+    choice ? $checkbox.css({
+            "background": "url('" + png_path + "check.png') no-repeat left top 0",
+            "background-size": "cover"
+        }) :
+        $checkbox.css({
+            "background": "url('" + png_path + "check.png') no-repeat left top -1.29rem",
+            "background-size": "cover"
+        });
     $(this).parents(".question").find(".error_tips").hide();
-    if(limit){
+    if (limit) {
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
-        if(check_num>limit){
+        if (check_num > limit) {
             $(".limit_tips").show().focus();
-        }else{
+        } else {
             $(".limit_tips").hide();
         }
     }
@@ -71,12 +78,12 @@ $(".option label input[type='checkbox']").click(function () {
 //-------------选择其他焦点到输入框----------------------
 $(".other_click").click(function () {
     var type = $(this).parents(".question").attr("data-type");
-    if(type=='1'){
+    if (type == '1') {
         $(this).siblings(".option_content").find(".other").focus();
     }
-    if(type=="2"){
-        var choice= $(this).is(":checked");
-        choice? $(this).siblings(".option_content").find(".other").focus():"";
+    if (type == "2") {
+        var choice = $(this).is(":checked");
+        choice ? $(this).siblings(".option_content").find(".other").focus() : "";
     }
 
 });
@@ -85,7 +92,7 @@ $(".other_click").click(function () {
 $(".question .option_content>.other").click(function () {
     var other = $(this).parents("label").find(".other_click");
     var choice = other.is(":checked");
-    choice ? "":other.trigger("click");
+    choice ? "" : other.trigger("click");
 });
 
 $(".fill_in,.mul_fill_input").keyup(function () {
@@ -95,34 +102,33 @@ $(".fill_in,.mul_fill_input").keyup(function () {
 
 //------------验证手机号那道题-----------------
 $("#phone_que").blur(function () {
-    var phone_number= $(this).val();
+    var phone_number = $(this).val();
     $.ajax({
         // csrf-token
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url:"/api/answer/verify_phone",
-        data:{
-            "questionnaire_id":$(".questionnaire_id").text(),
-            "question_id":$(this).attr("question-id"),
-            "phone_number":phone_number
+        url: "/api/answer/verify_phone",
+        data: {
+            "questionnaire_id": $(".questionnaire_id").text(),
+            "question_id": $(this).attr("question-id"),
+            "phone_number": phone_number
         },
-        type:"post",
-        dataType:"json",
-        success:function (data) {
-            if(data.code == 200) {
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
 
             } else {
                 $("#phone_que").val("");
                 alert("您已参与此次调查问卷")
             }
         },
-        error:function () {
+        error: function () {
             alert("操作失败，请刷新重试")
         }
     });
 });
-
 
 
 //------------点击提交按钮---------------------
@@ -132,44 +138,44 @@ $(".submit").click(function () {
     $(".question").each(function () {
         var $this = $(this);
         var type = $this.attr("data-type");
-        var anw =  $this.find(".answer");
-        if($this.is(":visible")){
-            if(type == "1" ||type =="2"){
+        var anw = $this.find(".answer");
+        if ($this.is(":visible")) {
+            if (type == "1" || type == "2") {
                 var l = anw.find(".option input:checked").length;
-                if(l==0){
+                if (l == 0) {
                     $this.children(".error_tips").show().focus();
                     state = false;
                     return false;
                 }
             }
-            if(type == "3"){
-                var con =$.trim(anw.find(".fill_in").val());
-                if(con==""){
+            if (type == "3") {
+                var con = $.trim(anw.find(".fill_in").val());
+                if (con == "") {
                     anw.children(".fill_in").focus();
                     $this.children(".error_tips").show();
                     state = false;
                     return false;
                 }
             }
-            if(type == "4" || type =="5"){
+            if (type == "4" || type == "5") {
                 var tr = anw.find("table tbody tr");
                 tr.each(function () {
                     var l = $(this).find("input:checked").length;
-                    if(l==0){
+                    if (l == 0) {
                         $this.children(".error_tips").show().focus();
                         state = false;
                         return false;
                     }
                 })
             }
-            if(type == "7"){
+            if (type == "7") {
                 var option = anw.find(".option");
                 option.each(function () {
                     var con = $.trim($(this).find(".mul_fill_input").val());
-                    if(con==""){
+                    if (con == "") {
                         $(this).parents('.question').find(".error_tips").show();
                         $(this).find(".mul_fill_input").focus();
-                        state=false;
+                        state = false;
                         return false;
                     }
                 });
@@ -179,20 +185,21 @@ $(".submit").click(function () {
     });
 
     //传数据
-    if(state==true){
+    if (state == true) {
         var datas = [];
+        var phone = {};
         $(".question").each(function () {
             var data = {};
             var $this = $(this);
             var type = $this.attr("data-type");
             var que_id = $this.attr("question-id");    //问题的id
             var $ops = $this.find(".option");
-            if($this.is(":visible")){       //判断这道题被没被隐藏，跳过的题不传
-                if(type=="1"){
+            if ($this.is(":visible")) {       //判断这道题被没被隐藏，跳过的题不传
+                if (type == "1") {
                     var option = $this.find("input[type='radio']:checked");    //  被选中的那个选项
                     var option_id = option.attr("choice-id");                //选中选项的id
                     // var option_con = option.siblings(".option_content").text();    // 选中选项的内容
-                    if($this.find('.other_click').is(":checked")){         // 如果选的是其他，获取填的内容
+                    if ($this.find('.other_click').is(":checked")) {         // 如果选的是其他，获取填的内容
                         var other_fill = $this.find(".other").val();
                     }
                     data.question_id = que_id;
@@ -201,13 +208,13 @@ $(".submit").click(function () {
                     data.other = other_fill;
                     datas.push(data);
                 }
-                if(type=="2"){
+                if (type == "2") {
                     $ops.each(function () {
                         var data = {};
                         var option = $(this).find("input[type='checkbox']:checked");
-                        if(option.length) {
+                        if (option.length) {
                             var option_id = option.attr("choice-id");
-                            if($this.find('.other_click').is(":checked")){         // 如果选的是其他，获取填的内容
+                            if ($this.find('.other_click').is(":checked")) {         // 如果选的是其他，获取填的内容
                                 var other_fill = $this.find(".other").val();
                             }
                             data.question_id = que_id;
@@ -218,15 +225,19 @@ $(".submit").click(function () {
                         }
                     });
                 }
-                if(type=="3"){
-
+                if (type == "3") {
                     var fill = $this.find(".fill_in").val();
+                    var is_phone_number = $this.find("#phone_que");
+                    if (is_phone_number.length == 1) {
+                        phone.question_id = que_id;
+                        phone.content = fill;
+                    }
                     data.question_id = que_id;
                     data.type = 3;
                     data.content = fill;
                     datas.push(data);
                 }
-                if(type=="4" ||type=="5"){
+                if (type == "4" || type == "5") {
                     var $tr = $this.find("table tbody tr");
                     $tr.each(function () {
                         var data = {};
@@ -237,7 +248,7 @@ $(".submit").click(function () {
                         datas.push(data);
                     })
                 }
-                if(type=="7"){
+                if (type == "7") {
                     $ops.each(function () {
                         var data = {};
                         var mul_fill = $(this).find(".mul_fill_input").val();
@@ -256,18 +267,18 @@ $(".submit").click(function () {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url:"/api/answer/store",
-            data:{
-                "questionnaire_id":$(".questionnaire_id").text(),
-                "datas":datas
+            url: "/api/answer/store",
+            data: {
+                "questionnaire_id": $(".questionnaire_id").text(),
+                "datas": datas,
+                "phone": phone
             },
-            type:"post",
-            dataType:"json",
-            success:function (data) {
-                if(data.code == 200) alert(data.message);
-                else alert(data.message);
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) window.location.href = "/questionnaire/mobile/thanks";
             },
-            error:function () {
+            error: function () {
                 alert("操作失败，请刷新重试")
             }
         });
@@ -276,12 +287,9 @@ $(".submit").click(function () {
 });
 
 
-
-
-
 function changeBlue(item) {
-    item.css({"background":"url('" + png_path + "btn.png') no-repeat left top 0", "background-size":"cover"});
+    item.css({"background": "url('" + png_path + "btn.png') no-repeat left top 0", "background-size": "cover"});
 }
 function changeWhite(item) {
-    item.css({"background":"url('" + png_path + "btn.png') no-repeat left top -1.35rem", "background-size":"cover"})
+    item.css({"background": "url('" + png_path + "btn.png') no-repeat left top -1.35rem", "background-size": "cover"})
 }

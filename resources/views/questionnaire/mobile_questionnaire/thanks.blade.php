@@ -14,14 +14,10 @@
 @stop
 
 @section('content')
-    {{--@parent--}}
-    @include('questionnaire.mobile_questionnaire.questions_choices')
-@stop
-
-@section('footer')
-    <div class="questionnaire_id" style="display: none">{{ $questionnaire_id }}</div>
-    <div class="footer">
-        <div class="submit">提交问卷</div>
+    <div class="content">
+        <div class="thanks" style="text-align: center">
+            <h1>谢谢参与</h1>
+        </div>
     </div>
 @stop
 
