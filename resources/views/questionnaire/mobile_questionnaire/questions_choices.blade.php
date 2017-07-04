@@ -179,8 +179,7 @@
         <div class="question" data-type="6" data-id="{{ $question->order }}">
             <div class="question_title">
                 <strong>
-                    <span class="que_num">{{ $question->order }}. </span><span
-                            class="que_content">{{ $question->name }}</span>
+                    <span class="que_content">{{ $question->name }}</span>
                 </strong>
             </div>
         </div>
