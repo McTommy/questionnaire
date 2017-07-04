@@ -120,8 +120,7 @@ class QuestionnaireController extends Controller
     public function destroy($id)
     {
         $questionnaire = $this->questionnaire->byId($id);
-        $questionnaire->status = 0;
-        $questionnaire->save();
+        $questionnaire->delete();
         return redirect('/questionnaire');
     }
 
