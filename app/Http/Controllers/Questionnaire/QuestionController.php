@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Questionnaire;
 use App\Http\Requests\CreateQuestionRequest;
 use App\Http\Requests\DeleteQuestionRequest;
 use App\Http\Requests\EditQuestionRequest;
+use App\Repositories\QuestionnaireRepository;
 use App\Repositories\QuestionRepository;
 use App\Http\Controllers\Controller;
 
@@ -12,24 +13,29 @@ class QuestionController extends Controller
 {
 
     protected $question;
+    protected $questionnaire;
 
     /**
      * QuestionController constructor.
      * @param $question
      */
-    public function __construct(QuestionRepository $question)
+    public function __construct(QuestionRepository $question, QuestionnaireRepository $questionnaire)
     {
         $this->question = $question;
+        $this->questionnaire = $questionnaire;
     }
 
 
     //现实id为$id的调查问卷的问题配置页
     public function index($id)
     {
+        $questionnaire = $this->questionnaire->byId($id);
         $questions = $this->question->byQuestionnaireId($id);
         $sub_question = $this->question->getAllSubQuestion($id);
         $has_phone_number = $this->question->hasPhoneNumber($id);
         $first_question = $this->question->getFirstQuestion($id);
+        if($questionnaire->start_time < date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
+            return redirect('/questionnaire');
         return view('questionnaire.question.questionnaire_configure', [
                 'activity_info_id' => $id,
                 'questions' => $questions,
