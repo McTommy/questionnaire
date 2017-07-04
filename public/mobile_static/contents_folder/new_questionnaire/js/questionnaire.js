@@ -31,6 +31,14 @@ $(".option label input[type='radio']").click(function () {
                 $(this).show();
             }
         })
+    } else if(jump==0) {
+        $(".question").each(function () {
+            var $this = $(this);
+            var index = parseInt($this.attr("data-id"));
+            if(index>id){
+                $this.hide();
+            }
+        })
     } else {
         $(".question").show();
 
