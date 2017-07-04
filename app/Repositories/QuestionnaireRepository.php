@@ -81,4 +81,10 @@ class QuestionnaireRepository
         }
     }
 
+    //
+    public function incrementAnswerNumber($id)
+    {
+        Questionnaire::where('id', $id)->increment('answer_number');
+    }
+
 }

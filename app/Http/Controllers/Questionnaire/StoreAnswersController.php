@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Questionnaire;
 
 use App\Http\Requests\StoreAnswersRequest;
 use App\Http\Requests\VerifyPhoneNumberRequest;
+use App\Questionnaire;
 use App\Repositories\AnswerRepository;
 use App\Http\Controllers\Controller;
 use App\Repositories\BlankRepository;
+use App\Repositories\QuestionnaireRepository;
 use Auth;
 
 class StoreAnswersController extends Controller
@@ -14,16 +16,18 @@ class StoreAnswersController extends Controller
 
     protected $answer;
     protected $blank;
+    protected $questionnaire;
 
     /**
      * StoreAnswersController constructor.
      * @param $answer
      */
-    public function __construct(AnswerRepository $answer, BlankRepository $blank)
+    public function __construct(AnswerRepository $answer, BlankRepository $blank, QuestionnaireRepository $questionnaire)
     {
 //        $this->middleware('auth');
         $this->answer = $answer;
         $this->blank = $blank;
+        $this->questionnaire = $questionnaire;
     }
 
     //存储调查问卷信息到answer以及blank表中
@@ -40,7 +44,8 @@ class StoreAnswersController extends Controller
         $datas = $request->get('datas');
         //存储到数据库
         $this->answer->store($datas, $questionnaire_id);
-        //存储成功
+        //存储成功,问卷答题数加一
+        $this->questionnaire->incrementAnswerNumber($questionnaire_id);
         return response()->json(['code' => 200, 'message' => '问卷提交成功']);
     }
 
