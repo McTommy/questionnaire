@@ -1,3 +1,4 @@
+<div class="foreword">{{ $questionnaire->title }}</div>
 <!--单选1 多选2 填空3 矩阵单选4 矩阵量表5 段落说明6 多项填空7-->
 @foreach($questions as $question)
     @if($question->type == 1)

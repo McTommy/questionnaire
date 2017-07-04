@@ -14,7 +14,6 @@
 @stop
 
 @section('content')
-    {{--@parent--}}
     @include('questionnaire.mobile_questionnaire.questions_choices')
 @stop
 
