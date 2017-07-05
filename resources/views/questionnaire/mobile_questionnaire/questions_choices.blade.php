@@ -14,7 +14,7 @@
                 <div class="options">
                     @foreach($question->choices as $choice)
                         <div class="option" data-jump="{{ $choice->next_question_order }}">
-                            <label><input type="radio" name="{{ $question->order }}" choice-id="{{ $choice->id }}"
+                            <label><input type="radio" name="single_{{ $question->id }}" choice-id="{{ $choice->id }}"
                                 @if($choice->content == "其他___")
                                 class="other_click"
                                 @endif
@@ -52,7 +52,7 @@
                 <div class="options">
                     @foreach($question->choices as $choice)
                         <div class="option">
-                            <label><input type="checkbox" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
+                            <label><input type="checkbox" name="multi_{{ $choice->order }}" choice-id="{{ $choice->id }}"
                                           @if($choice->content == "其他___")
                                           class="other_click"
                                         @endif
@@ -122,7 +122,7 @@
                                 @foreach($sub_question->choices as $choice)
                                     <td>
                                         <div class="rank_item">
-                                            <label><input type="radio" name="{{ $sub_question->id }}"
+                                            <label><input type="radio" name="matrix_single_{{ $sub_question->id }}"
                                                           choice-id="{{ $choice->id }}"
                                                           question-id="{{ $sub_question->id }}"><span
                                                         class="radio_new"></span></label>
@@ -166,7 +166,7 @@
                                 <td>
                                     <div class="rank_item">
                                         @foreach($sub_question->choices as $choice)
-                                            <label><input type="radio" name="{{ $sub_question->id }}"
+                                            <label><input type="radio" name="matrix_scale_{{ $sub_question->id }}"
                                                           choice-id="{{ $choice->id }}"
                                                           question-id="{{ $sub_question->id }}"><span
                                                         class="radio_new"></span>{{ $choice->content }}</label>
