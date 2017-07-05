@@ -14,8 +14,8 @@
                 <div class="options">
                     @foreach($question->choices as $choice)
                         <div class="option" data-jump="{{ $choice->next_question_order }}">
-                            <label><input type="radio" name="{{ $choice->order }}" choice-id="{{ $choice->id }}"
-                                          class="other_click"><span class="radio_new"></span>
+                            <label><input type="radio" name="{{ $question->order }}" choice-id="{{ $choice->id }}"
+                                          ><span class="radio_new"></span>
                                 <div class="option_content">
                                     @if($choice->content == "其他___")
                                         其他<input type="text" class="other">

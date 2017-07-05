@@ -60,7 +60,7 @@
                                         @if($question->is_required == 1)
                                             <span style="color: red;">*</span>
                                         @endif
-                                        @if($question->type == 2)
+                                        @if($question->type == 2 && $question->maximum_option)
                                             <i>
                                                 (最多可选
                                                 <span>{{ $question->maximum_option }}</span>

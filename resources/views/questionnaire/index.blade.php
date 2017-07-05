@@ -87,7 +87,7 @@
                                         @if($questionnaire->start_time < date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
                                             <a type="button" class="btn btn-primary btn_edit" disabled title="调查问卷一旦开始，不可编辑">不可编辑</a>
                                         @else
-                                            <a type="button" href="{{ URL::asset('') }}/questionnaire/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑问题</a>
+                                            <a type="button" href="questionnaire/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑问题</a>
                                         @endif
 
                                         <a type="button" href="#none" class="btn btn-black btn_delete">删除</a>
