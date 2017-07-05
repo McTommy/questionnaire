@@ -111,6 +111,11 @@ $(".fill_in,.mul_fill_input").keyup(function () {
 //------------验证手机号那道题-----------------
 $("#phone_que").blur(function () {
     var phone_number = $(this).val();
+    if(!(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
+        $(this).val("");
+        alert("手机号码有误，请重填");
+        return false;
+    }
     $.ajax({
         // csrf-token
         headers: {
