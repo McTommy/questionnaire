@@ -37,9 +37,13 @@
                 <span class="que_content">{{ $question->name }}</span>
                 <span class="star">@if($question->is_required == 1)*@endif </span>
                 <span class="type">(多选)</span>
-                <span class="max_choose">(最多选<span>{{ $question->maximum_option }}</span>项)</span>
+                @if($question->maximum_option)
+                    <span class="max_choose">(最多选<span>{{ $question->maximum_option }}</span>项)</span>
+                @endif
             </div>
-            <div class="limit_tips">最多选{{ $question->maximum_option }}项</div>
+            @if($question->maximum_option)
+                <div class="limit_tips">最多选{{ $question->maximum_option }}项</div>
+            @endif
             <div class="error_tips" tabindex="2">请填写此题</div>
             <div class="answer">
                 <div class="options">

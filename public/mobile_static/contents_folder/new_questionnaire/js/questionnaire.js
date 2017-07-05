@@ -76,9 +76,9 @@ $(".option label input[type='checkbox']").click(function () {
     if (limit) {
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
         if (check_num > limit) {
-            $(".limit_tips").show().focus();
+            $(this).parents(".question").find(".limit_tips").show().focus();
         } else {
-            $(".limit_tips").hide();
+            $(this).parents(".question").find(".limit_tips").hide();
         }
     }
 });
