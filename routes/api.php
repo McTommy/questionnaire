@@ -34,6 +34,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('answer/store', 'Questionnaire\StoreAnswersController@store');
     //验证该手机号是否参与了此次调查问卷
     Route::post('answer/verify_phone', 'Questionnaire\StoreAnswersController@verifyPhoneNumber');
+    //缓存已答完题目到缓存数据库
+    Route::post('answer/cache', 'Questionnaire\CacheAnswersController@CacheAnswer');
 
 });
 

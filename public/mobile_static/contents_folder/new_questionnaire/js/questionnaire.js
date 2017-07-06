@@ -10,6 +10,7 @@
  * Created by yuejd on 2017/6/23.
  */
 var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
+var state = true;
 
 //----------------单选按钮点击效果-----------------
 $(".option label input[type='radio']").click(function () {
@@ -77,8 +78,10 @@ $(".option label input[type='checkbox']").click(function () {
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
         if (check_num > limit) {
             $(this).parents(".question").find(".limit_tips").show().focus();
+            state = false ;
         } else {
             $(this).parents(".question").find(".limit_tips").hide();
+            state = true ;
         }
     }
 });
@@ -111,7 +114,7 @@ $(".fill_in,.mul_fill_input").keyup(function () {
 //------------验证手机号那道题-----------------
 $("#phone_que").blur(function () {
     var phone_number = $(this).val();
-    if(!(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
+    if(phone_number && !(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
         $(this).val("");
         alert("手机号码有误，请重填");
         return false;
@@ -147,18 +150,26 @@ $("#phone_que").blur(function () {
 //------------点击提交按钮---------------------
 $(".submit").click(function () {
     //验证没填的题目
-    var state = true;
     $(".question").each(function () {
         var $this = $(this);
         var type = $this.attr("data-type");
         var anw = $this.find(".answer");
         if ($this.is(":visible")) {
-            if (type == "1" || type == "2") {
-                var l = anw.find(".option input:checked").length;
-                if (l == 0) {
+            if(type == "1" ||type =="2"){
+                var item = anw.find(".option input:checked");
+                var l = item.length;
+                if(l==0){
                     $this.children(".error_tips").show().focus();
                     state = false;
                     return false;
+                }
+                if(item.hasClass("other_click")){
+                    var blank = anw.find(".other").val();
+                    if(blank==""){
+                        $this.children(".error_tips").show().focus();
+                        state = false;
+                        return false
+                    }
                 }
             }
             if (type == "3") {
@@ -168,6 +179,39 @@ $(".submit").click(function () {
                     $this.children(".error_tips").show();
                     state = false;
                     return false;
+                }
+                if(anw.find("#phone_que").length == 1) {
+                    que_id = $this.attr("question-id");
+                    phone_number = anw.find(".fill_in").val();
+                    $.ajax({
+                        // csrf-token
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "/api/answer/verify_phone",
+                        data: {
+                            "questionnaire_id": $(".questionnaire_id").text(),
+                            "question_id": que_id,
+                            "phone_number": phone_number
+                        },
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 200) {
+                                state = true
+                            } else {
+                                $("#phone_que").val("");
+                                $("#phone_que").focus();
+                                alert("您已参与此次调查问卷");
+                                state = false;
+                                return false;
+                            }
+                        },
+                        error: function () {
+                            state = false;
+                            return false;
+                        }
+                    });
                 }
             }
             if (type == "4" || type == "5") {
@@ -196,6 +240,9 @@ $(".submit").click(function () {
         }
 
     });
+    if(state == false){
+        $(".limit_tips").focus();
+    }
 
     //传数据
     if (state == true) {
@@ -304,5 +351,5 @@ function changeBlue(item) {
     item.css({"background": "url('" + png_path + "btn.png') no-repeat left top 0", "background-size": "cover"});
 }
 function changeWhite(item) {
-    item.css({"background": "url('" + png_path + "btn.png') no-repeat left top -1.35rem", "background-size": "cover"})
+    item.css({"background": "url('" + png_path + "btn.png') no-repeat left top -1.37rem", "background-size": "cover"})
 }

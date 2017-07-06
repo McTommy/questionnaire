@@ -15,6 +15,7 @@
 
 @section('content')
     @include('questionnaire.mobile_questionnaire.questions_choices')
+    <div class="bottom"></div>
 @stop
 
 @section('footer')
