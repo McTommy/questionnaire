@@ -11,9 +11,9 @@
  */
 var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
 var state = true;
+var count = 0;
 
 $(document).ready(function() {
-    var count = 0;
     $(".question").each(function () {
         var status = $(this).attr("data-state");
         if(status == "true") {
@@ -234,6 +234,11 @@ $(".submit").click(function () {
                 if(anw.find("#phone_que").length == 1) {
                     que_id = $this.attr("question-id");
                     phone_number = anw.find(".fill_in").val();
+                    if(phone_number && !(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
+                        $(this).val("");
+                        alert("手机号码有误，请重填");
+                        return false;
+                    }
                     $.ajax({
                         // csrf-token
                         headers: {
