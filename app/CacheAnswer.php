@@ -8,7 +8,7 @@ class CacheAnswer extends Model
 {
     protected $fillable = [
         'question_id', 'respondent_id', 'multi_blank',
-        'choice_id', 'other', 'status', 'questionnaire_id'
+        'choice_id', 'other', 'status', 'questionnaire_id', 'has_answered'
     ];
 
     //定义与questions表关系为多对一
@@ -17,7 +17,7 @@ class CacheAnswer extends Model
         return $this->belongsTo(Question::class);
     }
 
-    //定义与choices表关系为多对一
+    //定义与choices表关系为一对一
     public function choice()
     {
         return $this->belongsTo(Choice::class);

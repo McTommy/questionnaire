@@ -17,7 +17,7 @@ class Answer extends Model
         return $this->belongsTo(Question::class);
     }
 
-    //定义与choices表关系为多对一
+    //定义与choices表关系为一对一
     public function choice()
     {
         return $this->belongsTo(Choice::class);

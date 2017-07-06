@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
 //展示问卷与填写提交问卷，不需要登录，调用中间件respondent
 Route::group(['middleware' => 'respondent'], function () {
     Route::get('questionnaire/show/{id}', 'Questionnaire\ShowQuestionnaireController@index');
+    Route::get('questionnaire/reload/{id}', 'Questionnaire\ShowQuestionnaireController@reload');
     Route::post('questionnaire/store_answers', 'Questionnaire\StoreAnswersController@store');
     //展示填写完后的页面
     Route::get('questionnaire/mobile/thanks', function () {

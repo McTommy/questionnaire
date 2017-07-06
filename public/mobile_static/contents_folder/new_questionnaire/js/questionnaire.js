@@ -12,6 +12,39 @@
 var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
 var state = true;
 
+$(document).ready(function() {
+    var count = 0;
+    $(".question").each(function () {
+        var status = $(this).attr("data-state");
+        if(status == "true") {
+            count++;
+        }
+    });
+    var l = $(".question").length;
+    var ll = $(".question[data-type='6']").length;
+    var all = l -ll;
+    var result = (count/all).toFixed(2) * 100;
+    $(".process span").text(result);
+});
+
+//---------回填----------------
+$(".question").each(function () {
+    var $this = $(this);
+    var type = $this.attr("data-type");
+    if(type=="1" || type=="4" || type=="5"){
+        var single = $this.find("input[type='radio']:checked");
+        if(single){
+            single.siblings(".radio_new").css({"background": "url('" + png_path + "btn.png') no-repeat left top 0", "background-size": "cover"});
+        }
+    }
+    if(type=="2"){
+        var mul = $this.find("input[type='checkbox']:checked");
+        $.each(mul,function () {
+            $(this).siblings(".check_new").css({"background":"url('" + png_path + "check.png') no-repeat left top 0", "background-size":"cover"})
+        })
+    }
+});
+
 //----------------单选按钮点击效果-----------------
 $(".option label input[type='radio']").click(function () {
     var $radio = $(this).parents("label");
@@ -22,6 +55,8 @@ $(".option label input[type='radio']").click(function () {
     $(this).parents(".question").find(".error_tips").hide();
     var jump = parseInt($(this).parents(".option").attr("data-jump"));
     var id = parseInt($(this).parents(".question").attr("data-id"));
+    var que = $(this).parents(".question");
+    judgeFinish(que);
     if (jump) {
         //跳题效果
         $(".question").each(function () {
@@ -51,6 +86,8 @@ $(".rank_item input[type='radio']").click(function () {
     var sib = $(this).parents("label").siblings("label").find(".radio_new");
     changeWhite(sib);
     $(this).parents(".question").find(".error_tips").hide();
+    var que = $(this).parents(".question");
+    judgeFinish(que);
 });
 $(".array_single input[type='radio']").click(function () {
     var radio_new = $(this).parents("td").find(".radio_new");
@@ -58,6 +95,8 @@ $(".array_single input[type='radio']").click(function () {
     changeBlue(radio_new);
     changeWhite(sib);
     $(this).parents(".question").find(".error_tips").hide();
+    var que = $(this).parents(".question");
+    judgeFinish(que);
 });
 //----------------多选按钮点击效果----------------
 $(".option label input[type='checkbox']").click(function () {
@@ -74,6 +113,8 @@ $(".option label input[type='checkbox']").click(function () {
             "background-size": "cover"
         });
     $(this).parents(".question").find(".error_tips").hide();
+    var que = $(this).parents(".question");
+    judgeFinish(que);
     if (limit) {
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
         if (check_num > limit) {
@@ -110,6 +151,13 @@ $(".fill_in,.mul_fill_input").keyup(function () {
     $(this).parents(".question").find(".error_tips").hide();
 });
 
+$(".fill_in,.mul_fill_input").blur(function () {
+    var  fill = $(this).val();
+    var  que = $(this).parents(".question");
+    if(fill){
+        judgeFinish(que);
+    }
+});
 
 //------------验证手机号那道题-----------------
 $("#phone_que").blur(function () {
@@ -147,6 +195,7 @@ $("#phone_que").blur(function () {
 });
 
 
+
 //------------点击提交按钮---------------------
 $(".submit").click(function () {
     //验证没填的题目
@@ -160,13 +209,15 @@ $(".submit").click(function () {
                 var l = item.length;
                 if(l==0){
                     $this.children(".error_tips").show().focus();
+
                     state = false;
                     return false;
                 }
                 if(item.hasClass("other_click")){
                     var blank = anw.find(".other").val();
                     if(blank==""){
-                        $this.children(".error_tips").show().focus();
+                        $this.children(".error_tips").show();
+                        $this.find(".other").focus();
                         state = false;
                         return false
                     }
@@ -353,3 +404,138 @@ function changeBlue(item) {
 function changeWhite(item) {
     item.css({"background": "url('" + png_path + "btn.png') no-repeat left top -1.37rem", "background-size": "cover"})
 }
+
+function judgeFinish(que) {
+    var l = $(".question:visible").length;
+    var ll = $(".question[data-type='6']").length;
+    var all = l -ll;
+    var s = que.attr("data-state");
+    if(s=="false"){
+        count=count+1;
+        var result = (count/all).toFixed(2) * 100;
+        $(".process span").text(result);
+    }
+    que.attr("data-state",true);
+    var type = que.attr("data-type");
+    if(type=="2"){
+        var check = que.find("input[type='checkbox']:checked").length;
+        if(check==0){
+            count=count-1;
+            result = (count/all).toFixed(2) * 100;
+            $(".process span").text(result);
+            que.attr("data-state",false);
+        }
+    }
+
+}
+
+//------------点击存储按钮--------------------
+$(".push").click(function () {
+    var r = confirm("确认存储吗？")
+    if(r){
+        var datas = [];
+        var phone = {};
+        $(".question").each(function () {
+            var data = {};
+            var $this = $(this);
+            var type = $this.attr("data-type");
+            var que_id = $this.attr("question-id");    //问题的id
+            var $ops = $this.find(".option");
+            if ($this.is(":visible")) {       //判断这道题被没被隐藏，跳过的题不传
+                if (type == "1") {
+                    var option = $this.find("input[type='radio']:checked");    //  被选中的那个选项
+                    var option_id = option.attr("choice-id");                //选中选项的id
+                    // var option_con = option.siblings(".option_content").text();    // 选中选项的内容
+                    if ($this.find('.other_click').is(":checked")) {         // 如果选的是其他，获取填的内容
+                        var other_fill = $this.find(".other").val();
+                    }
+                    data.question_id = que_id;
+                    data.type = 1;
+                    data.choice_id = option_id;
+                    data.other = other_fill;
+                    datas.push(data);
+                }
+                if (type == "2") {
+                    $ops.each(function () {
+                        var data = {};
+                        var option = $(this).find("input[type='checkbox']:checked");
+                        if (option.length) {
+                            var option_id = option.attr("choice-id");
+                            if ($this.find('.other_click').is(":checked")) {         // 如果选的是其他，获取填的内容
+                                var other_fill = $this.find(".other").val();
+                            }
+                            data.question_id = que_id;
+                            data.type = 2;
+                            data.choice_id = option_id;
+                            data.other = other_fill;
+                            datas.push(data);
+                        }
+                    });
+                }
+                if (type == "3") {
+                    var fill = $this.find(".fill_in").val();
+                    var is_phone_number = $this.find("#phone_que");
+                    if (is_phone_number.length == 1) {
+                        phone.question_id = que_id;
+                        phone.content = fill;
+                    }
+                    data.question_id = que_id;
+                    data.type = 3;
+                    data.content = fill;
+                    datas.push(data);
+                }
+                if (type == "4" || type == "5") {
+                    var $tr = $this.find("table tbody tr");
+                    $tr.each(function () {
+                        var data = {};
+                        var rank_option = $(this).find("input[type='radio']:checked");
+                        data.question_id = rank_option.attr("question-id");
+                        data.type = type;
+                        data.choice_id = rank_option.attr("choice-id");
+                        datas.push(data);
+                    })
+                }
+                if (type == "7") {
+                    $ops.each(function () {
+                        var data = {};
+                        var mul_fill = $(this).find(".mul_fill_input").val();
+                        data.choice_id = $(this).find(".mul_fill_input").attr("choice-id");
+                        data.question_id = que_id;
+                        data.type = 7;
+                        data.multi_blank = mul_fill;
+                        datas.push(data)
+                    })
+                }
+
+            }
+        });
+        $.ajax({
+            // csrf-token
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "/api/answer/cache",
+            data: {
+                "questionnaire_id": $(".questionnaire_id").text(),
+                "datas": datas,
+                "phone": phone
+            },
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) alert(data.message);
+            },
+            error: function () {
+                alert("操作失败，请刷新重试")
+            }
+        });
+    }
+});
+//------------点击提取按钮--------------------
+$(".pull").click(function () {
+    var r = confirm("确认载入数据吗？");
+    questionnaire_id = $(".questionnaire_id").text();
+    if(r){
+        location.href = "/questionnaire/reload/" + questionnaire_id;
+    }
+});

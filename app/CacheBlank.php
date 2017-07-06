@@ -11,7 +11,7 @@ class CacheBlank extends Model
         'status', 'questionnaire_id', 'respondent_id'
     ];
 
-    //定义与questions表关系为多对一
+    //定义与questions表关系为一对一
     public function question()
     {
         return $this->belongsTo(Question::class);

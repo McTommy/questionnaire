@@ -27,8 +27,16 @@ class CacheAnswerRepository
     {
         //
 
-        $max_respondent_id = CacheAnswer::max('respondent_id');
+        $max_respondent_id = max(CacheAnswer::where('questionnaire_id', $questionnaire_id)->max('respondent_id'),
+            CacheBlank::where('questionnaire_id', $questionnaire_id)->max('respondent_id'));
         $respondent_id = $max_respondent_id ? $max_respondent_id + 1 : 1;
+        //清空该调查问卷的缓存记录
+        if(CacheBlank::where('questionnaire_id', $questionnaire_id)->first()) {
+            CacheBlank::where('questionnaire_id', $questionnaire_id)->delete();
+        }
+        if(CacheAnswer::where('questionnaire_id', $questionnaire_id)->first()) {
+            CacheAnswer::where('questionnaire_id', $questionnaire_id)->delete();
+        }
         foreach ($datas as $data) {
             if ($data['type'] == 3) {
                 $this->storeBlanks($data, $questionnaire_id, $respondent_id);
@@ -41,10 +49,7 @@ class CacheAnswerRepository
     //存储填空题
     public function storeBlanks($data, $questionnaire_id, $respondent_id)
     {
-        if(CacheBlank::where('questionnaire_id', $questionnaire_id)->first()) {
-            CacheBlank::where('questionnaire_id', $questionnaire_id)->delete();
-        }
-        if($data['content']) {
+        if(isset($data['content'])) {
             $store_data = [
                 'questionnaire_id' => $questionnaire_id,
                 'question_id' => $data['question_id'],
@@ -58,22 +63,18 @@ class CacheAnswerRepository
     //存储除了填空外其他题型
     public function storeAnswers($data, $questionnaire_id, $respondent_id)
     {
-        $cache_answers = CacheAnswer::where('questionnaire_id', $questionnaire_id)->get();
-        if($cache_answers) {
-            foreach ($cache_answers as $cache_answer) {
-                $cache_answer->delete();
+        if(isset($data['choice_id'])) {
+            if(($data['type'] == 7 && isset($data['multi_blank'])) || $data['type'] != 7) {
+                $store_data = [
+                    'questionnaire_id' => $questionnaire_id,
+                    'question_id' => $data['question_id'],
+                    'respondent_id' => $respondent_id,
+                    'choice_id' => $data['choice_id'],
+                    'other' => isset($data['other']) ? $data['other'] : null,
+                    'multi_blank' => isset($data['multi_blank']) ? $data['multi_blank'] : null,
+                ];
+                CacheAnswer::create($store_data);
             }
-        }
-        if($data['choice_id']) {
-            $store_data = [
-                'questionnaire_id' => $questionnaire_id,
-                'question_id' => $data['question_id'],
-                'respondent_id' => $respondent_id,
-                'choice_id' => $data['choice_id'],
-                'other' => isset($data['other']) ? $data['other'] : null,
-                'multi_blank' => isset($data['multi_blank']) ? $data['multi_blank'] : null,
-            ];
-            CacheAnswer::create($store_data);
         }
     }
 }

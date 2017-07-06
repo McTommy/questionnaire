@@ -34,4 +34,16 @@ class Questionnaire extends Model
     {
         return $this->hasMany(Blank::class);
     }
+
+    //定义与cache_answers表关系为一对多
+    public function cache_answers()
+    {
+        return $this->hasMany(CacheAnswer::class);
+    }
+
+    //定义与cache_blanks表关系为一对多
+    public function cache_blanks()
+    {
+        return $this->hasMany(CacheBlank::class);
+    }
 }

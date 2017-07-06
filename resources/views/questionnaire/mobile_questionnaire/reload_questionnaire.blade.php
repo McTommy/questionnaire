@@ -19,7 +19,13 @@
     <!--单选1 多选2 填空3 矩阵单选4 矩阵量表5 段落说明6 多项填空7-->
     @foreach($questions as $question)
         @if($question->type == 1)
-            <div class="question" data-type="1" data-id="{{ $question->order }}" question-id="{{ $question->id }}" data-state="false">
+            <div class="question" data-type="1" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 @if($question->cache_answers->sum("choice_id") > 0)
+                 data-state="true"
+                 @else
+                 data-state="false"
+                    @endif
+            >
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>
@@ -31,14 +37,19 @@
                     <div class="options">
                         @foreach($question->choices as $choice)
                             <div class="option" data-jump="{{ $choice->next_question_order }}">
-                                <label><input type="radio" name="single_{{ $question->id }}" choice-id="{{ $choice->id }}"
+                                <label><input type="radio" name="single_{{ $question->id }}"
+                                              choice-id="{{ $choice->id }}"
                                               @if($choice->content == "其他___")
                                               class="other_click"
+                                              @endif
+                                              @if($choice->cache_answer)
+                                              checked
                                             @endif
                                     ><span class="radio_new"></span>
                                     <div class="option_content">
                                         @if($choice->content == "其他___")
-                                            其他<input type="text" class="other">
+                                            其他<input type="text" class="other"
+                                                     value="{{ $choice->cache_answer ? $choice->cache_answer->other : '' }}">
                                         @else
                                             {{ $choice->content }}
                                         @endif
@@ -51,7 +62,13 @@
             </div>
         @elseif($question->type == 2)
             <div class="question" data-type="2" data-id="{{ $question->order }}"
-                 data-max="{{ $question->maximum_option }}" question-id="{{ $question->id }}" data-state="false">
+                 data-max="{{ $question->maximum_option }}" question-id="{{ $question->id }}"
+                 @if($question->cache_answers->sum("choice_id") > 0)
+                 data-state="true"
+                 @else
+                 data-state="false"
+                    @endif
+            >
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>
@@ -69,14 +86,19 @@
                     <div class="options">
                         @foreach($question->choices as $choice)
                             <div class="option">
-                                <label><input type="checkbox" name="multi_{{ $choice->order }}" choice-id="{{ $choice->id }}"
+                                <label><input type="checkbox" name="multi_{{ $choice->order }}"
+                                              choice-id="{{ $choice->id }}"
                                               @if($choice->content == "其他___")
                                               class="other_click"
+                                              @endif
+                                              @if($choice->cache_answer)
+                                              checked
                                             @endif
                                     ><span class="check_new"></span>
                                     <div class="option_content">
                                         @if($choice->content == "其他___")
-                                            其他<input type="text" class="other">
+                                            其他<input type="text" class="other"
+                                                     value="{{ $choice->cache_answer ? $choice->cache_answer->other : '' }}">
                                         @else
                                             {{ $choice->content }}
                                         @endif
@@ -88,7 +110,13 @@
                 </div>
             </div>
         @elseif($question->type == 3)
-            <div class="question" data-type="3" data-id="{{ $question->order }}" question-id="{{ $question->id }}" data-state="false">
+            <div class="question" data-type="3" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 @if($question->cache_blank)
+                 data-state="true"
+                 @else
+                 data-state="false"
+                    @endif
+            >
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ explode('_', $question->name)[0] }}</span>
@@ -100,12 +128,28 @@
                     <input type="text" class="fill_in"
                            @if($question->is_phone_number == 1)
                            id="phone_que" question-id="{{ $question->id }}"
-                            @endif>
+                           @endif
+                           value="{{ $question->cache_blank ? $question->cache_blank->content : '' }}"
+                    >
                 </div>
             </div>
         @elseif($question->type == 4)
             <div class="question" data-type="4"
-                 data-id="{{ $question->order }}" question-id="{{ $question->id }}" data-state="false">
+                 data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 @php($status = 0)
+                 @foreach($sub_questions as $sub_question)
+                 @if($question->order == $sub_question->parent_order)
+                 @if($sub_question->cache_answers->sum("choice_id") > 0)
+                 data-state="true"
+                 @php($status = 1)
+                 @break
+                 @endif
+                 @endif
+                 @endforeach
+                 @if($status != 1)
+                 data-state="false"
+                    @endif
+            >
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>
@@ -141,7 +185,11 @@
                                             <div class="rank_item">
                                                 <label><input type="radio" name="matrix_single_{{ $sub_question->id }}"
                                                               choice-id="{{ $choice->id }}"
-                                                              question-id="{{ $sub_question->id }}"><span
+                                                              question-id="{{ $sub_question->id }}"
+                                                              @if($choice->cache_answer)
+                                                              checked
+                                                            @endif
+                                                    ><span
                                                             class="radio_new"></span></label>
                                             </div>
                                         </td>
@@ -156,7 +204,21 @@
             </div>
         @elseif($question->type == 5)
             <div class="question" data-type="5"
-                 data-id="{{ $question->order }}" question-id="{{ $question->id }}" data-state="false">
+                 data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 @php($status = 0)
+                 @foreach($sub_questions as $sub_question)
+                 @if($question->order == $sub_question->parent_order)
+                 @if($sub_question->cache_answers->sum("choice_id") > 0)
+                 data-state="true"
+                 @php($status = 1)
+                 @break
+                 @endif
+                 @endif
+                 @endforeach
+                 @if($status != 1)
+                 data-state="false"
+                    @endif
+            >
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>
@@ -185,7 +247,11 @@
                                             @foreach($sub_question->choices as $choice)
                                                 <label><input type="radio" name="matrix_scale_{{ $sub_question->id }}"
                                                               choice-id="{{ $choice->id }}"
-                                                              question-id="{{ $sub_question->id }}"><span
+                                                              question-id="{{ $sub_question->id }}"
+                                                              @if($choice->cache_answer)
+                                                              checked
+                                                            @endif
+                                                    ><span
                                                             class="radio_new"></span>{{ $choice->content }}</label>
                                             @endforeach
                                         </div>
@@ -208,7 +274,13 @@
                 </div>
             </div>
         @elseif($question->type == 7)
-            <div class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"  data-state="false">
+            <div class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 @if($question->cache_answers->sum("choice_id") > 0)
+                 data-state="true"
+                 @else
+                 data-state="false"
+                    @endif
+            >
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>
@@ -222,7 +294,8 @@
                             <div class="option">
                                 <label>
                                     <span class="fill_option">{{ explode('_', $choice->content)[0] }}</span>
-                                    <input type="text" class="mul_fill_input" choice-id="{{ $choice->id }}">
+                                    <input type="text" class="mul_fill_input" choice-id="{{ $choice->id }}"
+                                           value="{{ $choice->cache_answer ? $choice->cache_answer->multi_blank : '' }}">
                                 </label>
                             </div>
                         @endforeach

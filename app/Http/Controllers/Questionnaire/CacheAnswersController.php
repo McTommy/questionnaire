@@ -33,7 +33,7 @@ class CacheAnswersController extends Controller
         //存储到数据库
         $this->cache_answer->store($datas, $questionnaire_id);
         //存储成功,问卷答题数加一
-        return response()->json(['code' => 200, 'message' => '问卷提交成功']);
+        return response()->json(['code' => 200, 'message' => '问卷缓存成功']);
     }
 
 }

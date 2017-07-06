@@ -26,7 +26,8 @@ class AnswerRepository
     public function store($datas, $questionnaire_id)
     {
         //
-        $max_respondent_id = Answer::max('respondent_id');
+        $max_respondent_id = max(Answer::where('questionnaire_id', $questionnaire_id)->max('respondent_id'),
+            Blank::where('questionnaire_id', $questionnaire_id)->max('respondent_id'));
         $respondent_id = $max_respondent_id ? $max_respondent_id + 1 : 1;
         foreach ($datas as $data) {
             if ($data['type'] == 3) {

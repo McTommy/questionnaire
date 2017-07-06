@@ -16,9 +16,15 @@ class Choice extends Model
         return $this->belongsTo(Question::class);
     }
 
-    //定义与answers表关系一对多
-    public function answers()
+    //定义与answers表关系一对一
+    public function answer()
     {
-        return $this->hasMany(Answer::class);
+        return $this->hasOne(Answer::class);
+    }
+
+    //定义与cache_answers表关系一对多
+    public function cache_answer()
+    {
+        return $this->hasOne(CacheAnswer::class);
     }
 }
