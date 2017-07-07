@@ -26,7 +26,6 @@ class CreateChoiceRequest extends FormRequest
         return [
             "questionnaire_id" => 'required',
             "question_order" => 'required',
-            "choices" => 'required',
         ];
     }
 }

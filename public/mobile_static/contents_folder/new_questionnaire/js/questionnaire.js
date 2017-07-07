@@ -10,8 +10,9 @@
  * Created by yuejd on 2017/6/23.
  */
 var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
-var state = true;
-var count = 0;
+var state = true,
+    new_state = true,
+    count = 0;
 
 $(document).ready(function() {
     $(".question").each(function () {
@@ -115,14 +116,14 @@ $(".option label input[type='checkbox']").click(function () {
     $(this).parents(".question").find(".error_tips").hide();
     var que = $(this).parents(".question");
     judgeFinish(que);
-    if (limit) {
+    if(limit){
         var check_num = question.find(".answer input[type='checkbox']:checked").length;
-        if (check_num > limit) {
-            $(this).parents(".question").find(".limit_tips").show().focus();
-            state = false ;
-        } else {
-            $(this).parents(".question").find(".limit_tips").hide();
-            state = true ;
+        if(check_num>limit){
+            new_state = false;
+            $(".limit_tips").show().focus();
+        }else{
+            $(".limit_tips").hide();
+            new_state = true ;
         }
     }
 });
@@ -147,15 +148,25 @@ $(".question .option_content>.other").click(function () {
     choice ? "" : other.trigger("click");
 });
 
-$(".fill_in,.mul_fill_input").keyup(function () {
+$(".fill_in,.mul_fill_input,.other").keyup(function () {
     $(this).parents(".question").find(".error_tips").hide();
 });
 
 $(".fill_in,.mul_fill_input").blur(function () {
     var  fill = $(this).val();
     var  que = $(this).parents(".question");
+    var  str = que.attr("data-state");
     if(fill){
         judgeFinish(que);
+    }else if(str=="true"){
+        var l = $(".question:visible").length;
+        var ll = $(".question[data-type='6']").length;
+        var all = l -ll;
+        count=count-1;
+        result = (count/all).toFixed(1) * 100;
+        $(".process span").text(result);
+        que.attr("data-state",false);
+
     }
 });
 
@@ -165,6 +176,7 @@ $("#phone_que").blur(function () {
     if(phone_number && !(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
         $(this).val("");
         alert("手机号码有误，请重填");
+        state =false;
         return false;
     }
     $.ajax({
@@ -199,6 +211,8 @@ $("#phone_que").blur(function () {
 //------------点击提交按钮---------------------
 $(".submit").click(function () {
     //验证没填的题目
+    var phone_num= $("#phone_que").val();
+
     $(".question").each(function () {
         var $this = $(this);
         var type = $this.attr("data-type");
@@ -214,12 +228,17 @@ $(".submit").click(function () {
                     return false;
                 }
                 if(item.hasClass("other_click")){
-                    var blank = anw.find(".other").val();
-                    if(blank==""){
-                        $this.children(".error_tips").show();
-                        $this.find(".other").focus();
-                        state = false;
-                        return false
+                    var ty = item.attr("data-other");
+                    if(ty=="must"){
+                        var blank = anw.find(".other").val();
+                        if(blank==""){
+                            $this.children(".error_tips").show();
+                            $this.find(".other").focus();
+                            state = false;
+                            return false
+                        }else{
+                            state = true ;
+                        }
                     }
                 }
             }
@@ -234,9 +253,9 @@ $(".submit").click(function () {
                 if(anw.find("#phone_que").length == 1) {
                     que_id = $this.attr("question-id");
                     phone_number = anw.find(".fill_in").val();
-                    if(phone_number && !(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
-                        $(this).val("");
-                        alert("手机号码有误，请重填");
+                    if(!(/^1(3|4|5|7|8)\d{9}$/.test(phone_num))){
+                        $("#phone_que").focus();
+                        state =false;
                         return false;
                     }
                     $.ajax({
@@ -296,12 +315,10 @@ $(".submit").click(function () {
         }
 
     });
-    if(state == false){
+    if(new_state == false){
         $(".limit_tips").focus();
-    }
-
-    //传数据
-    if (state == true) {
+    }else if(state==true){
+        //传数据
         var datas = [];
         var phone = {};
         $(".question").each(function () {

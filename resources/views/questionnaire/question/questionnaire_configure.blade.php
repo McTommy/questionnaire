@@ -89,8 +89,13 @@
                                 @if($question->type == 1 || $question->type == 7)
                                     @foreach($question->choices as $choice)
                                         <tr
-                                                @if($choice->content == "其他___" || $question->type == 1)
+                                                @if($choice->content == "其他___" && $question->type == 1)
                                                     data="other"
+                                                @if($choice->other_is_required == 1)
+                                                data-other="must"
+                                                @else
+                                                data-other="not"
+                                                @endif
                                                 @endif
                                                     tr-id="{{ $choice->order }}">
                                             <td>
@@ -100,6 +105,9 @@
                                             </td>
                                             <td>
                                                 <span>{{ $choice->content }}</span>
+                                                @if($choice->content == "其他___" && $question->type == 1 && $choice->other_is_required == 1)
+                                                    <span style="color: red">*</span>
+                                                @endif
                                                 @if($choice->next_question_order !== null)
                                                     @if($choice->next_question_order === 0)
                                                         <span style='color: #00bfd7'>(跳转到最后)</span>
@@ -122,11 +130,19 @@
                                         <tr
                                                 @if($choice->content == "其他___")
                                                 data="other"
+                                                @if($choice->other_is_required == 1)
+                                                data-other="must"
+                                                @else
+                                                data-other="not"
+                                                @endif
                                                 @endif
                                                 tr-id="{{ $choice->order }}">
                                             <td><input type="checkbox"></td>
                                             <td>
                                                 <span>{{ $choice->content }}</span>
+                                                @if($choice->content == "其他___" && $choice->other_is_required == 1)
+                                                    <span style="color: red">*</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="btn btn-group">

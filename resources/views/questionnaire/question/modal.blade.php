@@ -143,6 +143,9 @@
                         <div class="sort_error_tips" style="display:none;">*当前有<span>2</span>个答案，请输入小于<span>3</span>的正整数</div>
                     </div>
                     <div class="add_other">添加「其他」项</div>
+                    <div class="other_must">
+                        <input type="checkbox" class="other_check">「其他」项是否必填
+                    </div>
                     <div class="max_choose_box" style="display: none">
                         <label>最多可选</label>
                         <select class="max_choose">

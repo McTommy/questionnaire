@@ -435,6 +435,10 @@ html body .cancel{
     display: inline-block;
     margin-left: 30px;
 }
+.other_must{
+    display: inline-block;
+    margin-left: 30px;
+}
 .fixed_content{
     padding: 20px;
 }

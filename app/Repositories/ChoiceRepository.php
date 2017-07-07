@@ -24,7 +24,8 @@ class ChoiceRepository
             'question_id' => $array['question_id'],
             'content' => $array['content'],
             'order' => $array['order'],
-            'next_question_order' => isset($array['jump_to']) ? $array['jump_to'] : null
+            'next_question_order' => isset($array['jump_to']) ? $array['jump_to'] : null,
+            'other_is_required' => isset($array['other_is_required']) ? $array['other_is_required'] : null
         ];
         return Choice::create($data);
     }

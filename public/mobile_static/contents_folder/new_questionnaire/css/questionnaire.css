@@ -190,7 +190,7 @@ table tr td{
     margin-bottom: 0.2rem;
 }
 .question[data-type="6"]{
-    border-top:2px dotted #c0c0c0;
+    border-top:2px dashed cornflowerblue;
 }
 .bottom{
     height:3rem;

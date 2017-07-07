@@ -19,7 +19,8 @@
     <!--单选1 多选2 填空3 矩阵单选4 矩阵量表5 段落说明6 多项填空7-->
     @foreach($questions as $question)
         @if($question->type == 1)
-            <div class="question" data-type="1" data-id="{{ $question->order }}" question-id="{{ $question->id }}" data-state="false">
+            <div class="question" data-type="1" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 data-state="false">
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>
@@ -31,14 +32,22 @@
                     <div class="options">
                         @foreach($question->choices as $choice)
                             <div class="option" data-jump="{{ $choice->next_question_order }}">
-                                <label><input type="radio" name="single_{{ $question->id }}" choice-id="{{ $choice->id }}"
+                                <label><input type="radio" name="single_{{ $question->id }}"
+                                              choice-id="{{ $choice->id }}"
                                               @if($choice->content == "其他___")
                                               class="other_click"
+                                              @if($choice->other_is_required)
+                                              data-other="must"
+                                            @endif
                                             @endif
                                     ><span class="radio_new"></span>
                                     <div class="option_content">
                                         @if($choice->content == "其他___")
-                                            其他<input type="text" class="other">
+                                            其他<input type="text" class="other"
+                                                     @if($choice->other_is_required)
+                                                     placeholder="选择此项内容必填"
+                                                    @endif
+                                            >
                                         @else
                                             {{ $choice->content }}
                                         @endif
@@ -69,14 +78,22 @@
                     <div class="options">
                         @foreach($question->choices as $choice)
                             <div class="option">
-                                <label><input type="checkbox" name="multi_{{ $choice->order }}" choice-id="{{ $choice->id }}"
+                                <label><input type="checkbox" name="multi_{{ $choice->order }}"
+                                              choice-id="{{ $choice->id }}"
                                               @if($choice->content == "其他___")
                                               class="other_click"
+                                              @if($choice->other_is_required)
+                                              data-other="must"
+                                            @endif
                                             @endif
                                     ><span class="check_new"></span>
                                     <div class="option_content">
                                         @if($choice->content == "其他___")
-                                            其他<input type="text" class="other">
+                                            其他<input type="text" class="other"
+                                                     @if($choice->other_is_required)
+                                                     placeholder="选择此项内容必填"
+                                                    @endif
+                                            >
                                         @else
                                             {{ $choice->content }}
                                         @endif
@@ -88,7 +105,8 @@
                 </div>
             </div>
         @elseif($question->type == 3)
-            <div class="question" data-type="3" data-id="{{ $question->order }}" question-id="{{ $question->id }}" data-state="false">
+            <div class="question" data-type="3" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 data-state="false">
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ explode('_', $question->name)[0] }}</span>
@@ -208,7 +226,8 @@
                 </div>
             </div>
         @elseif($question->type == 7)
-            <div class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"  data-state="false">
+            <div class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+                 data-state="false">
                 <div class="question_title">
                     <span class="que_num">{{ $question->order }}. </span>
                     <span class="que_content">{{ $question->name }}</span>

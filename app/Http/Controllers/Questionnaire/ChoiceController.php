@@ -44,6 +44,7 @@ class ChoiceController extends Controller
                 'question_id' => $question->id,
                 'content' => $content,
                 'order' => $order + 1,
+                'other_is_required' => $content == "其他___" ? $request->get('other_is_required') : null,
             ];
             $this->choice->saveChoice($data);
         }
@@ -67,7 +68,7 @@ class ChoiceController extends Controller
             'question_id' => $question->id,
             'content' => $request->get('content'),
             'order' => $order,
-            'jump_to' => $request->get('jump_to')
+            'jump_to' => $request->get('jump_to'),
         ];
         $this->choice->saveChoice($data);
 

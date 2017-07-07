@@ -247,6 +247,7 @@ window.onload = $(function () {
         console.log(question);
         $(".creat_answer_box .creat_answer_box_question").text(question);
         $(".creat_answer_box .creat_answer_box_choice span").html(choice);
+
         if(choice=="【多项填空题】"){
             $(".add_other").hide();
         }else{
@@ -268,19 +269,34 @@ window.onload = $(function () {
                 var data = $(item).attr("data");
                 var input_num = id+1;
                 var input_anw = $(item).find("td:eq(1) span:eq(0)").text();
+                var other = $(item).attr("data-other");
                 if(choice=="【多选】"){
                     $(".max_choose").append("<option>"+(id+1)+"</option>");
                 }
-                $(".answer_content tbody").append("<tr data="+data+"><td>"+input_num+"</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+                if(other =="must"){
+                    $(".answer_content tbody").append("<tr data="+data+" data-other="+other+"><td>"+input_num+"</td> <td><span>"+input_anw+"</span><span style='color: red'>*</span></td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+                }
+                else {
+                    $(".answer_content tbody").append("<tr data="+data+"><td>"+input_num+"</td><td><span>"+input_anw+"</span></td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+                }
             })
 
         }
         var state =judge();
-        console.log(state)
         if(state==true){
             $(".add_other").css("color","#0096ff");
+            $(".other_check").attr("disabled",true);
         }else{
             $(".add_other").css("color","#ccc");
+            $(".other_check").attr("disabled",false);
+        }
+        var other_tr = $(".answer_content tbody tr[data='other']");
+        var ty = other_tr.attr("data-other");
+        if(ty=="must"){
+            console.log("选上");
+            $(".other_check").prop("checked",true);
+        }else if(ty==undefined){
+            $(".other_check").prop("checked",false);
         }
 
     });
@@ -302,7 +318,7 @@ window.onload = $(function () {
                         $(".creat_answer_box .answer_content tbody").prepend("<tr><td>1</td> <td>"+input_anw+"________</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
 
                     }else{
-                        $(".creat_answer_box .answer_content tbody").prepend("<tr><td>1</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+                        $(".creat_answer_box .answer_content tbody").prepend("<tr><td>1</td> <td><span>"+input_anw+"</span></td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
 
                     }
                 }else {
@@ -310,7 +326,7 @@ window.onload = $(function () {
                         $(".creat_answer_box .answer_content tbody tr:eq("+new_input_num+")").after("<tr> <td>1</td> <td>"+input_anw+"________</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
 
                     }else {
-                        $(".creat_answer_box .answer_content tbody tr:eq("+new_input_num+")").after("<tr> <td>1</td> <td>"+input_anw+"</td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
+                        $(".creat_answer_box .answer_content tbody tr:eq("+new_input_num+")").after("<tr><td>1</td><td><span>"+input_anw+"</span></td> <td> <div class='btn btn-default btn_box_delete_answer'>删除</div> </td> </tr>");
 
                     }
 
@@ -344,10 +360,30 @@ window.onload = $(function () {
         var l = $tbody.find("tr").length;
         var state = judge();
         if (state==true){
-            $tbody.append("<tr data='other'><td>"+(l+1)+"</td><td>其他___</td><td> <div class='btn btn-default btn_box_delete_answer'>删除</div></td></tr>");
+            $tbody.append("<tr data='other'><td>"+(l+1)+"</td><td><span>其他___</span></td><td> <div class='btn btn-default btn_box_delete_answer'>删除</div></td></tr>");
             $(".max_choose").append("<option>"+(l+1)+"</option>");
             $this.css("color","#ccc");
+            $(".other_check").attr("disabled",false);
         }
+    });
+
+    //----------点击其他项是否必填---------------------
+    $(".other_check").click(function () {
+        var choice = $(this).is(":checked");
+        var $tbody =  $(".creat_answer_box .answer_content tbody");
+        var state = judge();
+        if(state==false){
+            if(choice){
+                var $tr = $tbody.find("tr[data='other']");
+                $tr.find("td:eq(1)").append("<span style='color: red'> *</span>").end().attr("data-other","must");
+
+            }else {
+                var $tr = $tbody.find("tr[data='other']");
+                $tbody.find("tr[data='other'] td:eq(1) span:eq(1)").remove();
+                $tr.attr("data-other","not");
+            }
+        }
+
     });
 
     //点击确认创建答案
@@ -365,19 +401,26 @@ window.onload = $(function () {
         var choices = [];
         $(".creat_answer_box .table tbody tr").each(function () {
             order = $(this).children('td:eq(0)').text();
-            content = $(this).children('td:eq(1)').text();
+            content = $(this).children('td:eq(1)').text().split("*")[0];
             if(choice == "【多项填空题】") choices[order-1] = content + "________";
             else choices[order-1] = content;
         });
-        create_single_multi_ajax(data_id + 1, choices, max_number);
+        var other_is_required = $(".other_must").find("input:checked").length == 1 ? 1 : null;
+        create_single_multi_ajax(data_id + 1, choices, max_number, other_is_required);
 
         if(choice=="【单选】"){
             $(".question_content table:eq("+ data_id +") tbody").empty();
             $(".answer_content tbody tr").each(function(index,item) {
-                var answer=$(item).find("td:eq(1)").html();
+                var answer=$(item).find("td:eq(1) span:eq(0)").text();
                 var data = $(item).attr("data");
+                var other = $(item).attr("data-other");
+                if(other=="must"){
+                    var other_must = "<span style='color: red'>*</span>";
+                }else {
+                    other_must ="";
+                }
                 if(data){
-                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td><input type='radio' name='radio'> </td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+" data-other="+other+"><td><input type='radio' name='radio'> </td> <td><span>"+ answer +"</span>"+other_must+"</td> <td> <div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div> <div class='btn btn-default btn_delete_answer'>删除</div></div></td> </tr>");
                 }else{
                     $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='radio' name='radio'> </td> <td><span>"+ answer +"</span></td> <td> <div class='btn btn-group'>" +
@@ -416,10 +459,16 @@ window.onload = $(function () {
             }
             $(".question_content table:eq("+ data_id +") tbody").empty();
             $(".answer_content tbody tr").each(function(index,item) {
-                var answer=$(item).find("td:eq(1)").html();
+                var answer=$(item).find("td:eq(1) span:eq(0)").text();
                 var data = $(item).attr("data");
+                var other = $(item).attr("data-other");
+                if(other=="must"){
+                    var other_must = "<span style='color: red'>*</span>"
+                }else {
+                    other_must ="";
+                }
                 if(data){
-                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+"><td><input type='checkbox'></td> <td><span>"+ answer +"</span></td><td><div class='btn btn-group'>" +
+                    $(".question_content table:eq("+ data_id +") tbody").append("<tr data = "+data+" data-other="+other+"><td><input type='checkbox'></td><td><span>"+ answer +"</span>"+other_must+"</td><td><div class='btn btn-group'>" +
                         "<div class='btn btn-default btn_edit_answer'>编辑</div><div class='btn btn-default btn_delete_answer'>删除</div></div></td></tr>")
                 }else{
                     $(".question_content table:eq("+ data_id +") tbody").append("<tr><td><input type='checkbox'></td><td><span>"+ answer +"</span></td><td><div class='btn btn-group'>" +
@@ -438,7 +487,6 @@ window.onload = $(function () {
         $tbody.find("tr").each(function () {
             var data = $(this).attr("data");
             if (data=="other"){
-                console.log("有other")
                 state = false ;
                 return false;
             }

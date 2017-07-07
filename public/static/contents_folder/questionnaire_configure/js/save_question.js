@@ -108,7 +108,7 @@ function delete_question_ajax(order) {
 }
 
 //创建单选多选多项填空选项的ajax方法
-function create_single_multi_ajax(question_order, choice, max_num) {
+function create_single_multi_ajax(question_order, choice, max_num, other_is_required) {
     $.ajax({
         // csrf-token
         headers: {
@@ -119,7 +119,8 @@ function create_single_multi_ajax(question_order, choice, max_num) {
             "questionnaire_id":$(".activity_info_id").text(),
             "question_order":question_order,
             "choices":choice,
-            "maximum_option":max_num
+            "maximum_option":max_num,
+            "other_is_required":other_is_required
         },
         type:"post",
         dataType:"json",

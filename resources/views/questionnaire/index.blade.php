@@ -44,23 +44,6 @@
                             <th class="th_questionnaire_sub_title">问卷副标题</th>
                             <th class="th_questionnaire_template">是否被存为模板</th>
                             <th class="th_questionnaire_status">状态</th>
-
-                            {{--<th class="th_state">--}}
-                                {{--<div class="dropdown">--}}
-                                    {{--<button class="btn btn-default dropdown-toggle btn-dropdown" type="button"--}}
-                                            {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">--}}
-                                        {{--<span>状态</span>--}}
-                                        {{--<span class="caret"></span>--}}
-                                    {{--</button>--}}
-                                    {{--<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">--}}
-                                        {{--<li><a href="#">全部</a></li>--}}
-                                        {{--<li><a href="#">未开始</a></li>--}}
-                                        {{--<li><a href="#">进行中</a></li>--}}
-                                        {{--<li><a href="#">已结束</a></li>--}}
-                                        {{--<li><a href="#">已过期</a></li>--}}
-                                    {{--</ul>--}}
-                                {{--</div>--}}
-                            {{--</th>--}}
                             <th class="th_questionnaire_create_time">创建时间</th>
                             <th class="th_questionnaire_start_time">开始时间</th>
                             <th class="th_questionnaire_end_time">结束时间</th>
