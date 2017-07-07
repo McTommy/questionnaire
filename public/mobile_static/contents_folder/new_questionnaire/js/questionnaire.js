@@ -435,6 +435,7 @@ function judgeFinish(que) {
     if(s=="false"){
         count=count+1;
         var result = (count/all).toFixed(2) * 100;
+        result = result.toString().split('.')[0];
         $(".process span").text(result);
     }
     que.attr("data-state",true);
