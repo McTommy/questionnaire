@@ -35,19 +35,18 @@ class QuestionRepository
             ['parent_order', null]
         ];
         //条件查询缓存数据
-        if($cookie) {
-            return Question::with(['choices' => function($query) {
-                $query->orderBy('order');
-            }])
-                ->with(['cache_answers' => function($query) use ($cookie) {
+        if ($cookie) {
+            return Question::with(['choices' => function ($query) use ($cookie) {
+                $query->with(['cache_answer' => function ($query) use ($cookie) {
                     $query->where('cookie', $cookie);
-                }])
-                ->with(['cache_blank' => function($query) use ($cookie) {
-                    $query->where('cookie', $cookie);
-                }])
-                ->where($condition)->orderBy('order')->get();
+                }])->orderBy('order');
+            }])->with(['cache_answers' => function ($query) use ($cookie) {
+                $query->where('cookie', $cookie);
+            }])->with(['cache_blank' => function ($query) use ($cookie) {
+                $query->where('cookie', $cookie);
+            }])->where($condition)->orderBy('order')->get();
         }
-        return Question::with(['choices' => function($query) {
+        return Question::with(['choices' => function ($query) {
             $query->orderBy('order');
         }])->where($condition)->orderBy('order')->get();
     }
@@ -64,7 +63,7 @@ class QuestionRepository
             ['is_phone_number', 1]
         ];
         $question = Question::where($condition)->first();
-        if($question) return true;
+        if ($question) return true;
         return false;
     }
 
@@ -78,19 +77,18 @@ class QuestionRepository
             ['questionnaire_id', $id],
             ['parent_order', '<>', null]
         ];
-        if($cookie) {
-            return Question::with(['choices' => function($query) {
-                $query->orderBy('order');
-            }])
-                ->with(['cache_answers' => function($query) use ($cookie) {
+        if ($cookie) {
+            return Question::with(['choices' => function ($query) use ($cookie) {
+                $query->with(['cache_answer' => function ($query) use ($cookie) {
                     $query->where('cookie', $cookie);
-                }])
-                ->with(['cache_blank' => function($query) use ($cookie) {
-                    $query->where('cookie', $cookie);
-                }])
-                ->where($condition)->orderBy('order')->get();
+                }])->orderBy('order');
+            }])->with(['cache_answers' => function ($query) use ($cookie) {
+                $query->where('cookie', $cookie);
+            }])->with(['cache_blank' => function ($query) use ($cookie) {
+                $query->where('cookie', $cookie);
+            }])->where($condition)->orderBy('order')->get();
         }
-        return Question::with(['choices' => function($query) {
+        return Question::with(['choices' => function ($query) {
             $query->orderBy('order');
         }])->where($condition)->orderBy('order')->get();
     }
@@ -109,7 +107,7 @@ class QuestionRepository
             ['parent_order', $question_order],
             ['parent_order', '<>', null]
         ];
-        if($sub_order) {
+        if ($sub_order) {
             $condition = array_merge($condition, [['order', $sub_order]]);
             return Question::with('choices')->where($condition)->first();
         }
@@ -250,11 +248,11 @@ class QuestionRepository
     public function changeOrder($questionnaire_id, $order, $old_order = null, $id = null)
     {
         $condition = [
-          ['questionnaire_id', $questionnaire_id],
+            ['questionnaire_id', $questionnaire_id],
         ];
         $questions = Question::where($condition)->get();
         foreach ($questions as $question) {
-            if($question->parent_order == null) {
+            if ($question->parent_order == null) {
                 //若存在旧order
                 if ($old_order) {
                     //新大于旧， 更改区间内的order
@@ -272,18 +270,18 @@ class QuestionRepository
                 }
             } else {
                 //如果矩阵题parent_order
-                if($old_order) {
-                    if($question->parent_order >= $order && $question->parent_order < $old_order) {
+                if ($old_order) {
+                    if ($question->parent_order >= $order && $question->parent_order < $old_order) {
                         $question->parent_order++;
                         $question->save();
                     } elseif ($question->parent_order <= $order && $question->parent_order > $old_order) {
                         $question->parent_order--;
                         $question->save();
-                    } elseif($question->parent_order == $old_order) {
+                    } elseif ($question->parent_order == $old_order) {
                         $question->parent_order = $order;
                         $question->save();
                     }
-                } elseif($question->parent_order >= $order) {
+                } elseif ($question->parent_order >= $order) {
                     $question->parent_order++;
                     $question->save();
                 }
@@ -300,9 +298,9 @@ class QuestionRepository
     public function saveEditQuestion($questionnaire, $old_order, $order, $name, $is_required)
     {
         $data = [
-          ['questionnaire_id', $questionnaire],
-          ['order', $old_order],
-          ['parent_order', null]
+            ['questionnaire_id', $questionnaire],
+            ['order', $old_order],
+            ['parent_order', null]
         ];
         $question = Question::where($data)->first();
         $question->name = $name;
@@ -316,7 +314,7 @@ class QuestionRepository
      * @param $questionnaire
      * @param $order
      */
-    public function deleteQuestion($questionnaire,$order)
+    public function deleteQuestion($questionnaire, $order)
     {
         $condition1 = [
             ['questionnaire_id', $questionnaire],
@@ -348,7 +346,7 @@ class QuestionRepository
         ];
         $questions = Question::where($data)->get();
         foreach ($questions as $question) {
-            $question->order --;
+            $question->order--;
             $question->save();
         }
         //parent_order 大于该问题的减一
@@ -358,7 +356,7 @@ class QuestionRepository
         ];
         $questions = Question::where($data)->get();
         foreach ($questions as $question) {
-            $question->parent_order --;
+            $question->parent_order--;
             $question->save();
         }
     }

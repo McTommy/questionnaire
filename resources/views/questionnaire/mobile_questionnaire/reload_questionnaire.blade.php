@@ -44,11 +44,17 @@
                                               @endif
                                               @if($choice->cache_answer)
                                               checked
+                                              @if($choice->other_is_required)
+                                              data-other="must"
+                                            @endif
                                             @endif
                                     ><span class="radio_new"></span>
                                     <div class="option_content">
                                         @if($choice->content == "其他___")
                                             其他<input type="text" class="other"
+                                                     @if($choice->other_is_required)
+                                                     placeholder="选择此项内容必填"
+                                                     @endif
                                                      value="{{ $choice->cache_answer ? $choice->cache_answer->other : '' }}">
                                         @else
                                             {{ $choice->content }}
@@ -93,11 +99,17 @@
                                               @endif
                                               @if($choice->cache_answer)
                                               checked
+                                              @if($choice->other_is_required)
+                                              data-other="must"
+                                            @endif
                                             @endif
                                     ><span class="check_new"></span>
                                     <div class="option_content">
                                         @if($choice->content == "其他___")
                                             其他<input type="text" class="other"
+                                                     @if($choice->other_is_required)
+                                                     placeholder="选择此项内容必填"
+                                                     @endif
                                                      value="{{ $choice->cache_answer ? $choice->cache_answer->other : '' }}">
                                         @else
                                             {{ $choice->content }}
