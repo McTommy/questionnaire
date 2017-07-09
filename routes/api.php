@@ -36,6 +36,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('answer/verify_phone', 'Questionnaire\StoreAnswersController@verifyPhoneNumber');
     //缓存已答完题目到缓存数据库
     Route::post('answer/cache', 'Questionnaire\CacheAnswersController@CacheAnswers');
+    //点击提取问卷时验证cookie
+    Route::post('answer/cache/verify_cookie', 'Questionnaire\CacheAnswersController@ajaxVerifyCookie');
 
 });
 

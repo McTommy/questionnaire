@@ -28,12 +28,25 @@ class QuestionRepository
      * @param $id
      * @return mixed
      */
-    public function byQuestionnaireId($id)
+    public function byQuestionnaireId($id, $cookie = null)
     {
         $condition = [
             ['questionnaire_id', $id],
             ['parent_order', null]
         ];
+        //条件查询缓存数据
+        if($cookie) {
+            return Question::with(['choices' => function($query) {
+                $query->orderBy('order');
+            }])
+                ->with(['cache_answers' => function($query) use ($cookie) {
+                    $query->where('cookie', $cookie);
+                }])
+                ->with(['cache_blank' => function($query) use ($cookie) {
+                    $query->where('cookie', $cookie);
+                }])
+                ->where($condition)->orderBy('order')->get();
+        }
         return Question::with(['choices' => function($query) {
             $query->orderBy('order');
         }])->where($condition)->orderBy('order')->get();
@@ -59,12 +72,24 @@ class QuestionRepository
      * @param $id
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function getAllSubQuestion($id)
+    public function getAllSubQuestion($id, $cookie = null)
     {
         $condition = [
             ['questionnaire_id', $id],
             ['parent_order', '<>', null]
         ];
+        if($cookie) {
+            return Question::with(['choices' => function($query) {
+                $query->orderBy('order');
+            }])
+                ->with(['cache_answers' => function($query) use ($cookie) {
+                    $query->where('cookie', $cookie);
+                }])
+                ->with(['cache_blank' => function($query) use ($cookie) {
+                    $query->where('cookie', $cookie);
+                }])
+                ->where($condition)->orderBy('order')->get();
+        }
         return Question::with(['choices' => function($query) {
             $query->orderBy('order');
         }])->where($condition)->orderBy('order')->get();

@@ -20,6 +20,7 @@ class CreateCacheBlanksTable extends Migration
             $table->unsignedInteger('question_id')->index()->comment('问题id');
             $table->string('content')->index()->comment('填空题答案内容');
             $table->unsignedInteger('order')->default(1)->comment('填空题答案序号');
+            $table->string('cookie')->index()->comment('暂存问题唯一识别字段');
             $table->unsignedSmallInteger('status')->default(1);
             $table->timestamps();
         });

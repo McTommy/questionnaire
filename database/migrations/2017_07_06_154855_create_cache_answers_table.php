@@ -21,7 +21,7 @@ class CreateCacheAnswersTable extends Migration
             $table->unsignedInteger('choice_id')->index()->comment('选项id');
             $table->string('other')->nullable()->index()->comment('选项中的其他内容');
             $table->string('multi_blank')->nullable()->index()->comment('多项填空题答案处');
-            $table->unsignedInteger('has_answered')->index()->comment('已回答数目');
+            $table->string('cookie')->index()->comment('暂存问题唯一识别字段');
             $table->unsignedSmallInteger('status')->default(1);
             $table->timestamps();
         });

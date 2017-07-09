@@ -8,7 +8,7 @@ class CacheBlank extends Model
 {
     protected $fillable = [
         'question_id', 'content', 'order',
-        'status', 'questionnaire_id', 'respondent_id'
+        'status', 'questionnaire_id', 'respondent_id', 'cookie'
     ];
 
     //定义与questions表关系为一对一

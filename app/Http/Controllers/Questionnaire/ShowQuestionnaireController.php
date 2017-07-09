@@ -38,10 +38,13 @@ class ShowQuestionnaireController extends Controller
     }
 
     //c端重载入该调查问卷的以填信息
-    public function reload($id)
+    public function reload($id_cookie)
     {
-        $questions = $this->question->byQuestionnaireId($id);
-        $sub_question = $this->question->getAllSubQuestion($id);
+
+        $id = explode('_', $id_cookie)[0];
+        $cookie = explode('_', $id_cookie)[1];
+        $questions = $this->question->byQuestionnaireId($id, $cookie);
+        $sub_question = $this->question->getAllSubQuestion($id, $cookie);
         $questionnaire = $this->questionnaire->byId($id);
         return view('questionnaire.mobile_questionnaire.reload_questionnaire', [
             'questionnaire_id' => $id,

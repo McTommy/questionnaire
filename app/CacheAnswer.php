@@ -8,7 +8,7 @@ class CacheAnswer extends Model
 {
     protected $fillable = [
         'question_id', 'respondent_id', 'multi_blank',
-        'choice_id', 'other', 'status', 'questionnaire_id', 'has_answered'
+        'choice_id', 'other', 'status', 'questionnaire_id', 'cookie'
     ];
 
     //定义与questions表关系为多对一

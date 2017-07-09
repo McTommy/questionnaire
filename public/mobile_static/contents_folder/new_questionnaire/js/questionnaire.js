@@ -454,7 +454,7 @@ function judgeFinish(que) {
 
 //------------点击存储按钮--------------------
 $(".push").click(function () {
-    var r = confirm("确认存储吗？")
+    var r = confirm("确认存储吗？");
     if(r){
         var datas = [];
         var phone = {};
@@ -541,7 +541,9 @@ $(".push").click(function () {
             data: {
                 "questionnaire_id": $(".questionnaire_id").text(),
                 "datas": datas,
-                "phone": phone
+                "phone": phone,
+                "old_cookie": getCookie("user_token"),
+                "new_cookie": setCookie("user_token", (new Date()).valueOf(), 365)
             },
             type: "post",
             dataType: "json",
@@ -559,6 +561,52 @@ $(".pull").click(function () {
     var r = confirm("确认载入数据吗？");
     questionnaire_id = $(".questionnaire_id").text();
     if(r){
-        location.href = "/questionnaire/reload/" + questionnaire_id;
+        cookie = getCookie("user_token");
+        $.ajax({
+            // csrf-token
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "/api/answer/cache/verify_cookie",
+            data: {
+                "questionnaire_id": $(".questionnaire_id").text(),
+                "cookie": cookie
+            },
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200)
+                    // alert('123123');
+                    location.href = "/questionnaire/reload/" + questionnaire_id + '_' + cookie;
+                else alert("无问卷载入")
+            },
+            error: function () {
+                alert("操作失败，请刷新重试")
+            }
+        });
+
     }
 });
+
+
+//---------设cookie----------
+function setCookie(c_name,value,expiredays) {
+    var exdate=new Date();
+    exdate.setDate(exdate.getDate()+expiredays);
+    document.cookie = c_name+ "=" +escape(value)+
+        ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+    return value;
+}
+//---------取cookie，验证是否有那个名字的cookie----------
+function getCookie(c_name) {
+    if (document.cookie.length>0) {
+        c_start=document.cookie.indexOf(c_name + "=");
+        if (c_start!=-1) {
+            c_start=c_start + c_name.length+1;
+            c_end=document.cookie.indexOf(";",c_start);
+            if (c_end==-1) c_end=document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return ""
+}
