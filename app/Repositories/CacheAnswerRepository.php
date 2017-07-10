@@ -29,22 +29,33 @@ class CacheAnswerRepository
             CacheBlank::where('questionnaire_id', $questionnaire_id)->max('respondent_id'));
         $respondent_id = $max_respondent_id ? $max_respondent_id + 1 : 1;
         //清空该调查问卷的缓存记录
+        $this->deleteCaches($questionnaire_id, $old_cookie);
+        $cache_status = false;
+        $blank_status = false;
+        $answer_status = false;
+        foreach ($datas as $data) {
+            if ($data['type'] == 3) {
+                $blank_status = $this->storeBlanks($data, $questionnaire_id, $respondent_id, $new_cookie);
+            } else {
+                $answer_status = $this->storeAnswers($data, $questionnaire_id, $respondent_id, $new_cookie);
+            }
+            if($blank_status || $answer_status) $cache_status = true;
+        }
+        return $cache_status;
+    }
+
+    //清空该调查问卷的缓存记录
+    public function deleteCaches($questionnaire_id, $cookie)
+    {
         $condition = [
-          ['questionnaire_id', $questionnaire_id],
-          ['cookie', $old_cookie]
+            ['questionnaire_id', $questionnaire_id],
+            ['cookie', $cookie]
         ];
         if(CacheBlank::where($condition)->first()) {
             CacheBlank::where($condition)->delete();
         }
         if(CacheAnswer::where($condition)->first()) {
             CacheAnswer::where($condition)->delete();
-        }
-        foreach ($datas as $data) {
-            if ($data['type'] == 3) {
-                $this->storeBlanks($data, $questionnaire_id, $respondent_id, $new_cookie);
-            } else {
-                $this->storeAnswers($data, $questionnaire_id, $respondent_id, $new_cookie);
-            }
         }
     }
 
@@ -60,6 +71,9 @@ class CacheAnswerRepository
                 'cookie' => $new_cookie
             ];
             CacheBlank::create($store_data);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -78,7 +92,10 @@ class CacheAnswerRepository
                     'cookie' => $new_cookie
                 ];
                 CacheAnswer::create($store_data);
+                return true;
             }
+        } else {
+            return false;
         }
     }
 

@@ -230,3 +230,6 @@ table tr td{
     background: linear-gradient(top,#f2f3f7,#e4e8ec);
     margin-bottom: 0.2rem;
 }
+.pull_disabled{
+    background: #C0C0C0
+}

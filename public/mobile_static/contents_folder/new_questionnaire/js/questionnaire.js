@@ -27,6 +27,12 @@ $(document).ready(function() {
     var result = (count/all).toFixed(2) * 100;
     result = result.toString().split('.')[0];
     $(".process span").text(result);
+
+    //若客户端不存在user_token则载入按钮不可用
+    var user_token = getCookie('user_token');
+    if(!user_token) {
+        $(".pull").addClass("pull_disabled");
+    }
 });
 
 //---------回填----------------
@@ -554,7 +560,15 @@ $(".push").click(function () {
             type: "post",
             dataType: "json",
             success: function (data) {
-                if (data.code == 200) alert(data.message);
+                if (data.code == 200){
+                    $(".pull").removeClass("pull_disabled");
+                    alert(data.message);
+                }
+                else{
+                    setCookie("user_token", "", -1);
+                    $(".pull").addClass("pull_disabled");
+                    alert(data.message);
+                }
             },
             error: function () {
                 alert("操作失败，请刷新重试")
@@ -564,6 +578,11 @@ $(".push").click(function () {
 });
 //------------点击提取按钮--------------------
 $(".pull").click(function () {
+    //若客户端不存在user_token则载入按钮不可用
+    var user_token = getCookie('user_token');
+    if(!user_token){
+        return false;
+    }
     var r = confirm("确认载入数据吗？");
     questionnaire_id = $(".questionnaire_id").text();
     if(r){

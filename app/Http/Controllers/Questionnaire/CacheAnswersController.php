@@ -33,9 +33,10 @@ class CacheAnswersController extends Controller
         //组织数据格式
         $datas = $request->get('datas');
         //存储到数据库
-        $this->cache_answer->store($datas, $questionnaire_id, $old_cookie, $new_cookie);
+        $cache_status = $this->cache_answer->store($datas, $questionnaire_id, $old_cookie, $new_cookie);
 
-        return response()->json(['code' => 200, 'message' => '问卷缓存成功']);
+        if($cache_status) return response()->json(['code' => 200, 'message' => '问卷缓存成功']);
+        return response()->json(['code' => 500, 'message' => '无数据缓存']);
     }
 
     //ajax校验cookie

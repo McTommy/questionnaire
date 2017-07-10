@@ -257,8 +257,8 @@
     <div class="questionnaire_id" style="display: none">{{ $questionnaire_id }}</div>
     <div class="footer">
         <div class="clearfix">
-            <div class="push fl">存储</div>
-            <div class="pull fr">载入</div>
+            <div class="push fl">暂存</div>
+            <div class="pull fr">加载</div>
         </div>
         <div class="submit">提交问卷</div>
     </div>
