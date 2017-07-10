@@ -25,6 +25,7 @@ $(document).ready(function() {
     var ll = $(".question[data-type='6']").length;
     var all = l -ll;
     var result = (count/all).toFixed(2) * 100;
+    result = result.toString().split('.')[0];
     $(".process span").text(result);
 });
 
@@ -163,7 +164,8 @@ $(".fill_in,.mul_fill_input").blur(function () {
         var ll = $(".question[data-type='6']").length;
         var all = l -ll;
         count=count-1;
-        result = (count/all).toFixed(1) * 100;
+        result = (count/all).toFixed(2) * 100;
+        result = result.toString().split('.')[0];
         $(".process span").text(result);
         que.attr("data-state",false);
 
@@ -445,6 +447,7 @@ function judgeFinish(que) {
         if(check==0){
             count=count-1;
             result = (count/all).toFixed(2) * 100;
+            result = result.toString().split('.')[0];
             $(".process span").text(result);
             que.attr("data-state",false);
         }
