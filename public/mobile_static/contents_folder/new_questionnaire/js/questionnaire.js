@@ -535,6 +535,9 @@ $(".push").click(function () {
 
             }
         });
+
+        old_cookie = getCookie("user_token");
+        new_cookie = setCookie("user_token", (new Date()).valueOf(), 365);
         $.ajax({
             // csrf-token
             headers: {
@@ -545,8 +548,8 @@ $(".push").click(function () {
                 "questionnaire_id": $(".questionnaire_id").text(),
                 "datas": datas,
                 "phone": phone,
-                "old_cookie": getCookie("user_token"),
-                "new_cookie": setCookie("user_token", (new Date()).valueOf(), 365)
+                "old_cookie": old_cookie,
+                "new_cookie": new_cookie
             },
             type: "post",
             dataType: "json",
@@ -597,7 +600,7 @@ function setCookie(c_name,value,expiredays) {
     var exdate=new Date();
     exdate.setDate(exdate.getDate()+expiredays);
     document.cookie = c_name+ "=" +escape(value)+
-        ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+        ((expiredays==null) ? "" : ";expires="+exdate.toGMTString()) + "; path=/";
     return value;
 }
 //---------取cookie，验证是否有那个名字的cookie----------
