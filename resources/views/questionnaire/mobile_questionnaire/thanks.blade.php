@@ -3,6 +3,7 @@
 @section('css')
     <link rel="stylesheet"
           href="{{ URL::asset('mobile_static/contents_folder/new_questionnaire/css/questionnaire.css') }}">
+    <link href="{{ URL::asset('mobile_static/plugin_folder/bootstrap_v3.3.5/css/bootstrap.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('header')
@@ -17,6 +18,7 @@
     <div class="content">
         <div class="thanks" style="text-align: center">
             <h1>谢谢参与</h1>
+            <a class="btn btn-primary" href="/questionnaire/show/{{ $questionnaire_id }}">点此继续填写问卷</a>
         </div>
     </div>
 @stop

@@ -62,4 +62,12 @@ class ShowQuestionnaireController extends Controller
         ]);
     }
 
+    //展示感谢页面
+    public function thanks($id)
+    {
+        return view('questionnaire.mobile_questionnaire.thanks', [
+            'questionnaire_id' => $id
+        ]);
+    }
+
 }

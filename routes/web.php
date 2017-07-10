@@ -33,7 +33,5 @@ Route::group(['middleware' => 'respondent'], function () {
     Route::get('questionnaire/reload/{id_cookie}', 'Questionnaire\ShowQuestionnaireController@reload');
     Route::post('questionnaire/store_answers', 'Questionnaire\StoreAnswersController@store');
     //展示填写完后的页面
-    Route::get('questionnaire/mobile/thanks', function () {
-        return view('questionnaire.mobile_questionnaire.thanks');
-    });
+    Route::get('questionnaire/mobile/thanks/{id}', 'Questionnaire\ShowQuestionnaireController@thanks');
 });

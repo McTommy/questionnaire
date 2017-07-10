@@ -403,6 +403,7 @@ $(".submit").click(function () {
 
             }
         });
+        questionnaire_id = $(".questionnaire_id").text();
         $.ajax({
             // csrf-token
             headers: {
@@ -410,14 +411,14 @@ $(".submit").click(function () {
             },
             url: "/api/answer/store",
             data: {
-                "questionnaire_id": $(".questionnaire_id").text(),
+                "questionnaire_id": questionnaire_id,
                 "datas": datas,
                 "phone": phone
             },
             type: "post",
             dataType: "json",
             success: function (data) {
-                if (data.code == 200) window.location.href = "/questionnaire/mobile/thanks";
+                if (data.code == 200) window.location.href = "/questionnaire/mobile/thanks/" + questionnaire_id;
             },
             error: function () {
                 alert("操作失败，请刷新重试")
