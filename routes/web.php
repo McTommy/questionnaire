@@ -25,6 +25,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('questionnaire/{id}', 'Questionnaire\QuestionController@index')->name('questionnaire.question');
     Route::post('questionnaire/question/save', 'Questionnaire\QuestionController@save');
     Route::resource('questionnaire', 'Questionnaire\QuestionnaireController');
+    //调查问卷报告
+    Route::get('report/simple_query/{id}', 'Report\SimpleQueryController@index');
 });
 
 //展示问卷与填写提交问卷，不需要登录，调用中间件respondent

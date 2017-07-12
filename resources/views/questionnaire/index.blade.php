@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('css')
-    <link href={{ URL::asset('static/plugin_folder/jquery-ui_v1.10.0/jquery.ui.datepicker.css') }} rel="stylesheet" />
-    <link href={{ URL::asset('static/plugin_folder/jquery-ui_v1.10.0/jquery-ui-1.7.2.custom.css') }} rel="stylesheet" />
-    <link href={{ URL::asset('static/contents_folder/questionnaire_list/less/interaction_center.less') }} rel="stylesheet" />
+    <link href={{ URL::asset('static/plugin_folder/jquery-ui_v1.10.0/jquery.ui.datepicker.css') }} rel="stylesheet"/>
+    <link href={{ URL::asset('static/plugin_folder/jquery-ui_v1.10.0/jquery-ui-1.7.2.custom.css') }} rel="stylesheet"/>
+    <link href={{ URL::asset('static/contents_folder/questionnaire_list/less/interaction_center.less') }} rel="stylesheet"/>
 @stop
 
 @section('question_content')
@@ -39,10 +39,11 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr class="table_head">
-                            <th class="th_questionnaire_title">调查问卷名称</th>
-                            <th class="th_questionnaire_author">问卷作者</th>
-                            <th class="th_questionnaire_sub_title">问卷副标题</th>
-                            <th class="th_questionnaire_template">是否被存为模板</th>
+                            <th class="th_questionnaire_title">问卷名称</th>
+                            <th class="th_questionnaire_author">作者</th>
+                            <th class="th_questionnaire_sub_title">副标题</th>
+                            <th class="th_questionnaire_answer_number">已答</th>
+                            <th class="th_questionnaire_template">被存为模板</th>
                             <th class="th_questionnaire_status">状态</th>
                             <th class="th_questionnaire_create_time">创建时间</th>
                             <th class="th_questionnaire_start_time">开始时间</th>
@@ -59,6 +60,7 @@
                                 <td>{{ $questionnaire->title }}</td>
                                 <td>{{ $questionnaire->author }}</td>
                                 <td>{{ $questionnaire->sub_title }}</td>
+                                <td>{{ $questionnaire->answer_number }}</td>
                                 <td>{{ $questionnaire->is_template == 0 ? '否' : '是' }}</td>
                                 <td>{{ $questionnaire->status == 0 ? '异常' : '正常' }}</td>
                                 <td>{{ $questionnaire->created_at }}</td>
@@ -68,11 +70,13 @@
                                     <div class="btn-group table_btn_group" role="group">
 
                                         @if($questionnaire->start_time < date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
-                                            <a type="button" class="btn btn-primary btn_edit" disabled title="调查问卷一旦开始，不可编辑">不可编辑</a>
+                                            <a type="button" class="btn btn-primary btn_edit" disabled
+                                               title="调查问卷一旦开始，不可编辑">不可编辑</a>
                                         @else
-                                            <a type="button" href="questionnaire/{{ $questionnaire->id }}" class="btn btn-primary btn_edit">编辑问题</a>
+                                            <a type="button" href="questionnaire/{{ $questionnaire->id }}"
+                                               class="btn btn-primary btn_edit">编辑问题</a>
                                         @endif
-
+                                        <a type="button" href="/report/simple_query/{{ $questionnaire->id }}" class="btn btn-primary btn_report_simple">结果查询</a>
                                         <a type="button" href="#none" class="btn btn-black btn_delete">删除</a>
                                     </div>
                                 </td>
@@ -90,7 +94,6 @@
                 </nav>
             </div>
             <!--自己的内容结束-->
-
 
 
         </div>

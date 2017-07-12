@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Questionnaire;
 
 use App\Repositories\CacheAnswerRepository;
-use App\Repositories\CacheBlankRepository;
 use App\Repositories\QuestionnaireRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

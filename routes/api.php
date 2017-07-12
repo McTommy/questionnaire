@@ -39,5 +39,7 @@ Route::group(['middleware' => 'api'], function () {
     //点击提取问卷时验证cookie
     Route::post('answer/cache/verify_cookie', 'Questionnaire\CacheAnswersController@ajaxVerifyCookie');
 
+    //简单查询，返回查询数目
+    Route::post('report/simple_query', 'Report\SimpleQueryController@ajaxSimpleQuery');
 });
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Questionnaire;
 use App\Repositories\CacheAnswerRepository;
 use App\Repositories\QuestionnaireRepository;
 use App\Repositories\QuestionRepository;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ShowQuestionnaireController extends Controller
