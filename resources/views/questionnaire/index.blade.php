@@ -76,7 +76,8 @@
                                             <a type="button" href="questionnaire/{{ $questionnaire->id }}"
                                                class="btn btn-primary btn_edit">编辑问题</a>
                                         @endif
-                                        <a type="button" href="/report/simple_query/{{ $questionnaire->id }}" class="btn btn-primary btn_report_simple">结果查询</a>
+                                        <a type="button" href="#none" class="btn btn-primary btn_report_simple" disabled>结果查询</a>
+                                        {{--<a type="button" href="/report/simple_query/{{ $questionnaire->id }}" class="btn btn-primary btn_report_simple" disabled>结果查询</a>--}}
                                         <a type="button" href="#none" class="btn btn-black btn_delete">删除</a>
                                     </div>
                                 </td>

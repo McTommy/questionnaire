@@ -19,7 +19,7 @@
     <!--单选1 多选2 填空3 矩阵单选4 矩阵量表5 段落说明6 多项填空7-->
     @foreach($questions as $question)
         @if($question->type == 1)
-            <div class="question" data-type="1" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+            <div id="question_id_{{ $question->id }}" class="question" data-type="1" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
                  @if($question->cache_answers->sum("choice_id") > 0)
                  data-state="true"
                  @else
@@ -67,7 +67,7 @@
                 </div>
             </div>
         @elseif($question->type == 2)
-            <div class="question" data-type="2" data-id="{{ $question->order }}"
+            <div id="question_id_{{ $question->id }}" class="question" data-type="2" data-id="{{ $question->order }}"
                  data-max="{{ $question->maximum_option }}" question-id="{{ $question->id }}"
                  @if($question->cache_answers->sum("choice_id") > 0)
                  data-state="true"
@@ -122,7 +122,7 @@
                 </div>
             </div>
         @elseif($question->type == 3)
-            <div class="question" data-type="3" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+            <div id="question_id_{{ $question->id }}" class="question" data-type="3" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
                  @if($question->cache_blank)
                  data-state="true"
                  @else
@@ -146,7 +146,7 @@
                 </div>
             </div>
         @elseif($question->type == 4)
-            <div class="question" data-type="4"
+            <div id="question_id_{{ $question->id }}" class="question" data-type="4"
                  data-id="{{ $question->order }}" question-id="{{ $question->id }}"
                  @php($status = 0)
                  @foreach($sub_questions as $sub_question)
@@ -215,7 +215,7 @@
                 </div>
             </div>
         @elseif($question->type == 5)
-            <div class="question" data-type="5"
+            <div id="question_id_{{ $question->id }}" class="question" data-type="5"
                  data-id="{{ $question->order }}" question-id="{{ $question->id }}"
                  @php($status = 0)
                  @foreach($sub_questions as $sub_question)
@@ -278,7 +278,7 @@
                 </div>
             </div>
         @elseif($question->type == 6)
-            <div class="question" data-type="6" data-id="{{ $question->order }}">
+            <div id="question_id_{{ $question->id }}" class="question" data-type="6" data-id="{{ $question->order }}">
                 <div class="question_title">
                     <strong>
                         <span class="que_content">{{ $question->name }}</span>
@@ -286,7 +286,7 @@
                 </div>
             </div>
         @elseif($question->type == 7)
-            <div class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
+            <div id="question_id_{{ $question->id }}" class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
                  @if($question->cache_answers->sum("choice_id") > 0)
                  data-state="true"
                  @else

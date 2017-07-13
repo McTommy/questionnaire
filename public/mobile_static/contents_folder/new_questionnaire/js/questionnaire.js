@@ -9,16 +9,28 @@
 /**
  * Created by yuejd on 2017/6/23.
  */
-var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
+// var png_path = "../../mobile_static/contents_folder/new_questionnaire/img/";
+var stringsss = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+var png_path = stringsss + '/mobile_static/contents_folder/new_questionnaire/img/';
 var state = true,
     new_state = true,
     count = 0;
+    aim_question_id = $(".question:first").attr("id");
+
+
 
 $(document).ready(function() {
     $(".question").each(function () {
         var status = $(this).attr("data-state");
         if(status == "true") {
             count++;
+        }
+    });
+    $(".question").each(function () {
+        var status = $(this).attr("data-state");
+        if(status == "false") {
+            aim_question_id = $(this).attr("id");
+            return false;
         }
     });
     var l = $(".question").length;
@@ -33,7 +45,9 @@ $(document).ready(function() {
     if(!user_token) {
         $(".pull").addClass("pull_disabled");
     }
+
 });
+
 
 //---------回填----------------
 $(".question").each(function () {
@@ -225,8 +239,11 @@ $(".submit").click(function () {
         var $this = $(this);
         var type = $this.attr("data-type");
         var anw = $this.find(".answer");
+
         if ($this.is(":visible")) {
+
             if(type == "1" ||type =="2"){
+
                 var item = anw.find(".option input:checked");
                 var l = item.length;
                 if(l==0){
@@ -636,3 +653,4 @@ function getCookie(c_name) {
     }
     return ""
 }
+
