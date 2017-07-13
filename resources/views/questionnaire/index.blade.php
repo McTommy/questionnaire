@@ -48,7 +48,7 @@
                             <th class="th_questionnaire_create_time">创建时间</th>
                             <th class="th_questionnaire_start_time">开始时间</th>
                             <th class="th_questionnaire_end_time">结束时间</th>
-                            <th class="th_opr">操作</th>
+                            <th class="th_opr" style="width: 290px">操作</th>
                         </tr>
                         </thead>
 
