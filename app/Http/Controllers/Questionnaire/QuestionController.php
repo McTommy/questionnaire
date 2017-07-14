@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Questionnaire;
 use App\Http\Requests\CreateQuestionRequest;
 use App\Http\Requests\DeleteQuestionRequest;
 use App\Http\Requests\EditQuestionRequest;
+use App\Http\Requests\SaveLogoRequest;
 use App\Repositories\QuestionnaireRepository;
 use App\Repositories\QuestionRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
@@ -39,6 +41,7 @@ class QuestionController extends Controller
         return view('questionnaire.question.questionnaire_configure', [
                 'activity_info_id' => $id,
                 'questions' => $questions,
+                'questionnaire' => $questionnaire,
                 'sub_questions' => $sub_question,
                 'has_phone_number' => $has_phone_number,
                 'first_question' => $first_question,
@@ -108,4 +111,26 @@ class QuestionController extends Controller
         return response()->json(['status' => 200]);
     }
 
+    //存储logo图片
+    public function saveLogoImg(SaveLogoRequest $request)
+    {
+        if($request->isMethod('post')) {
+            $file = $request->file('logo');
+            if ($file->isValid()) {
+                $ext = $file->extension();
+                if($ext == 'png') {
+                    $path = 'storage/' . $file->store('img/logo');
+                    $id = $request->get('id');
+                    $this->questionnaire->storeLogo($path, $id);
+                    return redirect('questionnaire/' . $id);
+                } else {
+                    return back()->withErrors('文件扩展名错误');
+                }
+            } else {
+                return back()->withErrors('文件上传失败');
+            }
+        } else {
+            return back()->withErrors('请求格式错误');
+        }
+    }
 }

@@ -5,9 +5,13 @@ namespace App\Repositories;
 use App\Choice;
 use App\Question;
 use App\Questionnaire;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionnaireRepository
 {
+
+    protected $default_logo_url = '/mobile_static/contents_folder/new_questionnaire/img/logo.png';
+
     //创建paginate
     public function questionnaire_paginate($number)
     {
@@ -87,4 +91,19 @@ class QuestionnaireRepository
         Questionnaire::where('id', $id)->increment('answer_number');
     }
 
+    //存储
+    public function storeLogo($path, $id)
+    {
+        //获取当前id的logo_url
+        $questionnaire = Questionnaire::where('id', $id)->first();
+        $old_logo_url = $questionnaire->img_logo_url;
+        if ($old_logo_url != $this->default_logo_url) {
+            //删除old_url
+            $old_logo_path = public_path() . '/' . $old_logo_url;
+            if(file_exists($old_logo_path))
+                unlink(public_path() . '/' . $old_logo_url);
+        }
+        $questionnaire->img_logo_url = $path;
+        $questionnaire->save();
+    }
 }

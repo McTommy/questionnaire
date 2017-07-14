@@ -8,7 +8,7 @@
 @section('header')
     <div class="header">
         <div class="head-logo">
-            <img src="{{ URL::asset('mobile_static/contents_folder/new_questionnaire/img/logo.png') }}">
+            <img src="{{ URL::asset($questionnaire->img_logo_url) }}">
         </div>
     </div>
 @stop

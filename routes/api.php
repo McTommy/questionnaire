@@ -19,10 +19,11 @@ use Illuminate\Http\Request;
 
 //创建调查问卷页面ajax调用的api
 Route::group(['middleware' => 'api'], function () {
-    //新建 编辑 删除问题
+    //新建 编辑 删除问题 自定义logo
     Route::post('question/create_question', 'Questionnaire\QuestionController@createQuestion');
     Route::post('question/update_question', 'Questionnaire\QuestionController@updateQuestion');
     Route::post('question/delete_question', 'Questionnaire\QuestionController@deleteQuestion');
+    Route::post('question/save_logo', 'Questionnaire\QuestionController@saveLogoImg');
     //存为模板或取消该模板
     Route::post('question/toggle_template', 'Questionnaire\QuestionnaireController@toggleTemplate');
     //新建选项 配置选项 编辑选项 删除选项

@@ -63,7 +63,7 @@
         <!--导航栏开始-->
         <div class="nav_bar">
             <ul class="nav_bar_level1">
-                <li><a href="#"><span>创建调查问卷</span></a href="#">
+                <li><a href="#"><span>创建调查问卷</span></a>
                     <ul class="nav_bar_level2">
                         <li><a href="{{ url('questionnaire') }}"><span>新建调查问卷</span></a></li>
                     </ul>
