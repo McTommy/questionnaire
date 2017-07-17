@@ -26,13 +26,6 @@ $(document).ready(function() {
             count++;
         }
     });
-    $(".question").each(function () {
-        var status = $(this).attr("data-state");
-        if(status == "false") {
-            aim_question_id = $(this).attr("id");
-            return false;
-        }
-    });
     var l = $(".question").length;
     var ll = $(".question[data-type='6']").length;
     var all = l -ll;
@@ -47,7 +40,6 @@ $(document).ready(function() {
     }
 
 });
-
 
 //---------回填----------------
 $(".question").each(function () {
@@ -252,19 +244,25 @@ $(".submit").click(function () {
                     state = false;
                     return false;
                 }
-                if(item.hasClass("other_click")){
-                    var ty = item.attr("data-other");
-                    if(ty=="must"){
-                        var blank = anw.find(".other").val();
-                        if(blank==""){
-                            $this.children(".error_tips").show();
-                            $this.find(".other").focus();
-                            state = false;
-                            return false
-                        }else{
-                            state = true ;
+                if(type == "2") {
+                    $(".option input:checked").each(function () {
+                        item = $(this);
+                        if(item.hasClass("other_click")){
+
+                            var ty = item.attr("data-other");
+                            if(ty=="must"){
+                                var blank = anw.find(".other").val();
+                                if(blank==""){
+                                    $this.children(".error_tips").show();
+                                    $this.find(".other").focus();
+                                    state = false;
+                                    return false
+                                }else{
+                                    state = true ;
+                                }
+                            }
                         }
-                    }
+                    });
                 }
             }
             if (type == "3") {
@@ -340,7 +338,8 @@ $(".submit").click(function () {
         }
 
     });
-    if(new_state == false){
+
+    if(new_state == false) {
         $(".limit_tips").focus();
     }else if(state==true){
         //传数据

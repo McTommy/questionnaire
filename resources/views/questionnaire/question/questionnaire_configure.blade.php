@@ -32,13 +32,10 @@
                     <form action="{{ url('api/question/save_logo') }}" target="ansynform" method="POST"
                           enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <input type="file" name="logo"/>
                         <input type="text" name="id" style="display: none" value="{{ $questionnaire->id }}">
-                        <input type="submit" value="上传" />
+                        <input class="btn btn-default" type="file" name="logo"/>
+                        <input class="btn btn-default" type="submit" value="上传" />
                     </form>
-                    @foreach($errors->all() as $error)
-                        <span>{{ $error }}</span>
-                    @endforeach
                 </div>
 
                 <label style="margin-top: 10px">预览：</label>
