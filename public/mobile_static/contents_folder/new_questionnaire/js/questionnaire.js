@@ -186,38 +186,42 @@ $(".fill_in,.mul_fill_input").blur(function () {
 
 //------------验证手机号那道题-----------------
 $("#phone_que").blur(function () {
-    var phone_number = $(this).val();
-    if(phone_number && !(/^1(3|4|5|7|8)\d{9}$/.test(phone_number))){
-        $(this).val("");
-        alert("手机号码有误，请重填");
+    var phone_num= $(this).val();
+    if(!(/^1(3|4|5|7|8)\d{9}$/.test(phone_num))){
+        $(".phone_error_tips").show();
+        $(this).select();
         state =false;
         return false;
-    }
-    $.ajax({
-        // csrf-token
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: "/api/answer/verify_phone",
-        data: {
-            "questionnaire_id": $(".questionnaire_id").text(),
-            "question_id": $(this).attr("question-id"),
-            "phone_number": phone_number
-        },
-        type: "post",
-        dataType: "json",
-        success: function (data) {
-            if (data.code == 200) {
+    }else{
+        $(".phone_error_tips").hide();
+        state = true ;
+        $.ajax({
+            // csrf-token
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "/api/answer/verify_phone",
+            data: {
+                "questionnaire_id": $(".questionnaire_id").text(),
+                "question_id": $(this).attr("question-id"),
+                "phone_number": phone_number
+            },
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
 
-            } else {
-                $("#phone_que").val("");
-                alert("您已参与此次调查问卷")
+                } else {
+                    $("#phone_que").val("");
+                    alert("您已参与此次调查问卷")
+                }
+            },
+            error: function () {
+                alert("操作失败，请刷新重试")
             }
-        },
-        error: function () {
-            alert("操作失败，请刷新重试")
-        }
-    });
+        });
+
+    }
 });
 
 
@@ -653,3 +657,8 @@ function getCookie(c_name) {
     return ""
 }
 
+window.setTimeout(function(){
+    var q_height = $(".question[data-state='false']:eq(0)").offset().top;
+    console.info(q_height)
+    $("html,body").animate({scrollTop:q_height},100);
+},300);

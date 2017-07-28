@@ -179,7 +179,7 @@ table tr td{
     font-size: 0.8rem;
 
 }
-.limit_tips,html body .question .error_tips{
+.limit_tips,html body .question .error_tips,.phone_error_tips{
     width:3.5rem;
     background-color: darkred;
     color: #fff;
@@ -188,6 +188,9 @@ table tr td{
     font-size: 0.6rem;
     text-align: center;
     margin-bottom: 0.2rem;
+}
+.phone_error_tips{
+    width:5rem;
 }
 .question[data-type="6"]{
     border-top:2px dashed cornflowerblue;
@@ -229,7 +232,4 @@ table tr td{
     background: -moz-linear-gradient(top,#f2f3f7,#e4e8ec);
     background: linear-gradient(top,#f2f3f7,#e4e8ec);
     margin-bottom: 0.2rem;
-}
-.pull_disabled{
-    background: #C0C0C0
 }

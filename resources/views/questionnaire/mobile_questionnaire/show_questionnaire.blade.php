@@ -71,7 +71,7 @@
                     @endif
                 </div>
                 @if($question->maximum_option)
-                    <div class="limit_tips">最多选{{ $question->maximum_option }}项</div>
+                    <div class="limit_tips" tabindex="2">最多选{{ $question->maximum_option }}项</div>
                 @endif
                 <div class="error_tips" tabindex="2">请填写此题</div>
                 <div class="answer">
@@ -114,6 +114,9 @@
                     <span class="type">(填空)</span>
                 </div>
                 <div class="error_tips" tabindex="2">请填写此题</div>
+                @if($question->is_phone_number == 1)
+                    <div class="phone_error_tips"  tabindex="2">手机号填写有误</div>
+                @endif
                 <div class="answer">
                     <input type="text" class="fill_in"
                            @if($question->is_phone_number == 1)
