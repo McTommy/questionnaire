@@ -17,7 +17,7 @@
     <!--全局css开始-->
     <link href="{{ URL::asset('mobile_static/plugin_folder/font-awesome/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('mobile_static/common_folder/stylesheets/common_base.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('mobile_static/common_folder/less/Mobile_index.less') }}" rel="stylesheet/less">
+{{--    <link href="{{ URL::asset('mobile_static/common_folder/less/Mobile_index.less') }}" rel="stylesheet/less">--}}
     <!--全局css结束-->
     @yield('css')
 </head>

@@ -290,7 +290,7 @@
             </div>
         @elseif($question->type == 7)
             <div id="question_id_{{ $question->id }}" class="question" data-type="7" data-id="{{ $question->order }}" question-id="{{ $question->id }}"
-                 @if($question->cache_answers->sum("choice_id") == $question->answers->sum("choice_id"))
+                 @if($question->cache_answers->count() == $question->choices->count())
                  data-state="true"
                  @else
                  data-state="false"
