@@ -659,6 +659,5 @@ function getCookie(c_name) {
 
 window.setTimeout(function(){
     var q_height = $(".question[data-state='false']:eq(0)").offset().top;
-    console.info(q_height)
     $("html,body").animate({scrollTop:q_height},100);
 },300);
