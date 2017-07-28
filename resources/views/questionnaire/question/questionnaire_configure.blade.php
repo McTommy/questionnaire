@@ -28,7 +28,7 @@
             <!--自己的内容开始-->
             <div class="content_mb_subject">
                 <div>
-                    <label for="">请导入问卷上方的图片</label>
+                    <label for="">请导入问卷上方的图片(限.png格式)</label>
                     <form action="{{ url('api/question/save_logo') }}" target="ansynform" method="POST"
                           enctype="multipart/form-data">
                         {{ csrf_field() }}
