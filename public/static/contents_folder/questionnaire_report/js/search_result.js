@@ -178,6 +178,7 @@ $(".search_reset").click(function () {
     $(".choose_child").append('<option disabled selected style="display:none;" value="0">请选择子题目</option>')
 
     $(".choose_anw").empty();
-    $(".choose_anw").append('<option disabled selected style="display:none;" value="0">请选择答案</option>')
+    $(".choose_anw").append('<option disabled selected style="display:none;" value="0">请选择选项</option>')
 
+    $(".yes_radio").trigger("click");
 });
