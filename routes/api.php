@@ -42,5 +42,9 @@ Route::group(['middleware' => 'api'], function () {
 
     //简单查询，返回查询数目
     Route::post('report/simple_query', 'Report\SimpleQueryController@ajaxSimpleQuery');
+    //拉取指定问题的子问题
+    Route::post('report/get_sub_questions', 'Report\SimpleQueryController@ajaxGetSubQuestions');
+    //拉取指定问题的答案
+    Route::post('report/get_choices', 'Report\SimpleQueryController@ajaxGetChoices');
 });
 

@@ -93,6 +93,15 @@ class QuestionRepository
         }])->where($condition)->orderBy('order')->get();
     }
 
+    public function getSpecifiedSubQuestion($id, $parent_order)
+    {
+        $condition = [
+            ['questionnaire_id', $id],
+            ['parent_order', $parent_order]
+        ];
+        return Question::where($condition)->get();
+    }
+
 
     /**
      * @param $question_order

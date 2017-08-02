@@ -82,4 +82,10 @@ class ChoiceRepository
         }
     }
 
+    //根据问题id查询选项
+    public function getByQuestionId($question_id)
+    {
+        return Choice::where('question_id', $question_id)->get();
+    }
+
 }
