@@ -162,7 +162,6 @@ $(".search_result").click(function () {
         type:"post",
         dataType:"json",
         success:function (data) {
-            alert(data.number);
            $(".result").text(data.number + '人')
         }
     });
