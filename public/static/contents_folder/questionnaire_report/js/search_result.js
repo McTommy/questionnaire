@@ -133,22 +133,22 @@ $(".search_result").click(function () {
     //组织数据格式
     if (third_id) {
         datas = [
-            {'is_non': first_yes, 'choice_id': first_id},
-            {'is_non': second_yes, 'choice_id': second_id},
-            {'is_non': third_yes, 'choice_id': third_id}
+            {'is_non': 1-first_yes, 'choice_id': first_id},
+            {'is_non': 1-second_yes, 'choice_id': second_id},
+            {'is_non': 1-third_yes, 'choice_id': third_id}
 
         ];
         conditions = [first_logic, second_logic]
     } else if (!third_id && second_id) {
         datas = [
-            {'is_non': first_yes, 'choice_id': first_id},
-            {'is_non': second_yes, 'choice_id': second_id},
+            {'is_non': 1-first_yes, 'choice_id': first_id},
+            {'is_non': 1-second_yes, 'choice_id': second_id},
 
         ];
         conditions = [first_logic]
     } else {
         datas = [
-            {'is_non': first_yes, 'choice_id': first_id}
+            {'is_non': 1-first_yes, 'choice_id': first_id}
         ];
         conditions = []
     }
