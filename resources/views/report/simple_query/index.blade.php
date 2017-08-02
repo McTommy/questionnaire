@@ -192,6 +192,7 @@
 
                 </table>
                 <div class="btn btn-primary search_result">点击查看结果</div>
+                <div class="btn btn-primary search_reset">重置</div>
                 <div class="part_title">输出结果：<span class="result"></span>
                 </div>
 

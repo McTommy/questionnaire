@@ -167,3 +167,17 @@ $(".search_result").click(function () {
     });
 
 });
+
+//重置查询条件
+$(".search_reset").click(function () {
+    $(".choose_que").append('<option disabled selected style="display:none;" value="0">请选择题目</option>')
+
+
+    $(".choose_child").empty();
+    $(".child_content").hide();
+    $(".choose_child").append('<option disabled selected style="display:none;" value="0">请选择子题目</option>')
+
+    $(".choose_anw").empty();
+    $(".choose_anw").append('<option disabled selected style="display:none;" value="0">请选择答案</option>')
+
+});
