@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Questionnaire;
 
+use App\Questionnaire;
 use App\Repositories\CacheAnswerRepository;
 use App\Repositories\QuestionnaireRepository;
 use App\Repositories\QuestionRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class ShowQuestionnaireController extends Controller
 {
@@ -30,6 +32,21 @@ class ShowQuestionnaireController extends Controller
     //c端展示调查问卷
     public function index($id)
     {
+        if (!is_numeric($id)) {
+            $questionnaire_id = $this->questionnaire->byEnName()->id;
+            return redirect('questionnaire/show/'. $questionnaire_id);
+        }
+        $referer = request()->headers->get('referer');
+        $status = explode('/', $referer);
+        if (count($status) == 5) {
+            if (is_numeric($status[4]) && $status[3] == "questionnaire")
+                $can_preview = true;
+            else
+                $can_preview = false;
+        } else {
+            $can_preview = false;
+        }
+
         $questions = $this->question->byQuestionnaireId($id);
         $sub_question = $this->question->getAllSubQuestion($id);
         $questionnaire = $this->questionnaire->byId($id);
@@ -38,6 +55,7 @@ class ShowQuestionnaireController extends Controller
             'questionnaire' => $questionnaire,
             'questions' => $questions,
             'sub_questions' => $sub_question,
+            'can_preview' => $can_preview
         ]);
     }
 
@@ -68,5 +86,7 @@ class ShowQuestionnaireController extends Controller
             'questionnaire_id' => $id
         ]);
     }
+
+
 
 }

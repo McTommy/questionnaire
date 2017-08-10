@@ -12,6 +12,12 @@ class QuestionnaireRepository
 
     protected $default_logo_url = '/mobile_static/contents_folder/new_questionnaire/img/logo.png';
 
+    //返回调查问卷总数目
+    public function getQuestionnaireNum()
+    {
+        return Questionnaire::where('status', 1)->count();
+    }
+
     //创建paginate
     public function questionnaire_paginate($number)
     {
@@ -105,5 +111,29 @@ class QuestionnaireRepository
         }
         $questionnaire->img_logo_url = $path;
         $questionnaire->save();
+    }
+
+    //更改问卷结束时间
+    public function updateEndTime($id, $time)
+    {
+        return Questionnaire::where('id', $id)->update(['end_time' => $time]);
+    }
+
+    //检验问卷英文名唯一性
+    public function verifyEnName($name)
+    {
+        return Questionnaire::where('en_name', $name)->first();
+    }
+
+    //以en_name查找问卷
+    public function byEnName($name)
+    {
+        return Questionnaire::where('en_name', $name)->first();
+    }
+
+    //更新英文名
+    public function updateEnName($id, $name)
+    {
+        return Questionnaire::where('id', $id)->update(['en_name' => $name]);
     }
 }

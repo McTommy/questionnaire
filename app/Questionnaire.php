@@ -8,7 +8,8 @@ class Questionnaire extends Model
 {
     protected $fillable = [
       'title', 'author', 'sub_title', 'make_time', 'start_time',
-        'end_time', 'is_template', 'editable', 'status'
+        'end_time', 'is_template', 'editable', 'status', 'en_name',
+        'comment'
     ];
 
     //定义与investigators表为多对多关系
@@ -45,5 +46,11 @@ class Questionnaire extends Model
     public function cache_blanks()
     {
         return $this->hasMany(CacheBlank::class);
+    }
+
+    //定义与queries表关系为一对多
+    public function queries()
+    {
+        return $this->hasMany(Query::class);
     }
 }

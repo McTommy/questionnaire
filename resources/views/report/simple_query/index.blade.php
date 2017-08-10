@@ -195,6 +195,10 @@
                 <div class="btn btn-primary search_reset">重置</div>
                 <div class="part_title">输出结果：<span class="result"></span>
                 </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary search_save">存储查询结果</button>
+                    <a class="btn btn-primary search_export" href="{{ url('report/export_excel') }}">导出所有查询记录</a>
+                </div>
 
 
             </div>

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Report;
 
 use App\Repositories\ChoiceRepository;
+use App\Repositories\QueryRepository;
 use App\Repositories\QuestionnaireRepository;
 use App\Repositories\QuestionRepository;
 use App\Repositories\ReportRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SimpleQueryController extends Controller
 {
@@ -16,6 +18,7 @@ class SimpleQueryController extends Controller
     protected $question;
     protected $questionnaire;
     protected $choice;
+    protected $query;
 
     /**
      * SimpleQueryController constructor.
@@ -24,13 +27,15 @@ class SimpleQueryController extends Controller
     public function __construct(QuestionRepository $question,
                                 QuestionnaireRepository $questionnaire,
                                 ReportRepository $report,
-                                ChoiceRepository $choice
-                                )
+                                ChoiceRepository $choice,
+                                QueryRepository $query
+    )
     {
         $this->report = $report;
         $this->question = $question;
         $this->questionnaire = $questionnaire;
         $this->choice = $choice;
+        $this->query = $query;
     }
 
 //    拉取问题展示
@@ -99,8 +104,7 @@ class SimpleQueryController extends Controller
         $choices = $this->choice->getByQuestionId($question_id);
         if ($choices) {
             $datas = [];
-            foreach ($choices as $choice)
-            {
+            foreach ($choices as $choice) {
                 $data = [
                     'id' => $choice->id,
                     'content' => $choice->content,
@@ -112,5 +116,61 @@ class SimpleQueryController extends Controller
         } else {
             return response()->json(['messages' => "无指定选项", 'code' => 500]);
         }
+    }
+
+    //ajax存储查询条件
+    public function ajaxSaveQuery(Request $request)
+    {
+        $questionnaire_id = $request->get('questionnaire_id');
+        $datas = $request->get('datas');
+        $conditions = $request->get('conditions');
+        if (!$conditions) $conditions = [];
+        $respondent_id = $this->report->selectAnswersTable($questionnaire_id, $datas, $conditions);
+        for ($i=0;count($datas)>$i;$i++) {
+            if ($datas[$i]['sub_question_name'] == null)
+                $datas[$i]['sub_question_name'] = '';
+        }
+        $content['datas'] = $datas;
+        $content['conditions'] = $conditions;
+        $content = json_encode($content, JSON_UNESCAPED_UNICODE);
+        $result_number = count($respondent_id);
+        if ($this->query->saveQuery($questionnaire_id, $content, $result_number))
+            return response()->json(['code' => 200]);
+        return response()->json(['code' => 500, 'number' => $result_number, 'message' => "数据保存失败"]);
+    }
+
+    //导出保存的调查问卷查询记录
+    public function exportExcel()
+    {
+        $queries = $this->query->getAll();
+        $cellData = [
+            ['序号', '调查问卷id', '调查问卷名称', '选项一', '条件一', '选项二', '条件二', '选项三', '符合条件的数目', '查询时间'],
+        ];
+        foreach ($queries as $query) {
+            $content = json_decode($query->content);
+            $choice_array = [];
+            foreach ($content->datas as $content_data) {
+                $choice_content = $content_data->is_non == 1 ? '未' : '' . '选择题目为:' . $content_data->question_name .
+                    ',子题目为:' . $content_data->sub_question_name . ',选项为:' . $content_data->choice_name . ' 的被调查人';
+                array_push($choice_array, $choice_content);
+            }
+            $condition_array = [];
+            foreach ($content->conditions as $condition) {
+                $condition_content = $condition == 'and' ? '并且(与)' : '或者(或)';
+                array_push($condition_array, $condition_content);
+            }
+            $data = [
+                $query->id, $query->questionnaire->id, $query->questionnaire->title,
+                $choice_array[0], isset($condition_array[0])?$condition_array[0]:'空',
+                isset($choice_array[1])?$choice_array[1]:'空',isset($condition_array[1])?$condition_array[1]:'空',
+                isset($choice_array[2])?$choice_array[2]:'空', $query->result_number,$query->created_at->format('Y-m-d H:i:s')
+            ];
+            array_push($cellData, $data);
+        }
+        Excel::create('查询信息记录表', function ($excel) use ($cellData) {
+            $excel->sheet('simple_query', function ($sheet) use ($cellData) {
+                $sheet->rows($cellData);
+            });
+        })->export('xls');
     }
 }

@@ -14,6 +14,12 @@
 @stop
 
 @section('content')
+
+    @if($questionnaire->start_time > date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
+        <h1 class="foreword">问卷尚未开始，敬请期待</h1>
+    @elseif($questionnaire->end_time < date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
+        <h1 class="foreword">问卷已结束，感谢您的参与</h1>
+    @else
     <div class="process"><span>0</span>%</div>
     <div class="foreword">{{ $questionnaire->title }}</div>
     <!--单选1 多选2 填空3 矩阵单选4 矩阵量表5 段落说明6 多项填空7-->
@@ -320,6 +326,7 @@
         @endif
     @endforeach
     <div class="bottom"></div>
+    @endif
 @stop
 
 @section('footer')

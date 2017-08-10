@@ -851,13 +851,13 @@ window.onload = $(function () {
                     } else {
                         $(".toggle_template").text("已保存为模板")
                     }
-                    alertShow("操作成功");
+                    alert("操作成功");
                 } else {
-                    alertShow("操作失败，请刷新重试");
+                    alert("操作失败，请刷新重试");
                 }
             },
             error: function () {
-                alertShow("操作失败，请刷新重试")
+                alert("操作失败，请刷新重试")
             }
         });
 

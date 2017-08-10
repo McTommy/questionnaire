@@ -439,6 +439,18 @@ html body .error_tips {
   margin-bottom: 5px;
   text-align: left;
 }
+html body .en_name_error {
+  color: #ff0000;
+  font-size: 12px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+html body .en_name_type_error {
+  color: #ff0000;
+  font-size: 12px;
+  margin-bottom: 5px;
+  text-align: left;
+}
 html body .input_num_box {
   position: absolute;
   color: #1c1c1c;

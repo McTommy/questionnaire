@@ -93,65 +93,8 @@ $(".choose_child").change(function () {
 
 
 $(".search_result").click(function () {
-    // 第一部分的获取的值
-      var first_yes = $(".first_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
-      var first_q = $(".first_que .choose_que option:selected").text();    //没选 是 请选择题目
-      if($(".first_que .child_content").is(":visible")){
-          var first_child = $(".first_que .choose_child option:selected").text();
-      }
-      var first_id = $(".first_que .choose_anw option:selected").attr("data-id");
-      if (!first_id) {
-          alert("请您选择第一个查询条件条件");
-          return false;
-      }
-
-    // 第一个与或非
-     var first_logic = $(".first_logic input[type=radio]:checked").val(); //yes是与 ，no是或，没选是undifined
-
-    //第二部分的获取的值
-    var second_yes = $(".second_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
-    var second_q = $(".second_que .choose_que option:selected").text();    //没选 是 请选择题目
-    if($(".second_que .child_content").is(":visible")){
-        var second_child = $(".second_que .choose_child option:selected").text();
-    }
-    var second_id = $(".second_que .choose_anw option:selected").attr("data-id");
-
-    // 第二个与或非
-    var second_logic = $(".second_logic input[type=radio]:checked").val();
-
-    //第三部分的获取的值
-    var third_yes = $(".third_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
-    var third_q = $(".third_que .choose_que option:selected").text();    //没选 是 请选择题目
-    if($(".third_que .child_content").is(":visible")){
-        var third_child = $(".third_que .choose_child option:selected").text();
-    }
-    var third_id = $(".third_que .choose_anw option:selected").attr("data-id");
-    if (third_id && !second_id) {
-        alert("请您选择第二个查询条件条件");
-        return false;
-    }
-    //组织数据格式
-    if (third_id) {
-        datas = [
-            {'is_non': 1-first_yes, 'choice_id': first_id},
-            {'is_non': 1-second_yes, 'choice_id': second_id},
-            {'is_non': 1-third_yes, 'choice_id': third_id}
-
-        ];
-        conditions = [first_logic, second_logic]
-    } else if (!third_id && second_id) {
-        datas = [
-            {'is_non': 1-first_yes, 'choice_id': first_id},
-            {'is_non': 1-second_yes, 'choice_id': second_id},
-
-        ];
-        conditions = [first_logic]
-    } else {
-        datas = [
-            {'is_non': 1-first_yes, 'choice_id': first_id}
-        ];
-        conditions = []
-    }
+    datas = get_conditions()[0];
+    conditions = get_conditions()[1];
     $.ajax({
         url:"/api/report/simple_query",
         data:{
@@ -182,3 +125,154 @@ $(".search_reset").click(function () {
 
     $(".yes_radio").trigger("click");
 });
+
+
+//保存查询数据
+$(".search_save").click(function () {
+    var state = confirm("是否保存当前查询条件及数据？");
+    if(state) {
+        // 第一部分的获取的值
+        var first_yes = $(".first_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
+        var first_q = $(".first_que .choose_que option:selected").text();    //没选 是 请选择题目
+        if($(".first_que .child_content").is(":visible")){
+            var first_child = $(".first_que .choose_child option:selected").text();
+        }
+        var first_id = $(".first_que .choose_anw option:selected").attr("data-id");
+        var first_choice_name = $(".first_que .choose_anw option:selected").text();
+        if (!first_id) {
+            alert("请您选择第一个查询条件");
+            return false;
+        }
+
+        // 第一个与或非
+        var first_logic = $(".first_logic input[type=radio]:checked").val(); //yes是与 ，no是或，没选是undifined
+
+        //第二部分的获取的值
+        var second_yes = $(".second_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
+        var second_q = $(".second_que .choose_que option:selected").text();    //没选 是 请选择题目
+        if($(".second_que .child_content").is(":visible")){
+            var second_child = $(".second_que .choose_child option:selected").text();
+        }
+        var second_id = $(".second_que .choose_anw option:selected").attr("data-id");
+        var second_choice_name = $(".second_que .choose_anw option:selected").text();
+
+        // 第二个与或非
+        var second_logic = $(".second_logic input[type=radio]:checked").val();
+
+        //第三部分的获取的值
+        var third_yes = $(".third_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
+        var third_q = $(".third_que .choose_que option:selected").text();    //没选 是 请选择题目
+        if($(".third_que .child_content").is(":visible")){
+            var third_child = $(".third_que .choose_child option:selected").text();
+        }
+        var third_id = $(".third_que .choose_anw option:selected").attr("data-id");
+        var third_choice_name = $(".third_que .choose_anw option:selected").text();
+        if (third_id && !second_id) {
+            alert("请您选择第二个查询条件");
+            return false;
+        }
+        //组织数据格式
+        if (third_id) {
+            datas = [
+                {'is_non': 1-first_yes, 'choice_id': first_id, 'question_name':first_q, 'sub_question_name':first_child?first_child:'', 'choice_name':first_choice_name},
+                {'is_non': 1-second_yes, 'choice_id': second_id, 'question_name':second_q, 'sub_question_name':second_child?second_child:'', 'choice_name':second_choice_name},
+                {'is_non': 1-third_yes, 'choice_id': third_id, 'question_name':third_q, 'sub_question_name':third_child?third_child:'', 'choice_name':third_choice_name},
+            ];
+            conditions = [first_logic, second_logic]
+        } else if (!third_id && second_id) {
+            datas = [
+                {'is_non': 1-first_yes, 'choice_id': first_id, 'question_name':first_q, 'sub_question_name':first_child?first_child:'', 'choice_name':first_choice_name},
+                {'is_non': 1-second_yes, 'choice_id': second_id, 'question_name':second_q, 'sub_question_name':second_child?second_child:'', 'choice_name':second_choice_name},
+
+            ];
+            conditions = [first_logic]
+        } else {
+            datas = [
+                {'is_non': 1-first_yes, 'choice_id': first_id, 'question_name':first_q, 'sub_question_name':first_child?first_child:'', 'choice_name':first_choice_name},
+            ];
+            conditions = []
+        }
+        $.ajax({
+            url:"/api/report/save_query",
+            data:{
+                'questionnaire_id':$(".activity_info_id").text(),
+                'datas': datas,
+                'conditions':conditions
+            },
+            type:"post",
+            dataType:"json",
+            success:function (data) {
+                if (data.code == 200)
+                    alert('保存成功');
+                else {
+                    alert('保存失败')
+                }
+            }
+        });
+    }
+});
+
+
+//获取查询数据
+function get_conditions() {
+    // 第一部分的获取的值
+    var first_yes = $(".first_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
+    var first_q = $(".first_que .choose_que option:selected").text();    //没选 是 请选择题目
+    if($(".first_que .child_content").is(":visible")){
+        var first_child = $(".first_que .choose_child option:selected").text();
+    }
+    var first_id = $(".first_que .choose_anw option:selected").attr("data-id");
+    if (!first_id) {
+        alert("请您选择第一个查询条件");
+        return false;
+    }
+
+    // 第一个与或非
+    var first_logic = $(".first_logic input[type=radio]:checked").val(); //yes是与 ，no是或，没选是undifined
+
+    //第二部分的获取的值
+    var second_yes = $(".second_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
+    var second_q = $(".second_que .choose_que option:selected").text();    //没选 是 请选择题目
+    if($(".second_que .child_content").is(":visible")){
+        var second_child = $(".second_que .choose_child option:selected").text();
+    }
+    var second_id = $(".second_que .choose_anw option:selected").attr("data-id");
+
+    // 第二个与或非
+    var second_logic = $(".second_logic input[type=radio]:checked").val();
+
+    //第三部分的获取的值
+    var third_yes = $(".third_que input[type=radio]:checked").val();  //yes是1 ，no是0，没选是undifined
+    var third_q = $(".third_que .choose_que option:selected").text();    //没选 是 请选择题目
+    if($(".third_que .child_content").is(":visible")){
+        var third_child = $(".third_que .choose_child option:selected").text();
+    }
+    var third_id = $(".third_que .choose_anw option:selected").attr("data-id");
+    if (third_id && !second_id) {
+        alert("请您选择第二个查询条件");
+        return false;
+    }
+    //组织数据格式
+    if (third_id) {
+        datas = [
+            {'is_non': 1-first_yes, 'choice_id': first_id},
+            {'is_non': 1-second_yes, 'choice_id': second_id},
+            {'is_non': 1-third_yes, 'choice_id': third_id}
+
+        ];
+        conditions = [first_logic, second_logic]
+    } else if (!third_id && second_id) {
+        datas = [
+            {'is_non': 1-first_yes, 'choice_id': first_id},
+            {'is_non': 1-second_yes, 'choice_id': second_id},
+
+        ];
+        conditions = [first_logic]
+    } else {
+        datas = [
+            {'is_non': 1-first_yes, 'choice_id': first_id}
+        ];
+        conditions = []
+    }
+    return [datas, conditions];
+}

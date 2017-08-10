@@ -46,5 +46,16 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('report/get_sub_questions', 'Report\SimpleQueryController@ajaxGetSubQuestions');
     //拉取指定问题的答案
     Route::post('report/get_choices', 'Report\SimpleQueryController@ajaxGetChoices');
+    //存储查询条件与数据
+    Route::post('report/save_query', 'Report\SimpleQueryController@ajaxSaveQuery');
+    //更改问卷结束时间
+    Route::post('questionnaire/update_end_time', 'Questionnaire\QuestionnaireController@ajaxUpdateEndTime');
+    //检验问卷英文名唯一性
+    Route::post('questionnaire/verify_en_name', 'Questionnaire\QuestionnaireController@ajaxVerifyEnName');
+    //更新问卷英文名
+    Route::post('questionnaire/update_en_name', 'Questionnaire\QuestionnaireController@ajaxUpdateEnName');
+    //获取c端二维码
+    Route::post('questionnaire/get_c_qrcode', 'Questionnaire\QuestionnaireController@ajaxGetCQrcode');
+
 });
 
