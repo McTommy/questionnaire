@@ -33,7 +33,7 @@ class ShowQuestionnaireController extends Controller
     public function index($id)
     {
         if (!is_numeric($id)) {
-            $questionnaire_id = $this->questionnaire->byEnName()->id;
+            $questionnaire_id = $this->questionnaire->byEnName($id)->id;
             return redirect('questionnaire/show/'. $questionnaire_id);
         }
         $referer = request()->headers->get('referer');
