@@ -143,33 +143,13 @@ class SimpleQueryController extends Controller
     public function exportExcel()
     {
         $queries = $this->query->getAll();
-        $cellData = [
+        $cell_data = [
             ['序号', '调查问卷id', '调查问卷名称', '选项一', '条件一', '选项二', '条件二', '选项三', '符合条件的数目', '查询时间'],
         ];
-        foreach ($queries as $query) {
-            $content = json_decode($query->content);
-            $choice_array = [];
-            foreach ($content->datas as $content_data) {
-                $choice_content = $content_data->is_non == 1 ? '未' : '' . '选择题目为:' . $content_data->question_name .
-                    ',子题目为:' . $content_data->sub_question_name . ',选项为:' . $content_data->choice_name . ' 的被调查人';
-                array_push($choice_array, $choice_content);
-            }
-            $condition_array = [];
-            foreach ($content->conditions as $condition) {
-                $condition_content = $condition == 'and' ? '并且(与)' : '或者(或)';
-                array_push($condition_array, $condition_content);
-            }
-            $data = [
-                $query->id, $query->questionnaire->id, $query->questionnaire->title,
-                $choice_array[0], isset($condition_array[0])?$condition_array[0]:'空',
-                isset($choice_array[1])?$choice_array[1]:'空',isset($condition_array[1])?$condition_array[1]:'空',
-                isset($choice_array[2])?$choice_array[2]:'空', $query->result_number,$query->created_at->format('Y-m-d H:i:s')
-            ];
-            array_push($cellData, $data);
-        }
-        Excel::create('查询信息记录表', function ($excel) use ($cellData) {
-            $excel->sheet('simple_query', function ($sheet) use ($cellData) {
-                $sheet->rows($cellData);
+        $cell_data = $this->query->generateCellData($queries, $cell_data);
+        Excel::create('查询信息记录表', function ($excel) use ($cell_data) {
+            $excel->sheet('simple_query', function ($sheet) use ($cell_data) {
+                $sheet->rows($cell_data);
             });
         })->export('xls');
     }
