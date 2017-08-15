@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
     //调查问卷报告
     Route::get('report/simple_query/{id}', 'Report\SimpleQueryController@index');
     //导出保存的调查问卷查询记录
-    Route::get('report/export_excel', 'Report\SimpleQueryController@exportExcel');
+    Route::get('report/export_excel/{type}', 'Report\SimpleQueryController@exportExcel');
 
 });
 

@@ -197,7 +197,9 @@
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-primary search_save">存储查询结果</button>
-                    <a class="btn btn-primary search_export" href="{{ url('report/export_excel') }}">导出所有查询记录</a>
+                    <a class="btn btn-primary search_export" href="{{ url('report/export_excel/xls') }}">导出为Excel</a>
+                    <a class="btn btn-primary search_export_csv" href="{{ url('report/export_excel/csv') }}">导出为csv</a>
+
                 </div>
 
 

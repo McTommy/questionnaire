@@ -140,7 +140,7 @@ class SimpleQueryController extends Controller
     }
 
     //导出保存的调查问卷查询记录
-    public function exportExcel()
+    public function exportExcel($type)
     {
         $queries = $this->query->getAll();
         $cell_data = [
@@ -151,6 +151,6 @@ class SimpleQueryController extends Controller
             $excel->sheet('simple_query', function ($sheet) use ($cell_data) {
                 $sheet->rows($cell_data);
             });
-        })->export('xls');
+        })->export($type);
     }
 }
