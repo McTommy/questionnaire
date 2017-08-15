@@ -151,6 +151,6 @@ class SimpleQueryController extends Controller
             $excel->sheet('simple_query', function ($sheet) use ($cell_data) {
                 $sheet->rows($cell_data);
             });
-        })->export($type);
+        })->download($type);
     }
 }

@@ -135,10 +135,10 @@ $(function () {
             dataType: "json",
             success: function (data) {
                 if (data.code == 200) {
-                    if (text == "已保存为模板") {
+                    if (text == "删除模板") {
                         $this.text("保存为模板");
                     } else {
-                        $this.text("已保存为模板");
+                        $this.text("删除模板");
                     }
                     alert("操作成功");
                 } else {

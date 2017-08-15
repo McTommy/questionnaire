@@ -86,12 +86,14 @@
 
                                         @if($questionnaire->end_time < date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
                                             <a type="button" class="btn btn-primary active_questionnaire" href="#none">激活</a>
+                                        @elseif($questionnaire->start_time > date("Y-m-d H:i:s") && $questionnaire->end_time && $questionnaire->start_time)
+                                            <a type="button" class="btn btn-primary" href="#none" disabled>问卷尚未开始</a>
                                         @else
                                             <a type="button" class="btn btn-primary" href="#none" disabled>已激活</a>
                                         @endif
 
                                         @if($questionnaire->is_template == 1)
-                                            <button class="btn btn-primary finish toggle_template">已保存为模板</button>
+                                            <button class="btn btn-primary finish toggle_template">删除模板</button>
                                         @else
                                             <button class="btn btn-primary finish toggle_template">保存为模板</button>
                                         @endif
