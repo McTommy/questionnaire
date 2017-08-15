@@ -262,7 +262,8 @@ $(function () {
     $('#from').datepicker({
         duration: '',
         showTime: true,
-        constrainInput: false
+        constrainInput: false,
+        minDate: "+1D"
     });
     $('#to').datepicker({
         duration: '',
