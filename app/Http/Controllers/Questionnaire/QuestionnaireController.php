@@ -166,6 +166,16 @@ class QuestionnaireController extends Controller
         return response()->json(['code' => 200, 'message' => $en_name]);
     }
 
+    //ajax验证问卷名
+    public function ajaxVerifyTitle(Request $request)
+    {
+        $title = $request->get('title');
+        if ($this->questionnaire->byTitle($title))
+            return response()->json(['code' => 500, 'message' => '中文名已存在']);
+        return response()->json(['code' => 200]);
+
+    }
+
     //ajax获取二维码
     public function ajaxGetCQrcode(Request $request)
     {

@@ -56,6 +56,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('questionnaire/update_en_name', 'Questionnaire\QuestionnaireController@ajaxUpdateEnName');
     //获取c端二维码
     Route::post('questionnaire/get_c_qrcode', 'Questionnaire\QuestionnaireController@ajaxGetCQrcode');
+    //验证问卷名唯一性
+    Route::post('questionnaire/verify_title', 'Questionnaire\QuestionnaireController@ajaxVerifyTitle');
 
 });
 

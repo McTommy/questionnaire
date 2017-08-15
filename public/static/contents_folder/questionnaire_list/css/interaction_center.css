@@ -439,6 +439,12 @@ html body .error_tips {
   margin-bottom: 5px;
   text-align: left;
 }
+html body .title_error_tips {
+  color: #ff0000;
+  font-size: 12px;
+  margin-bottom: 5px;
+  text-align: left;
+}
 html body .en_name_error {
   color: #ff0000;
   font-size: 12px;

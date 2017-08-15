@@ -15,6 +15,7 @@
                             <input  class="input_title" name="title" type="text">
                         </div>
                         <p class="error_tips" style="display: none">*请输入问卷名</p>
+                        <p class="title_error_tips" style="display: none">*此问卷名已存在</p>
                         <p>请输入调查问卷英文名称(可通过questionnaire/show/此英文名 访问问卷填写端, 可为空)</p>
                         <div class="box_title form-group">
                             <input  class="input_title questionnaire_en_name" name="en_name" type="text">
@@ -122,7 +123,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="box_title form-group">
-                        <input  class="input_title update_en_name" name="en_name" type="text">
+                        <input  class="update_en_name" name="en_name" type="text">
                     </div>
                     <p class="en_name_error" style="display: none">*此英文名已存在</p>
                     <p class="en_name_type_error" style="display: none">*请保证输入全为英文</p>

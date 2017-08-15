@@ -56,7 +56,30 @@ $(function () {
         } else if (start_time == "" || start_time == null || end_time == "" || end_time == null) {
             $(".time_error_tips").show();
         } else {
-            $("#submit").trigger("click");
+            $.ajax({
+                // csrf-token
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "/api/questionnaire/verify_title",
+                data: {
+                    "title": title
+                },
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code != 200) {
+                        $(".title_error_tips").show();
+                        $(".input_title").select();
+                    } else {
+                        $("#submit").trigger("click");
+                    }
+                },
+                error: function () {
+                    alert("操作失败，请刷新重试")
+                }
+            });
+            
         }
     });
 
@@ -151,7 +174,7 @@ $(function () {
         });
 
     });
-
+    
     //ajax查询英文名是否唯一
     $(".questionnaire_en_name").blur(function () {
         en_name = $(".questionnaire_en_name").val();

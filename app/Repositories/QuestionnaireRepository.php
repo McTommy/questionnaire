@@ -136,4 +136,10 @@ class QuestionnaireRepository
     {
         return Questionnaire::where('id', $id)->update(['en_name' => $name]);
     }
+    
+    //以title查询问卷
+    public function byTitle($title)
+    {
+        return Questionnaire::where('title', $title)->first();
+    }
 }
